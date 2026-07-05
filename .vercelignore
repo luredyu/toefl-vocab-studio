@@ -1,0 +1,7 @@
+data/
+public/
+work/
+eng.traineddata
+.git/
+.DS_Store
+*.log

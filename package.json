@@ -1,0 +1,21 @@
+{
+  "name": "toefl-vocab-studio",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "build": "node scripts/build-public.mjs",
+    "check": "node --check app.js && node --check server.mjs && node --check persistence.mjs && node --check api/index.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@tesseract.js-data/eng": "^1.0.0",
+    "docx": "^9.7.1",
+    "mammoth": "^1.11.0",
+    "pdfjs-dist": "^4.8.69",
+    "tesseract.js": "^6.0.1"
+  }
+}

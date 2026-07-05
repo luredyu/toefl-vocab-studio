@@ -1,0 +1,2400 @@
+const STORAGE_KEY = "toefl-vocab-studio:v1";
+const API_KEY_STORAGE = "toefl-vocab-studio:deepseek-key";
+
+const BASIC_WORDS = new Set(
+  `
+  the a an and or but if then than so because as of at in on to from for with by
+  about into over after before between through during without under again further
+  this that these those it its they them their he him his she her we us our you your
+  i me my who which what where when why how be am is are was were been being have
+  has had having do does did doing can could may might must shall should will would
+  say says said make makes made go goes went gone get gets got take takes took taken
+  come came see saw seen know knew known think thought want need use find give tell
+  work call try ask seem feel become leave put mean keep let begin help talk turn
+  start show hear play run move live believe bring happen write provide sit stand
+  lose pay meet include continue set learn change lead understand watch follow stop
+  create speak read allow add spend grow open walk win offer remember love consider
+  appear buy wait serve die send expect build stay fall cut reach remain suggest
+  raise pass sell require report decide pull return explain hope develop carry break
+  receive agree support hit produce eat cover catch draw choose cause point listen
+  realize place close involve increase improve join reduce pick wear drive plan
+  study student school university teacher people person man woman child children
+  time year day week month today world life part number way thing place home country
+  problem question answer group hand eye case point government company system program
+  fact water room mother area money story issue side kind head house service friend
+  father power hour game line end member law car city name team minute idea kid body
+  information back parent face others level office door health art war history party
+  result morning reason research girl guy moment air force education food boy age
+  policy process music market sense nation college interest death experience effect
+  class control care field development role effort rate heart drug leader light
+  voice wife police mind price decision son view relationship town road arm difference
+  value building action model season society tax director position player record
+  paper space ground form event official matter center couple site project activity
+  star table court oil situation cost industry figure street image phone data picture
+  practice piece land product doctor wall patient worker news test movie north love
+  personal simple important different difficult easy common large small big good bad
+  new old high low long short early late right left same other many much more most
+  few little all some any each every both either neither first second last next
+  really very also just only even still already always never often usually sometimes
+  however therefore perhaps probably possible able such own another while although
+  whether accept access argue depend design energy impact local public rapid urban
+  researcher resource transportation
+  yes no not
+  `.trim().split(/\s+/)
+);
+
+const IRREGULAR_LEMMAS = {
+  arose: "arise",
+  arisen: "arise",
+  became: "become",
+  begun: "begin",
+  began: "begin",
+  broke: "break",
+  broken: "break",
+  brought: "bring",
+  built: "build",
+  bought: "buy",
+  caught: "catch",
+  chose: "choose",
+  chosen: "choose",
+  came: "come",
+  dealt: "deal",
+  drew: "draw",
+  drawn: "draw",
+  driven: "drive",
+  drove: "drive",
+  fell: "fall",
+  fallen: "fall",
+  found: "find",
+  gave: "give",
+  given: "give",
+  grew: "grow",
+  grown: "grow",
+  held: "hold",
+  kept: "keep",
+  led: "lead",
+  left: "leave",
+  meant: "mean",
+  met: "meet",
+  paid: "pay",
+  rose: "rise",
+  risen: "rise",
+  ran: "run",
+  sent: "send",
+  spoke: "speak",
+  spoken: "speak",
+  spent: "spend",
+  stood: "stand",
+  taught: "teach",
+  told: "tell",
+  understood: "understand",
+  wore: "wear",
+  worn: "wear",
+  wrote: "write",
+  written: "write",
+};
+
+const ADVANCED_WORDS = new Set(
+  `
+  abundant accelerate accommodate accumulate adjacent advocate allocate ambiguous
+  analogy anticipate arbitrary articulate assess attain attribute authentic coherent
+  coincide compile complement comprehensive concede concurrent confer confine conform
+  consecutive constitute constrain contemporary contradict controversy conventional
+  correlate credible crucial cumulative decline deduce deliberate demonstrate denote
+  derive diminish discrete distort diverse elaborate empirical encounter enhance
+  ensure equivalent establish evident exclude explicit facilitate fluctuate fundamental
+  generate hypothesis identical illustrate imply incentive inevitable infer inhibit
+  inherent integrate interpret intervene justify maintain manipulate marginal mitigate
+  modify nonetheless objective obtain offset paradigm persist plausible preliminary
+  predominant preserve profound prohibit promote proportion prospect reinforce relevant
+  reluctant require resolve retain reveal significant simulate subsequent substitute
+  sufficient sustain tentative transform transmit ubiquitous undergo undermine valid
+  vary widespread
+  `.trim().split(/\s+/)
+);
+
+const DEMO_WORDS = [
+  {
+    id: crypto.randomUUID(),
+    word: "mitigate",
+    mode: "spelling",
+    partOfSpeech: "verb",
+    definitions: [
+      {
+        en: "to make something harmful, unpleasant, or bad less severe",
+        zh: "减轻，缓和（危害、痛苦或不良影响）",
+      },
+    ],
+    irregularForms: [],
+    wordFamily: [
+      { word: "mitigation", pos: "noun", zh: "缓解；减轻" },
+      { word: "mitigating", pos: "adjective", zh: "可减轻的；缓和的" },
+    ],
+    collocations: [
+      {
+        phrase: "mitigate the impact of",
+        zh: "减轻……的影响",
+        example: "Public investment can mitigate the impact of an economic downturn.",
+        exampleZh: "公共投资能够减轻经济衰退带来的影响。",
+      },
+      {
+        phrase: "mitigate potential risks",
+        zh: "降低潜在风险",
+        example: "Careful planning helps mitigate potential risks.",
+        exampleZh: "周密规划有助于降低潜在风险。",
+      },
+    ],
+    synonyms: [
+      {
+        word: "alleviate",
+        differenceZh: "常用于减轻疼痛、压力或社会问题；mitigate 更常强调降低严重程度或后果。",
+      },
+      {
+        word: "diminish",
+        differenceZh: "表示数量、强度或重要性减少，不一定含有主动采取措施的意味。",
+      },
+    ],
+    audio: "",
+    createdAt: Date.now(),
+    srs: defaultSrs(),
+  },
+  {
+    id: crypto.randomUUID(),
+    word: "plausible",
+    mode: "recognition",
+    partOfSpeech: "adjective",
+    definitions: [
+      {
+        en: "seeming reasonable or likely to be true",
+        zh: "看似合理的；貌似可信的",
+      },
+    ],
+    irregularForms: [],
+    wordFamily: [
+      { word: "plausibility", pos: "noun", zh: "合理性；可信性" },
+      { word: "plausibly", pos: "adverb", zh: "貌似合理地" },
+    ],
+    collocations: [
+      {
+        phrase: "a plausible explanation",
+        zh: "一个合理的解释",
+        example: "The evidence supports a plausible explanation for the decline.",
+        exampleZh: "这些证据支持了对这种下降现象的一种合理解释。",
+      },
+    ],
+    synonyms: [
+      {
+        word: "credible",
+        differenceZh: "credible 强调值得相信、具有可信度；plausible 强调表面上合乎逻辑或可能为真。",
+      },
+      {
+        word: "feasible",
+        differenceZh: "feasible 表示计划或方法切实可行，不表示说法可信。",
+      },
+    ],
+    audio: "",
+    createdAt: Date.now(),
+    srs: defaultSrs(),
+  },
+  {
+    id: crypto.randomUUID(),
+    word: "ubiquitous",
+    mode: "spelling",
+    partOfSpeech: "adjective",
+    definitions: [
+      {
+        en: "present, appearing, or found everywhere",
+        zh: "无处不在的；普遍存在的",
+      },
+    ],
+    irregularForms: [],
+    wordFamily: [
+      { word: "ubiquity", pos: "noun", zh: "无处不在；普遍存在" },
+    ],
+    collocations: [
+      {
+        phrase: "become increasingly ubiquitous",
+        zh: "变得日益普遍",
+        example: "Digital devices have become increasingly ubiquitous in education.",
+        exampleZh: "数字设备在教育中已经变得日益普遍。",
+      },
+    ],
+    synonyms: [
+      {
+        word: "pervasive",
+        differenceZh: "pervasive 强调广泛渗透并产生影响，有时带负面含义；ubiquitous 只强调到处可见。",
+      },
+      {
+        word: "widespread",
+        differenceZh: "widespread 表示分布广，但不一定达到「几乎无处不在」的程度。",
+      },
+    ],
+    audio: "",
+    createdAt: Date.now(),
+    srs: defaultSrs(),
+  },
+  {
+    id: crypto.randomUUID(),
+    word: "derive",
+    mode: "recognition",
+    partOfSpeech: "verb",
+    definitions: [
+      {
+        en: "to obtain something from a specified source",
+        zh: "获得；取得；源自",
+      },
+    ],
+    irregularForms: [],
+    wordFamily: [
+      { word: "derivation", pos: "noun", zh: "起源；派生" },
+      { word: "derivative", pos: "noun / adjective", zh: "派生物；衍生的" },
+    ],
+    collocations: [
+      {
+        phrase: "derive benefit from",
+        zh: "从……中获益",
+        example: "Students derive considerable benefit from regular feedback.",
+        exampleZh: "学生能从定期反馈中获得显著益处。",
+      },
+      {
+        phrase: "be derived from",
+        zh: "源自……",
+        example: "Many medicines are derived from natural compounds.",
+        exampleZh: "许多药物源自天然化合物。",
+      },
+    ],
+    synonyms: [
+      {
+        word: "obtain",
+        differenceZh: "obtain 泛指通过努力或过程获得；derive 常说明从某个明确来源中获得。",
+      },
+      {
+        word: "originate",
+        differenceZh: "originate 强调某事物开始或产生于某处；derive 更强调来源关系。",
+      },
+    ],
+    audio: "",
+    createdAt: Date.now(),
+    srs: defaultSrs(),
+  },
+];
+
+function defaultSrs() {
+  return {
+    dueAt: Date.now(),
+    interval: 0,
+    ease: 2.5,
+    reps: 0,
+    lapses: 0,
+    lastReviewed: null,
+  };
+}
+
+function defaultState() {
+  return {
+    words: [],
+    settings: {
+      model: "deepseek-v4-flash",
+      hideBasic: true,
+      dailyGoal: 20,
+    },
+    streak: 0,
+    reviewsToday: 0,
+    lastStudyDate: null,
+  };
+}
+
+let state = defaultState();
+let currentUser = null;
+let serverHasApiKey = false;
+let sharedAiEnabled = false;
+let stateDirty = false;
+let syncTimer = null;
+let activeView = "dashboard";
+let importMode = "paste";
+let importPhase = "input";
+let importSession = {
+  text: "",
+  fileName: "",
+  candidates: [],
+  status: "",
+};
+let librarySearch = "";
+let libraryMode = "all";
+let practiceMode = "recognition";
+let practiceQueue = [];
+let practiceIndex = 0;
+let practiceRevealed = false;
+let spellingAnswered = false;
+let activeAudioPlayer = null;
+
+const content = document.querySelector("#app-content");
+const title = document.querySelector("#page-title");
+const eyebrow = document.querySelector("#page-eyebrow");
+const modalRoot = document.querySelector("#modal-root");
+const toastRoot = document.querySelector("#toast-root");
+
+document.addEventListener("click", handleGlobalClick);
+document.addEventListener("input", handleGlobalInput);
+document.addEventListener("change", handleGlobalChange);
+document.addEventListener("keydown", handleGlobalKeydown);
+
+(async function init() {
+  // Check for existing session
+  try {
+    const res = await fetch("/api/auth/session");
+    const data = await res.json().catch(() => ({}));
+    if (data.user) {
+      currentUser = data.user;
+      serverHasApiKey = Boolean(data.hasApiKey);
+      sharedAiEnabled = Boolean(data.sharedAiEnabled);
+      const serverState = await fetchServerState();
+      if (serverState) state = { ...defaultState(), ...serverState };
+    } else {
+      state = loadLocalState();
+    }
+  } catch {
+    state = loadLocalState();
+  }
+  // Retroactively fill audio for words missing it
+  await backfillAudio();
+  render();
+})();
+
+async function backfillAudio() {
+  const needAudio = state.words.filter(
+    (word) => !word.audio || (!word.audio.startsWith("/api/audio?word=") && !word.audio.startsWith("/media/"))
+  );
+  if (!needAudio.length) return;
+  // Try external dictionary API first for each word
+  for (const w of needAudio) {
+    try {
+      let audio = await fetchDictionaryAudio(w.word);
+      if (!audio) {
+        // Fallback to wordbank local audio
+        const wbRes = await fetch("/api/wordbank/lookup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ words: [w.word] }),
+        });
+        const wbData = await wbRes.json().catch(() => ({}));
+        if (wbData.found?.[w.word]?.audio) audio = wbData.found[w.word].audio;
+      }
+      if (audio) w.audio = audio;
+    } catch {}
+  }
+  saveState();
+}
+
+function loadLocalState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? { ...defaultState(), ...JSON.parse(raw) } : defaultState();
+  } catch {
+    return defaultState();
+  }
+}
+
+function loadState() { return loadLocalState(); }
+
+async function fetchServerState() {
+  try {
+    const res = await fetch("/api/state");
+    if (!res.ok) return null;
+    return await res.json();
+  } catch { return null; }
+}
+
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  if (currentUser) {
+    stateDirty = true;
+    clearTimeout(syncTimer);
+    syncTimer = setTimeout(syncToServer, 2000);
+  }
+}
+
+async function syncToServer() {
+  if (!stateDirty || !currentUser) return;
+  try {
+    await fetch("/api/state", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(state),
+    });
+    stateDirty = false;
+    updateTopbar();
+  } catch { /* will retry on next saveState */ }
+}
+
+window.addEventListener("beforeunload", () => {
+  if (currentUser && stateDirty) {
+    navigator.sendBeacon("/api/state", JSON.stringify(state));
+  }
+});
+
+function setView(view) {
+  activeView = view;
+  document.querySelectorAll(".nav-item[data-view]").forEach((item) => {
+    item.classList.toggle("is-active", item.dataset.view === view);
+  });
+  render();
+}
+
+function updateTopbar() {
+  const container = document.querySelector("#topbar-actions");
+  if (!container) return;
+  if (currentUser) {
+    container.innerHTML = `
+      <div class="save-state ${stateDirty ? "" : "is-synced"}" title="${stateDirty ? "同步中..." : "数据已同步到云端"}">
+        <span class="save-dot"></span>
+        <span>${stateDirty ? "同步中..." : "云端已同步"}</span>
+      </div>
+      <div class="user-pill">
+        <span class="user-email">${escapeHtml(currentUser.email)}</span>
+        <button class="button button-ghost button-small" data-action="logout">退出</button>
+      </div>
+    `;
+  } else {
+    container.innerHTML = `
+      <div class="save-state" title="所有学习数据保存在本机浏览器">
+        <span class="save-dot"></span>
+        <span>本机存档</span>
+      </div>
+      <button class="button button-secondary button-small" data-action="show-auth-login">登录 / 注册</button>
+    `;
+  }
+}
+
+function render() {
+  const pageMeta = {
+    dashboard: ["2026 TOEFL", "今天，先掌握一小组"],
+    import: ["IMPORT & SELECT", "从材料里挑出真正要学的词"],
+    library: ["YOUR ARCHIVE", "存档词库"],
+    practice: ["SPACED REVIEW", "用合适的方式把词记牢"],
+    settings: ["LOCAL & PRIVATE", "设置与备份"],
+  };
+  [eyebrow.textContent, title.textContent] = pageMeta[activeView];
+
+  updateTopbar();
+  updateSidebarStats();
+
+  if (activeView === "dashboard") renderDashboard();
+  if (activeView === "import") renderImport();
+  if (activeView === "library") renderLibrary();
+  if (activeView === "practice") renderPractice();
+  if (activeView === "settings") renderSettings();
+}
+
+function updateSidebarStats() {
+  const total = document.querySelector("#stat-total");
+  const mode = document.querySelector("#stat-mode");
+  const streak = document.querySelector("#stat-streak");
+  if (!total || !mode || !streak) return;
+  const s = state.words.filter((w) => w.mode === "spelling").length;
+  const r = state.words.filter((w) => w.mode === "recognition").length;
+  total.textContent = state.words.length;
+  mode.textContent = `${s} / ${r}`;
+  streak.textContent = state.streak || 0;
+}
+
+function renderDashboard() {
+  const due = getDueWords();
+  const spellingCount = state.words.filter((word) => word.mode === "spelling").length;
+  const recognitionCount = state.words.filter((word) => word.mode === "recognition").length;
+  const progress = Math.min(100, Math.round((state.reviewsToday / state.settings.dailyGoal) * 100));
+
+  content.innerHTML = `
+    <div class="content-inner">
+      <section class="dashboard-hero">
+        <div class="hero-copy">
+          <div class="hero-kicker">TODAY'S FOCUS · 间隔重复</div>
+          <h2>${due.length ? `有 ${due.length} 个词正等你复习` : "今日复习已清空，可以整理新材料"}</h2>
+          <p>
+            先处理到期词，再导入新材料。拼写词会安排更密集的回忆练习，
+            识记词则侧重释义和阅读近义词辨析。
+          </p>
+          <button class="button button-light" data-action="${due.length ? "start-due" : "go-import"}">
+            ${due.length ? "开始今日复习" : "导入一份材料"} <span>→</span>
+          </button>
+        </div>
+        <div class="hero-progress">
+          <div class="progress-ring" style="border-top-color:${progress ? "#f6b47f" : "rgba(255,255,255,.13)"}">
+            <div class="progress-ring-content">
+              <strong>${state.reviewsToday}</strong>
+              <span>今日已复习 / ${state.settings.dailyGoal}</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="stats-grid">
+        ${statCard("⌛", "今日到期", due.length, due.length ? "建议优先完成" : "已全部完成")}
+        ${statCard("▤", "词库总量", state.words.length, "本机自动存档")}
+        ${statCard("⌨", "拼写词", spellingCount, "输出型掌握")}
+        ${statCard("◉", "识记词", recognitionCount, "阅读型掌握")}
+      </section>
+
+      <section class="dashboard-grid">
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <h2 class="panel-title">接下来复习</h2>
+              <p class="panel-subtitle">按到期时间排列</p>
+            </div>
+            <button class="button button-ghost button-small" data-action="go-practice">查看练习</button>
+          </div>
+          <div class="panel-body">
+            ${
+              due.length
+                ? `<div class="review-list">${due.slice(0, 5).map(reviewRow).join("")}</div>`
+                : emptyState("✓", "今天的复习完成了", "继续导入材料，候选词会先让你筛选，不会直接塞进词库。", "导入材料", "go-import")
+            }
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <h2 class="panel-title">材料处理流程</h2>
+              <p class="panel-subtitle">只留下你真正需要的词</p>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="review-list">
+              ${processRow("01", "导入", "粘贴文本、PDF、Word 或图片")}
+              ${processRow("02", "筛选", "拼写 / 识记；未选择即忽略")}
+              ${processRow("03", "生成", "释义、词族、搭配与近义词")}
+              ${processRow("04", "复习", "根据反馈安排下次出现")}
+            </div>
+            <button class="button button-primary" style="width:100%;margin-top:14px" data-action="go-import">开始整理</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  `;
+}
+
+function statCard(glyph, label, value, note) {
+  return `
+    <div class="stat-card">
+      <div class="stat-card-top"><span>${label}</span><span class="stat-glyph">${glyph}</span></div>
+      <div class="stat-value">${value}</div>
+      <div class="stat-note">${note}</div>
+    </div>
+  `;
+}
+
+function reviewRow(word) {
+  return `
+    <div class="review-row">
+      <div>
+        <div class="review-word">${escapeHtml(word.word)}</div>
+        <div class="review-meaning">${escapeHtml(firstDefinition(word)?.zh || "待补全释义")}</div>
+      </div>
+      <span class="tag ${word.mode === "spelling" ? "tag-spelling" : "tag-recognition"}">
+        ${word.mode === "spelling" ? "拼写" : "识记"}
+      </span>
+    </div>
+  `;
+}
+
+function processRow(number, label, description) {
+  return `
+    <div class="review-row">
+      <div style="display:flex;gap:12px;align-items:center">
+        <span class="tag tag-muted">${number}</span>
+        <div>
+          <div class="review-word" style="font-size:14px">${label}</div>
+          <div class="review-meaning">${description}</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderImport() {
+  if (importPhase === "classify") {
+    renderCandidates();
+    return;
+  }
+  if (importPhase === "generating") {
+    content.innerHTML = `
+      <div class="content-inner">
+        ${workflow("generate")}
+        <div class="panel generation-state">
+          <div>
+            <div class="spinner"></div>
+            <h2>正在生成词条</h2>
+            <p>DeepSeek 正在整理英英释义、中文释义、特殊变形、词族、写作搭配和近义词辨析。可靠词典录音会单独核验。</p>
+          </div>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  content.innerHTML = `
+    <div class="content-inner">
+      ${workflow("import")}
+      <section class="panel import-card">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">添加学习材料</h2>
+            <p class="panel-subtitle">材料只用于提取候选词，不会保存原文或原句</p>
+          </div>
+          <div class="import-tabs" style="width:420px">
+            <button class="tab-button ${importMode === "paste" ? "is-active" : ""}" data-import-mode="paste">粘贴文本</button>
+            <button class="tab-button ${importMode === "file" ? "is-active" : ""}" data-import-mode="file">文件 / 图片</button>
+          </div>
+        </div>
+        <div class="panel-body">
+          ${
+            importMode === "paste"
+              ? `
+                <label class="form-label" for="material-text">英文材料</label>
+                <textarea id="material-text" class="textarea" placeholder="粘贴阅读文章、听力文本、作文或口语笔记……">${escapeHtml(importSession.text)}</textarea>
+                <div class="input-hint">基础词会自动隐藏；你仍可在候选列表中选择"显示全部"。材料原句不会写入词卡。</div>
+              `
+              : `
+                <div class="dropzone" id="dropzone">
+                  <div>
+                    <div class="dropzone-icon">⇧</div>
+                    <h3>拖入文件，或从电脑选择</h3>
+                    <p>支持 TXT、Markdown、PDF、Word（DOCX）和常见图片格式<br />图片仅用于 OCR，不会发送给 DeepSeek</p>
+                    <label class="button button-secondary" for="material-file">选择文件</label>
+                    <input id="material-file" type="file" class="hidden" accept=".txt,.md,.pdf,.docx,image/*" />
+                    ${
+                      importSession.fileName
+                        ? `<div class="file-status"><span>✓</span><span>${escapeHtml(importSession.fileName)} · 已读取 ${importSession.text.length.toLocaleString()} 个字符</span></div>`
+                        : ""
+                    }
+                  </div>
+                </div>
+              `
+          }
+          <div class="import-actions">
+            <button class="button button-ghost button-small" data-action="load-sample">填入示例材料</button>
+            <button class="button button-primary" data-action="extract-candidates" ${importSession.text.trim().length < 20 ? "disabled" : ""}>
+              提取候选词 <span>→</span>
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+  `;
+  setupDropzone();
+}
+
+function workflow(current) {
+  const index = { import: 0, classify: 1, generate: 2 }[current];
+  const steps = ["导入材料", "筛选候选词", "生成并存档"];
+  return `
+    <div class="workflow">
+      <div class="workflow-steps">
+        ${steps
+          .map(
+            (step, i) => `
+              <div class="workflow-step ${i === index ? "is-current" : ""} ${i < index ? "is-done" : ""}">
+                <strong>${i < index ? "✓" : i + 1}</strong>${step}
+              </div>
+            `
+          )
+          .join("")}
+      </div>
+    </div>
+  `;
+}
+
+function renderCandidates() {
+  const selected = importSession.candidates.filter((item) => item.mode);
+  const visibleCandidates = state.settings.hideBasic
+    ? importSession.candidates.filter((item) => !item.basic)
+    : importSession.candidates;
+
+  content.innerHTML = `
+    <div class="content-inner">
+      ${workflow("classify")}
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">先决定哪些词值得进入词库</h2>
+            <p class="panel-subtitle">点击已选中的分类可取消；未选择的词会自动忽略</p>
+          </div>
+          <button class="button button-secondary button-small" data-action="back-import">返回修改材料</button>
+        </div>
+        <div class="panel-body">
+          <div class="candidate-toolbar">
+            <div class="candidate-summary">
+              找到 <strong>${visibleCandidates.length}</strong> 个候选词 · 已选 <strong>${selected.length}</strong> 个
+            </div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <button class="button button-ghost button-small" data-action="select-recommended">推荐词设为识记</button>
+              <button class="button button-secondary button-small" data-action="toggle-basic">
+                ${state.settings.hideBasic ? "显示全部词" : "隐藏基础词"}
+              </button>
+            </div>
+          </div>
+          <div class="candidate-list">
+            <div class="candidate-head">
+              <span>单词原型</span><span>出现次数</span><span>推荐度</span><span>你的选择</span>
+            </div>
+            ${visibleCandidates.map(candidateRow).join("")}
+          </div>
+          <div class="sticky-actionbar">
+            <div>
+              <strong>${selected.length}</strong> 个词将生成详情
+              <span style="color:var(--muted);font-size:11px;margin-left:8px">其余 ${importSession.candidates.length - selected.length} 个自动忽略</span>
+            </div>
+            <button class="button button-primary" data-action="generate-words" ${selected.length ? "" : "disabled"}>
+              生成并存档 ${selected.length ? `(${selected.length})` : ""} <span>→</span>
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+  `;
+}
+
+function candidateRow(item) {
+  const recommendation = item.score === "high" ? "建议关注" : item.score === "medium" ? "可能需要" : "一般";
+  const rowClass = item.mode ? `candidate-row is-${item.mode}` : "candidate-row";
+  const modeLabel = item.mode === "spelling" ? "拼写" : item.mode === "recognition" ? "识记" : "";
+  return `
+    <div class="${rowClass}" data-candidate="${escapeHtml(item.word)}">
+      <div class="candidate-word">
+        <span class="difficulty-dot ${item.score}"></span>
+        <strong>${escapeHtml(item.word)}</strong>
+        ${modeLabel ? `<span class="tag ${item.mode === "spelling" ? "tag-spelling" : "tag-recognition"}" style="margin-left:8px">${modeLabel}</span>` : ""}
+      </div>
+      <span>${item.count}</span>
+      <span class="tag tag-muted">${recommendation}</span>
+      <div class="mode-picker">
+        <button class="mode-option ${item.mode === "spelling" ? "is-selected" : ""}" data-candidate-mode="spelling" data-word="${escapeHtml(item.word)}">拼写</button>
+        <button class="mode-option ${item.mode === "recognition" ? "is-selected" : ""}" data-candidate-mode="recognition" data-word="${escapeHtml(item.word)}">识记</button>
+      </div>
+    </div>
+  `;
+}
+
+function renderLibrary() {
+  let words = [...state.words].sort((a, b) => b.createdAt - a.createdAt);
+  if (librarySearch) {
+    const needle = librarySearch.toLowerCase();
+    words = words.filter((word) => {
+      const haystack = [
+        word.word,
+        word.partOfSpeech,
+        ...(word.definitions || []).flatMap((item) => [item.en, item.zh]),
+        ...(word.synonyms || []).map((item) => item.word),
+      ]
+        .join(" ")
+        .toLowerCase();
+      return haystack.includes(needle);
+    });
+  }
+  if (libraryMode !== "all") words = words.filter((word) => word.mode === libraryMode);
+
+  content.innerHTML = `
+    <div class="content-inner">
+      <div class="library-toolbar">
+        <input id="library-search" class="text-input" placeholder="搜索单词、释义或近义词" value="${escapeHtml(librarySearch)}" />
+        <select id="library-mode" class="select-input">
+          <option value="all" ${libraryMode === "all" ? "selected" : ""}>全部分类</option>
+          <option value="spelling" ${libraryMode === "spelling" ? "selected" : ""}>拼写词</option>
+          <option value="recognition" ${libraryMode === "recognition" ? "selected" : ""}>识记词</option>
+        </select>
+        <select class="select-input" disabled title="后续可扩展排序">
+          <option>按添加时间</option>
+        </select>
+        <button class="button button-primary" data-action="go-import">＋ 添加材料</button>
+      </div>
+      ${
+        words.length
+          ? `<div class="word-grid">${words.map(wordCard).join("")}</div>`
+          : `<div class="panel">${emptyState("▤", state.words.length ? "没有符合筛选的词" : "词库还是空的", state.words.length ? "换一个关键词或分类试试。" : "导入材料并完成筛选后，生成的词会自动存档在这里。", state.words.length ? "清除筛选" : "导入材料", state.words.length ? "clear-library-filter" : "go-import")}</div>`
+      }
+    </div>
+  `;
+}
+
+function wordCard(word) {
+  const definition = firstDefinition(word);
+  return `
+    <article class="word-card" data-open-word="${word.id}">
+      <div class="word-card-top">
+        <div>
+          <div class="word-title-row">
+            <h2 class="word-title">${escapeHtml(word.word)}</h2>
+            ${word.audio ? `<button class="audio-button" data-play-audio="${word.id}" aria-label="播放 ${escapeHtml(word.word)} 的词典录音">▶</button>` : ""}
+          </div>
+          <div class="pos-label">${escapeHtml(word.partOfSpeech || "词性待补全")}</div>
+        </div>
+        <span class="tag ${word.mode === "spelling" ? "tag-spelling" : "tag-recognition"}">${word.mode === "spelling" ? "拼写" : "识记"}</span>
+      </div>
+      <div class="word-definition">${escapeHtml(definition?.zh || "中文释义待补全")}</div>
+      <div class="word-definition-en">${escapeHtml(definition?.en || "English definition pending")}</div>
+      <div class="word-meta">
+        <span class="tag tag-muted">${(word.wordFamily || []).length} 个词族</span>
+        <span class="tag tag-muted">${(word.collocations || []).length} 个搭配</span>
+        <span class="tag tag-muted">${(word.synonyms || []).length} 个近义词</span>
+      </div>
+    </article>
+  `;
+}
+
+function renderPractice() {
+  const eligible = getPracticeWords(practiceMode);
+  if (!practiceQueue.length || practiceQueue.some((word) => !eligible.find((candidate) => candidate.id === word.id))) {
+    resetPracticeQueue();
+  }
+
+  content.innerHTML = `
+    <div class="content-inner practice-layout">
+      <aside class="panel practice-sidebar">
+        <div class="section-kicker" style="margin-bottom:12px">练习模式</div>
+        <div class="practice-mode-list">
+          ${practiceModeButton("recognition", "快速识记", "释义回忆 + 自评")}
+          ${practiceModeButton("spelling", "看义拼写", "中文释义 → 键盘输入")}
+          ${practiceModeButton("listening", "听音拼写", "词典录音 → 键盘输入")}
+        </div>
+        <div class="privacy-note" style="margin-top:16px">
+          听音模式只使用有可靠词典录音的拼写词。没有录音的词不会出现在该模式。
+        </div>
+      </aside>
+      <section class="panel practice-stage">
+        ${eligible.length ? renderPracticeStage() : renderPracticeEmpty()}
+      </section>
+    </div>
+  `;
+  if (practiceMode === "spelling" || practiceMode === "listening") {
+    requestAnimationFrame(() => document.querySelector("#spelling-answer")?.focus());
+  }
+}
+
+function practiceModeButton(mode, label, description) {
+  const count = getPracticeWords(mode).length;
+  return `
+    <button class="practice-mode ${practiceMode === mode ? "is-active" : ""}" data-practice-mode="${mode}">
+      <strong>${label} · ${count}</strong>
+      <span>${description}</span>
+    </button>
+  `;
+}
+
+function renderPracticeStage() {
+  const word = practiceQueue[practiceIndex];
+  if (!word) return renderPracticeComplete();
+  const definition = firstDefinition(word);
+
+  if (practiceMode === "recognition") {
+    return `
+      <div class="flashcard">
+        <div class="practice-counter">${practiceIndex + 1} / ${practiceQueue.length}</div>
+        <h2 class="flash-word">${escapeHtml(word.word)}</h2>
+        <div class="flash-pos">${escapeHtml(word.partOfSpeech || "")}</div>
+        ${
+          practiceRevealed
+            ? `
+              <div class="flash-answer">
+                <strong>${escapeHtml(definition?.zh || "释义待补全")}</strong>
+                <div class="word-definition-en">${escapeHtml(definition?.en || "")}</div>
+              </div>
+              <div class="rating-row">
+                ${ratingButtons()}
+              </div>
+            `
+            : `
+              <p class="flash-prompt">先在脑中回忆它的意思，再揭晓答案。</p>
+              <button class="button button-primary" data-action="reveal-answer">显示释义 · Space</button>
+            `
+        }
+      </div>
+    `;
+  }
+
+  const isListening = practiceMode === "listening";
+  return `
+    <div class="flashcard">
+      <div class="practice-counter">${practiceIndex + 1} / ${practiceQueue.length}</div>
+      ${
+        isListening
+          ? `<button class="listen-orb" data-play-audio="${word.id}" aria-label="播放词典录音">▶</button>
+             <p class="spelling-prompt">听录音，拼出这个单词</p>`
+          : `<div class="section-kicker">看义拼写</div>
+             <p class="spelling-prompt">${escapeHtml(definition?.zh || "中文释义待补全")}</p>
+             <div class="word-definition-en">${escapeHtml(definition?.en || "")}</div>`
+      }
+      <input id="spelling-answer" class="spelling-input ${spellingAnswered ? "is-correct" : ""}" autocomplete="off" spellcheck="false" aria-label="输入单词拼写" ${spellingAnswered ? `value="${escapeHtml(word.word)}" disabled` : ""} />
+      <div class="answer-feedback" id="answer-feedback">${spellingAnswered ? "拼写正确 ✓" : "输入后按 Enter 检查"}</div>
+      ${
+        spellingAnswered
+          ? `<div class="rating-row">${ratingButtons(true)}</div>`
+          : `<button class="button button-ghost button-small" style="margin-top:16px" data-action="show-spelling-answer">想不起来，显示答案</button>`
+      }
+    </div>
+  `;
+}
+
+function ratingButtons(spelling = false) {
+  return `
+    <button class="rating-button" data-rating="again">${spelling ? "错误" : "忘记"}<br><small>1 · 很快再来</small></button>
+    <button class="rating-button" data-rating="hard">困难<br><small>2 · 缩短间隔</small></button>
+    <button class="rating-button" data-rating="good">记得<br><small>3 · 正常安排</small></button>
+    <button class="rating-button" data-rating="easy">熟练<br><small>4 · 延长间隔</small></button>
+  `;
+}
+
+function renderPracticeEmpty() {
+  const messages = {
+    recognition: ["没有可练习的识记词", "先从材料中选择一些识记词，生成后就能在这里复习。"],
+    spelling: ["没有可练习的拼写词", "先从材料中选择一些拼写词，生成后就能进行键盘练习。"],
+    listening: ["暂时没有可用的词典录音", "只有拿到可靠词典录音的拼写词才会进入听音模式。"],
+  };
+  return emptyState("⌨", messages[practiceMode][0], messages[practiceMode][1], "导入材料", "go-import");
+}
+
+function renderPracticeComplete() {
+  return emptyState("✓", "这一组完成了", "评分已经写入间隔重复计划。休息一下，或换一种模式继续。", "返回今日", "go-dashboard");
+}
+
+function renderSettings() {
+  const localKey = localStorage.getItem(API_KEY_STORAGE);
+  const hasKey = currentUser ? serverHasApiKey : Boolean(localKey);
+  const hasLocalData = loadLocalState().words.length > 0;
+  const canMigrate = currentUser && hasLocalData && (!state.words || !state.words.length);
+
+  content.innerHTML = `
+    <div class="content-inner settings-grid">
+      <section class="panel settings-card">
+        <div class="section-kicker">AI 生成</div>
+        <h2>DeepSeek API</h2>
+        <p>用于生成双语释义、特殊变形、词族、写作搭配及阅读近义词辨析。</p>
+
+        ${
+          currentUser
+            ? sharedAiEnabled
+              ? `
+            <div class="privacy-note">
+              站点管理员已配置 DeepSeek。你无需填写 API Key，即可直接生成词条。
+            </div>
+            <div class="settings-actions">
+              <button class="button button-primary button-small" data-action="test-api">测试连接</button>
+            </div>
+            `
+              : `
+            <div class="form-group">
+              <label class="form-label" for="deepseek-key">API Key</label>
+              <div class="password-wrap">
+                <input id="deepseek-key" class="text-input" type="password" placeholder="${hasKey ? "已保存（服务器端）· 输入可替换" : "sk-..."}" autocomplete="off" />
+                <button class="button button-secondary" data-action="save-api-key">保存到云端</button>
+              </div>
+            </div>
+            <div class="settings-actions">
+              <button class="button button-primary button-small" data-action="test-api">测试连接</button>
+              ${hasKey ? `<button class="button button-danger button-small" data-action="remove-api-key">移除云端 Key</button>` : ""}
+            </div>
+            <div class="privacy-note">
+              Key 加密存储在服务器上，仅用于生成词条时调用 DeepSeek。不会写入备份文件。
+            </div>
+            `
+            : `
+            <div class="form-group">
+              <label class="form-label" for="deepseek-key">API Key</label>
+              <div class="password-wrap">
+                <input id="deepseek-key" class="text-input" type="password" placeholder="${localKey ? "已保存 · 输入新 Key 可替换" : "sk-..."}" autocomplete="off" />
+                <button class="button button-secondary" data-action="save-api-key">保存</button>
+              </div>
+            </div>
+            <div class="settings-actions">
+              <button class="button button-primary button-small" data-action="test-api">测试连接</button>
+              ${localKey ? `<button class="button button-danger button-small" data-action="remove-api-key">移除 Key</button>` : ""}
+            </div>
+            <div class="privacy-note">
+              Key 只保存在当前浏览器的本地存储中。登录后 Key 将加密存储在云端，多设备共享。
+            </div>
+            `
+        }
+
+        <div class="form-group">
+          <label class="form-label" for="deepseek-model">模型</label>
+          <select id="deepseek-model" class="select-input">
+            <option value="deepseek-v4-flash" ${["deepseek-v4-flash", "deepseek-chat"].includes(state.settings.model) ? "selected" : ""}>DeepSeek V4 Flash · 推荐</option>
+            <option value="deepseek-v4-pro" ${["deepseek-v4-pro", "deepseek-reasoner"].includes(state.settings.model) ? "selected" : ""}>DeepSeek V4 Pro</option>
+          </select>
+        </div>
+      </section>
+
+      <section class="panel settings-card">
+        <div class="section-kicker">学习偏好</div>
+        <h2>筛选与每日目标</h2>
+        <p>这些设置只影响候选词展示和首页进度，不改变已经存档的词。</p>
+
+        <div class="form-group">
+          <label class="form-label" for="daily-goal">每日复习目标</label>
+          <input id="daily-goal" class="text-input" type="number" min="5" max="200" value="${state.settings.dailyGoal}" />
+        </div>
+        <div class="form-group">
+          <label style="display:flex;gap:10px;align-items:center;font-size:13px">
+            <input id="hide-basic-setting" type="checkbox" ${state.settings.hideBasic ? "checked" : ""} />
+            候选词列表默认隐藏基础词
+          </label>
+        </div>
+      </section>
+
+      <section class="panel settings-card">
+        <div class="section-kicker">${currentUser ? "云端存档" : "本机存档"}</div>
+        <h2>备份与恢复</h2>
+        <p>${currentUser ? "学习数据自动同步到云端。你也可以导出 JSON 文件作为离线备份。" : "词库和复习计划保存在当前浏览器。建议定期导出备份，避免清理浏览器数据后丢失。"}</p>
+        <div class="settings-actions">
+          <button class="button button-primary" data-action="export-docx">导出 Word 文档</button>
+          <button class="button button-secondary" data-action="export-backup">导出 JSON 备份</button>
+          <label class="button button-secondary" for="import-backup">导入备份</label>
+          <input id="import-backup" class="hidden" type="file" accept=".json,application/json" />
+          ${canMigrate ? `<button class="button button-secondary" data-action="migrate-local">迁移本地数据到云端</button>` : ""}
+        </div>
+        <div class="privacy-note">
+          ${currentUser
+            ? `云端存档：${state.words.length} 个词。登录账户后数据自动同步。`
+            : `当前存档：${state.words.length} 个词。登录后可同步到云端，多设备使用。`
+          }
+        </div>
+      </section>
+
+      <section class="panel settings-card">
+        <div class="section-kicker">示例与重置</div>
+        <h2>体验完整流程</h2>
+        <p>没有 API Key 时，可以先加入 4 个示例词，查看词卡、近义词辨析和三种练习模式。</p>
+        <div class="settings-actions">
+          <button class="button button-secondary" data-action="add-demo-words">加入示例词</button>
+          <button class="button button-danger" data-action="clear-all-data">清空学习数据</button>
+        </div>
+      </section>
+    </div>
+  `;
+}
+
+function handleGlobalClick(event) {
+  const nav = event.target.closest("[data-view]");
+  if (nav) {
+    setView(nav.dataset.view);
+    return;
+  }
+
+  const action = event.target.closest("[data-action]")?.dataset.action;
+  if (action) handleAction(action, event);
+
+  const importTab = event.target.closest("[data-import-mode]");
+  if (importTab) {
+    importMode = importTab.dataset.importMode;
+    renderImport();
+  }
+
+  const candidateMode = event.target.closest("[data-candidate-mode]");
+  if (candidateMode) {
+    setCandidateMode(candidateMode.dataset.word, candidateMode.dataset.candidateMode);
+  }
+
+  const practiceModeTarget = event.target.closest("[data-practice-mode]");
+  if (practiceModeTarget) {
+    practiceMode = practiceModeTarget.dataset.practiceMode;
+    resetPracticeQueue();
+    renderPractice();
+  }
+
+  const rating = event.target.closest("[data-rating]")?.dataset.rating;
+  if (rating) rateCurrentWord(rating);
+
+  const audioTarget = event.target.closest("[data-play-audio]");
+  if (audioTarget) {
+    event.stopPropagation();
+    playWordAudio(audioTarget.dataset.playAudio);
+  }
+
+  const wordTarget = event.target.closest("[data-open-word]");
+  if (wordTarget) openWordDetail(wordTarget.dataset.openWord);
+
+  if (event.target.matches("[data-close-detail]") || event.target.classList.contains("detail-sheet")) {
+    modalRoot.innerHTML = "";
+  }
+}
+
+function handleAction(action, event) {
+  if (action === "go-import") setView("import");
+  if (action === "go-practice") setView("practice");
+  if (action === "go-dashboard") setView("dashboard");
+  if (action === "start-due") {
+    practiceMode = "recognition";
+    resetPracticeQueue(true);
+    setView("practice");
+  }
+  if (action === "load-sample") loadSampleMaterial();
+  if (action === "extract-candidates") extractCandidatesFromMaterial();
+  if (action === "back-import") {
+    importPhase = "input";
+    renderImport();
+  }
+  if (action === "toggle-basic") {
+    state.settings.hideBasic = !state.settings.hideBasic;
+    saveState();
+    renderCandidates();
+  }
+  if (action === "select-recommended") {
+    importSession.candidates.forEach((item) => {
+      if (item.score === "high" && !item.mode) item.mode = "recognition";
+    });
+    renderCandidates();
+  }
+  if (action === "generate-words") generateSelectedWords();
+  if (action === "clear-library-filter") {
+    librarySearch = "";
+    libraryMode = "all";
+    renderLibrary();
+  }
+  if (action === "reveal-answer") {
+    practiceRevealed = true;
+    renderPractice();
+  }
+  if (action === "show-spelling-answer") {
+    const word = practiceQueue[practiceIndex];
+    const input = document.querySelector("#spelling-answer");
+    if (input && word) {
+      input.value = word.word;
+      input.classList.add("is-wrong");
+      input.disabled = true;
+      document.querySelector("#answer-feedback").textContent = "已显示答案；建议选择「错误」";
+      spellingAnswered = true;
+      setTimeout(renderPractice, 250);
+    }
+  }
+  if (action === "save-api-key") saveApiKey();
+  if (action === "remove-api-key") removeApiKey();
+  if (action === "test-api") testApi();
+  if (action === "export-backup") exportBackup();
+  if (action === "export-docx") exportDocx();
+  if (action === "add-demo-words") addDemoWords();
+  if (action === "clear-all-data") clearAllData();
+  // auth
+  if (action === "show-auth-login") showAuthModal("login");
+  if (action === "show-auth-register") showAuthModal("register");
+  if (action === "logout") handleLogout();
+  if (action === "migrate-local") migrateLocalData();
+  if (action === "auth-toggle") {
+    const mode = event?.target?.closest?.("[data-auth-mode]")?.dataset?.authMode || "login";
+    showAuthModal(mode);
+  }
+  if (action === "auth-submit") {
+    const mode = event?.target?.closest?.("[data-auth-mode]")?.dataset?.authMode || "login";
+    handleAuthSubmit(mode);
+  }
+}
+
+function handleGlobalInput(event) {
+  if (event.target.id === "material-text") {
+    importSession.text = event.target.value;
+    const button = document.querySelector('[data-action="extract-candidates"]');
+    if (button) button.disabled = importSession.text.trim().length < 20;
+  }
+  if (event.target.id === "library-search") {
+    librarySearch = event.target.value;
+    renderLibrary();
+    requestAnimationFrame(() => {
+      const search = document.querySelector("#library-search");
+      search?.focus();
+      search?.setSelectionRange(librarySearch.length, librarySearch.length);
+    });
+  }
+}
+
+function handleGlobalChange(event) {
+  if (event.target.id === "material-file" && event.target.files?.[0]) {
+    readMaterialFile(event.target.files[0]);
+  }
+  if (event.target.id === "library-mode") {
+    libraryMode = event.target.value;
+    renderLibrary();
+  }
+  if (event.target.id === "deepseek-model") {
+    state.settings.model = event.target.value;
+    saveState();
+  }
+  if (event.target.id === "daily-goal") {
+    state.settings.dailyGoal = Math.max(5, Math.min(200, Number(event.target.value) || 20));
+    saveState();
+  }
+  if (event.target.id === "hide-basic-setting") {
+    state.settings.hideBasic = event.target.checked;
+    saveState();
+  }
+  if (event.target.id === "import-backup" && event.target.files?.[0]) {
+    importBackup(event.target.files[0]);
+  }
+}
+
+function handleGlobalKeydown(event) {
+  if (activeView !== "practice") return;
+  if (practiceMode === "recognition" && event.code === "Space" && !practiceRevealed) {
+    event.preventDefault();
+    practiceRevealed = true;
+    renderPractice();
+  }
+  if ((practiceMode === "spelling" || practiceMode === "listening") && event.key === "Enter" && !spellingAnswered) {
+    checkSpellingAnswer();
+  }
+  // Keyboard rating shortcuts: 1=again 2=hard 3=good 4=easy
+  if (["1", "2", "3", "4"].includes(event.key) && (practiceRevealed || spellingAnswered)) {
+    event.preventDefault();
+    const rating = { "1": "again", "2": "hard", "3": "good", "4": "easy" }[event.key];
+    rateCurrentWord(rating);
+  }
+}
+
+function setCandidateMode(word, mode) {
+  const item = importSession.candidates.find((candidate) => candidate.word === word);
+  if (!item) return;
+  item.mode = item.mode === mode ? null : mode;
+  renderCandidates();
+}
+
+function loadSampleMaterial() {
+  importMode = "paste";
+  importSession.text = `The rapid expansion of urban areas can exacerbate environmental problems, but carefully designed policies may mitigate their impact. Researchers argue that compact development can preserve surrounding habitats, reduce energy consumption, and facilitate access to public transportation. Although this approach appears plausible, its effectiveness depends on whether local governments can allocate resources efficiently and overcome residents' reluctance to accept denser housing.`;
+  renderImport();
+}
+
+function extractCandidatesFromMaterial() {
+  const text = importSession.text.trim();
+  if (text.length < 20) {
+    showToast("请先添加足够的英文材料", "error");
+    return;
+  }
+  importSession.candidates = extractCandidates(text);
+  importPhase = "classify";
+  renderCandidates();
+}
+
+function extractCandidates(text) {
+  const tokens = text.toLowerCase().match(/[a-z][a-z'-]{2,}/g) || [];
+  const counts = new Map();
+  tokens.forEach((token) => {
+    const clean = token.replace(/^'+|'+$/g, "");
+    const lemma = lemmatize(clean);
+    if (lemma.length < 3) return;
+    counts.set(lemma, (counts.get(lemma) || 0) + 1);
+  });
+  return [...counts.entries()]
+    .map(([word, count]) => {
+      const basic = BASIC_WORDS.has(word);
+      const score = ADVANCED_WORDS.has(word) || word.length >= 10 ? "high" : word.length >= 7 ? "medium" : "low";
+      return { word, count, basic, score, mode: null };
+    })
+    .sort((a, b) => {
+      const rank = { high: 0, medium: 1, low: 2 };
+      return rank[a.score] - rank[b.score] || b.count - a.count || a.word.localeCompare(b.word);
+    });
+}
+
+function lemmatize(word) {
+  if (IRREGULAR_LEMMAS[word]) return IRREGULAR_LEMMAS[word];
+  if (word.endsWith("ies") && word.length > 5) return `${word.slice(0, -3)}y`;
+  if (word.endsWith("sses")) return word.slice(0, -2);
+  if (word.endsWith("ing") && word.length > 6) {
+    let root = word.slice(0, -3);
+    if (/([b-df-hj-np-tv-z])\1$/.test(root)) root = root.slice(0, -1);
+    if (["hous", "aris", "ris", "us", "giv", "tak", "mak", "hav", "mov", "driv", "deriv", "preserv"].includes(root)) {
+      root += "e";
+    }
+    return root;
+  }
+  if (word.endsWith("ed") && word.length > 5) {
+    let root = word.slice(0, -2);
+    if (root.endsWith("i")) root = `${root.slice(0, -1)}y`;
+    if (/([b-df-hj-np-tv-z])\1$/.test(root)) root = root.slice(0, -1);
+    if (["us", "giv", "tak", "mak", "mov", "driv", "deriv", "preserv"].includes(root)) {
+      root += "e";
+    }
+    return root;
+  }
+  if (word.endsWith("s") && !word.endsWith("ss") && word.length > 4) return word.slice(0, -1);
+  return word;
+}
+
+async function generateSelectedWords() {
+  const selected = importSession.candidates.filter((item) => item.mode);
+  if (!selected.length) return;
+
+  importPhase = "generating";
+  renderImport();
+
+  try {
+    // Step 1: Check local wordbank first
+    const wordList = selected.map((item) => item.word.toLowerCase());
+    const wbResponse = await fetch("/api/wordbank/lookup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ words: wordList }),
+    });
+    const wbResult = await wbResponse.json().catch(() => ({ found: {}, missing: wordList }));
+    const found = wbResult.found || {};
+    const missing = wbResult.missing || [];
+
+    // Step 2: Build words from wordbank matches
+    const enriched = [];
+    for (const item of selected) {
+      const key = item.word.toLowerCase();
+      const wbEntry = found[key];
+      if (wbEntry) {
+        // Don't use local audio path — fetch from external API for reliability
+        const { audio: _localAudio, ...entryWithoutAudio } = wbEntry;
+        enriched.push({
+          ...entryWithoutAudio,
+          audio: "", // Will be filled by fetchDictionaryAudio below
+          id: crypto.randomUUID(),
+          word: wbEntry.word.toLowerCase(),
+          mode: item.mode,
+          createdAt: Date.now(),
+          srs: defaultSrs(),
+        });
+      }
+    }
+
+    // Step 3: For words not in wordbank, use API (if key is set)
+    if (missing.length) {
+      const apiKey = currentUser ? "" : localStorage.getItem(API_KEY_STORAGE);
+      const canUseApi = currentUser ? serverHasApiKey : Boolean(apiKey);
+      if (!canUseApi) {
+        // No API key - skip missing words, but keep wordbank matches
+        if (!enriched.length) {
+          showToast("这些词不在本地词库中，请先在设置中保存 DeepSeek API Key 以生成", "error");
+          importPhase = "classify";
+          renderImport();
+          return;
+        }
+        showToast(`${missing.length} 个词不在本地词库中（可设置 API Key 补充），已导入 ${enriched.length} 个`);
+      } else {
+        // Call API for missing words
+        const missingSelected = selected.filter((item) => missing.includes(item.word.toLowerCase()));
+        const generated = await requestWordGeneration(missingSelected, apiKey);
+        for (const word of generated) {
+          const selection = missingSelected.find((item) => item.word.toLowerCase() === word.word.toLowerCase());
+          let audio = await fetchDictionaryAudio(word.word);
+          // Fallback: check wordbank for audio
+          if (!audio) {
+            try {
+              const wbRes = await fetch("/api/wordbank/lookup", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ words: [word.word] }),
+              });
+              const wbData = await wbRes.json().catch(() => ({}));
+              if (wbData.found?.[word.word]?.audio) audio = wbData.found[word.word].audio;
+            } catch {}
+          }
+          enriched.push({
+            ...word,
+            id: crypto.randomUUID(),
+            word: word.word.toLowerCase(),
+            mode: selection?.mode || "recognition",
+            audio,
+            createdAt: Date.now(),
+            srs: defaultSrs(),
+          });
+        }
+      }
+    }
+
+    // Step 3.5: Fetch audio for wordbank words (from external API, fallback to local)
+    for (const word of enriched) {
+      if (!word.audio) {
+        let audio = await fetchDictionaryAudio(word.word);
+        if (!audio) {
+          // Fallback to wordbank local audio
+          try {
+            const wbRes = await fetch("/api/wordbank/lookup", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ words: [word.word] }),
+            });
+            const wbData = await wbRes.json().catch(() => ({}));
+            if (wbData.found?.[word.word]?.audio) audio = wbData.found[word.word].audio;
+          } catch {}
+        }
+        word.audio = audio;
+      }
+    }
+
+    // Step 4: Save all words
+    const existing = new Map(state.words.map((word) => [word.word.toLowerCase(), word]));
+    enriched.forEach((word) => existing.set(word.word.toLowerCase(), word));
+    state.words = [...existing.values()];
+    saveState();
+    importSession = { text: "", fileName: "", candidates: [], status: "" };
+    importPhase = "input";
+    const fromLocal = enriched.length - missing.length;
+    const msg = missing.length
+      ? `已导入 ${enriched.length} 个词（${fromLocal} 来自本地词库，${missing.length} 来自 API）`
+      : `已导入 ${enriched.length} 个词（全部来自本地词库）`;
+    showToast(msg);
+    setView("library");
+  } catch (error) {
+    importPhase = "classify";
+    renderImport();
+    showToast(error.message || "生成失败，请检查 API 设置", "error");
+  }
+}
+
+async function requestWordGeneration(selected, apiKey) {
+  const wordList = selected.map((item) => item.word);
+  const prompt = `
+你是一个面向 2026 TOEFL iBT、中文母语考生的词汇编辑。请为以下单词生成高质量学习词条：
+${wordList.join(", ")}
+
+严格要求：
+1. 每个词只保留单词原型，不要音标。
+2. definitions 提供 1-2 个与学术英语和 TOEFL 最相关的义项，每项同时有简洁准确的英文释义 en 和中文释义 zh。
+3. irregularForms 只列不规则或特殊变化。规则加 -s、-ed、-ing 等不要列。每项格式 {"form":"","label":""}。
+4. wordFamily 列 2-5 个高价值派生词，包含 word、pos、zh。
+5. collocations 列 2-4 个适合 TOEFL 写作的自然固定搭配；每项包含 phrase、zh、example、exampleZh。例句必须自然、简洁、符合学术写作，不使用用户原材料的句子。
+6. synonyms 列 2-3 个可能出现在 TOEFL 阅读词汇题中的近义词；每项包含 word 和 differenceZh，清楚说明语义或使用范围差异。
+7. 不要生成复习状态、来源、原文句子、音标或音频。
+
+只返回合法 JSON，不要 Markdown。根对象格式：
+{"words":[{"word":"","partOfSpeech":"","definitions":[{"en":"","zh":""}],"irregularForms":[],"wordFamily":[],"collocations":[],"synonyms":[]}]}
+  `.trim();
+
+  const response = await fetch("/api/deepseek", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      apiKey,
+      model: state.settings.model,
+      messages: [
+        { role: "system", content: "You are a precise bilingual TOEFL lexicographer. Return valid JSON only." },
+        { role: "user", content: prompt },
+      ],
+    }),
+  });
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(payload.error || `DeepSeek 请求失败（${response.status}）`);
+  const raw = payload.choices?.[0]?.message?.content || "";
+  const parsed = parseJsonResponse(raw);
+  if (!Array.isArray(parsed.words) || !parsed.words.length) throw new Error("DeepSeek 返回的数据格式不完整");
+  return parsed.words;
+}
+
+function parseJsonResponse(raw) {
+  const clean = raw.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "").trim();
+  try {
+    return JSON.parse(clean);
+  } catch {
+    const start = clean.indexOf("{");
+    const end = clean.lastIndexOf("}");
+    if (start >= 0 && end > start) return JSON.parse(clean.slice(start, end + 1));
+    throw new Error("无法解析 DeepSeek 返回的 JSON");
+  }
+}
+
+async function fetchDictionaryAudio(word) {
+  try {
+    const response = await fetch(`/api/dictionary?word=${encodeURIComponent(word)}`);
+    if (!response.ok) return "";
+    const result = await response.json();
+    return result.audio || "";
+  } catch {
+    return "";
+  }
+}
+
+function setupDropzone() {
+  const zone = document.querySelector("#dropzone");
+  if (!zone) return;
+  ["dragenter", "dragover"].forEach((eventName) => {
+    zone.addEventListener(eventName, (event) => {
+      event.preventDefault();
+      zone.classList.add("is-dragging");
+    });
+  });
+  ["dragleave", "drop"].forEach((eventName) => {
+    zone.addEventListener(eventName, (event) => {
+      event.preventDefault();
+      zone.classList.remove("is-dragging");
+    });
+  });
+  zone.addEventListener("drop", (event) => {
+    const file = event.dataTransfer.files?.[0];
+    if (file) readMaterialFile(file);
+  });
+}
+
+async function readMaterialFile(file) {
+  importSession.fileName = file.name;
+  importSession.status = "正在读取文件……";
+  showToast("正在读取文件");
+  try {
+    if (file.size > 25 * 1024 * 1024) {
+      throw new Error("文件不能超过 25 MB");
+    }
+    if (file.type.startsWith("image/") && file.size > 12 * 1024 * 1024) {
+      throw new Error("图片不能超过 12 MB");
+    }
+    const extension = file.name.split(".").pop().toLowerCase();
+    if (["txt", "md"].includes(extension) || file.type.startsWith("text/")) {
+      importSession.text = await file.text();
+    } else if (extension === "pdf" || file.type === "application/pdf") {
+      importSession.text = await extractPdfText(file);
+    } else if (extension === "docx") {
+      importSession.text = await extractDocxText(file);
+    } else if (file.type.startsWith("image/") || ["png", "jpg", "jpeg", "webp", "bmp", "gif"].includes(extension)) {
+      importSession.text = await extractImageText(file);
+    } else {
+      throw new Error("暂不支持这种文件格式");
+    }
+    showToast(`已读取 ${file.name}`);
+    renderImport();
+  } catch (error) {
+    importSession.fileName = "";
+    importSession.text = "";
+    renderImport();
+    showToast(error.message || "文件读取失败", "error");
+  }
+}
+
+async function extractPdfText(file) {
+  const pdfjs = await import("/vendor/pdf/pdf.min.mjs");
+  pdfjs.GlobalWorkerOptions.workerSrc = "/vendor/pdf/pdf.worker.min.mjs";
+  const pdf = await pdfjs.getDocument({ data: await file.arrayBuffer() }).promise;
+  const pages = [];
+  for (let i = 1; i <= pdf.numPages; i += 1) {
+    const page = await pdf.getPage(i);
+    const pageContent = await page.getTextContent();
+    pages.push(pageContent.items.map((item) => item.str).join(" "));
+  }
+  return pages.join("\n\n");
+}
+
+async function extractDocxText(file) {
+  if (!window.mammoth) {
+    await loadScript("/vendor/mammoth/mammoth.browser.min.js");
+  }
+  const result = await window.mammoth.extractRawText({ arrayBuffer: await file.arrayBuffer() });
+  return result.value;
+}
+
+async function extractImageText(file) {
+  showToast("正在识别图片文字，首次使用可能需要一点时间");
+  const preparedImage = await prepareImageForOcr(file);
+  const imageBase64 = await fileToBase64(preparedImage);
+  const mimeType = preparedImage.type || normalizeImageMimeType(file);
+  const response = await fetch("/api/ocr", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ imageBase64, mimeType }),
+  });
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(payload.error || `图片识别失败（${response.status}）`);
+  const text = String(payload.text || "").trim();
+  if (!text) throw new Error("图片中未识别到英文文字，请尝试更清晰、正向的图片");
+  return text;
+}
+
+async function prepareImageForOcr(file) {
+  const targetBytes = 2.8 * 1024 * 1024;
+  if (file.size <= targetBytes && normalizeImageMimeType(file)) return file;
+
+  let bitmap;
+  try {
+    bitmap = await createImageBitmap(file);
+  } catch {
+    throw new Error("无法读取这张图片，请转换为 PNG 或 JPG 后重试");
+  }
+
+  let scale = Math.min(1, 2600 / Math.max(bitmap.width, bitmap.height));
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+    canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+    const context = canvas.getContext("2d", { alpha: false });
+    context.fillStyle = "#ffffff";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.imageSmoothingEnabled = true;
+    context.imageSmoothingQuality = "high";
+    context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+
+    const quality = Math.max(0.68, 0.92 - attempt * 0.06);
+    const blob = await canvasToBlob(canvas, "image/jpeg", quality);
+    if (blob.size <= targetBytes) {
+      bitmap.close?.();
+      return blob;
+    }
+    scale *= 0.8;
+  }
+
+  bitmap.close?.();
+  throw new Error("图片压缩后仍然过大，请裁剪后重试");
+}
+
+function canvasToBlob(canvas, type, quality) {
+  return new Promise((resolve, reject) => {
+    canvas.toBlob(
+      (blob) => blob ? resolve(blob) : reject(new Error("图片压缩失败")),
+      type,
+      quality
+    );
+  });
+}
+
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result).split(",")[1] || "");
+    reader.onerror = () => reject(new Error("图片读取失败"));
+    reader.readAsDataURL(file);
+  });
+}
+
+function normalizeImageMimeType(file) {
+  if (file.type) return file.type.toLowerCase();
+  const extension = file.name.split(".").pop().toLowerCase();
+  const byExtension = {
+    png: "image/png",
+    jpg: "image/jpeg",
+    jpeg: "image/jpeg",
+    webp: "image/webp",
+    bmp: "image/bmp",
+    gif: "image/gif",
+  };
+  return byExtension[extension] || "";
+}
+
+function loadScript(src, timeoutMs = 20000) {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = src;
+    const timer = setTimeout(() => {
+      script.remove();
+      reject(new Error("解析组件加载超时，请检查网络后重试"));
+    }, timeoutMs);
+    script.onload = () => { clearTimeout(timer); resolve(); };
+    script.onerror = () => { clearTimeout(timer); script.remove(); reject(new Error("解析组件加载失败，请检查网络后重试")); };
+    document.head.appendChild(script);
+  });
+}
+
+function openWordDetail(id) {
+  const word = state.words.find((item) => item.id === id);
+  if (!word) return;
+  const srs = word.srs || defaultSrs();
+  const now = Date.now();
+  const intervalDays = srs.interval ? Math.round(srs.interval * 10) / 10 : 0;
+  const dueIn = srs.dueAt > now ? Math.ceil((srs.dueAt - now) / 86400000) : 0;
+
+  modalRoot.innerHTML = `
+    <div class="detail-sheet" role="dialog" aria-modal="true" aria-label="${escapeHtml(word.word)} 词条详情">
+      <div class="detail-panel">
+        <div class="detail-header">
+          <div>
+            <div class="word-title-row">
+              <h2>${escapeHtml(word.word)}</h2>
+              ${word.audio ? `<button class="audio-button" data-play-audio="${word.id}" aria-label="播放词典录音">▶</button>` : ""}
+            </div>
+            <div class="pos-label">${escapeHtml(word.partOfSpeech || "")}</div>
+            <span class="tag ${word.mode === "spelling" ? "tag-spelling" : "tag-recognition"}" style="margin-top:10px">${word.mode === "spelling" ? "拼写" : "识记"}</span>
+          </div>
+          <button class="icon-button" data-close-detail aria-label="关闭">×</button>
+        </div>
+
+        ${detailSrs(word, srs, intervalDays, dueIn)}
+        ${detailDefinitions(word)}
+        ${detailIrregularForms(word)}
+        ${detailWordFamily(word)}
+        ${detailCollocations(word)}
+        ${detailSynonyms(word)}
+
+        <div class="settings-actions" style="margin-top:24px">
+          <button class="button button-secondary button-small" data-action="edit-word" data-word-id="${word.id}">编辑词条</button>
+          <button class="button button-secondary button-small" data-action="toggle-word-mode" data-word-id="${word.id}">
+            切换为${word.mode === "spelling" ? "识记" : "拼写"}
+          </button>
+          <button class="button button-danger button-small" data-action="delete-word" data-word-id="${word.id}">删除这个词</button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  bindDetailActions(word);
+}
+
+function bindDetailActions(word) {
+  modalRoot.querySelector('[data-action="delete-word"]')?.addEventListener("click", () => {
+    if (!confirm(`确定从词库删除 "${word.word}" 吗？`)) return;
+    state.words = state.words.filter((item) => item.id !== word.id);
+    saveState();
+    modalRoot.innerHTML = "";
+    renderLibrary();
+    showToast("已从词库删除");
+  });
+
+  modalRoot.querySelector('[data-action="toggle-word-mode"]')?.addEventListener("click", () => {
+    word.mode = word.mode === "spelling" ? "recognition" : "spelling";
+    saveState();
+    openWordDetail(word.id);
+    renderLibrary();
+    showToast(`"${word.word}" 已切换为${word.mode === "spelling" ? "拼写" : "识记"}`);
+  });
+
+  modalRoot.querySelector('[data-action="edit-word"]')?.addEventListener("click", () => {
+    renderEditForm(word);
+  });
+}
+
+function detailSrs(word, srs, intervalDays, dueIn) {
+  const lastReviewed = srs.lastReviewed
+    ? new Date(srs.lastReviewed).toLocaleDateString("zh-CN")
+    : "尚未复习";
+  return `
+    <section class="detail-section">
+      <h3>复习状态</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">
+        <div><span style="color:var(--muted)">上次复习</span><br><strong>${lastReviewed}</strong></div>
+        <div><span style="color:var(--muted)">下次到期</span><br><strong>${dueIn ? dueIn + " 天后" : "现在"}</strong></div>
+        <div><span style="color:var(--muted)">间隔</span><br><strong>${intervalDays ? intervalDays + " 天" : "未设定"}</strong></div>
+        <div><span style="color:var(--muted)">复习次数</span><br><strong>${srs.reps} 次</strong></div>
+        <div><span style="color:var(--muted)">遗忘次数</span><br><strong>${srs.lapses} 次</strong></div>
+        <div><span style="color:var(--muted)">难度系数</span><br><strong>${Math.round(srs.ease * 100) / 100}</strong></div>
+      </div>
+    </section>
+  `;
+}
+
+function renderEditForm(word) {
+  modalRoot.innerHTML = `
+    <div class="detail-sheet" role="dialog" aria-modal="true" aria-label="编辑 ${escapeHtml(word.word)}">
+      <div class="detail-panel">
+        <div class="detail-header">
+          <div>
+            <h2>编辑 · ${escapeHtml(word.word)}</h2>
+            <div class="pos-label">${escapeHtml(word.partOfSpeech || "")}</div>
+          </div>
+          <button class="icon-button" data-close-detail aria-label="关闭">×</button>
+        </div>
+
+        <section class="detail-section">
+          <h3>词性</h3>
+          <input id="edit-pos" class="text-input" value="${escapeHtml(word.partOfSpeech || "")}" placeholder="noun / verb / adjective..." />
+        </section>
+
+        <section class="detail-section">
+          <h3>双语释义</h3>
+          ${(word.definitions || [{ en: "", zh: "" }]).map((d, i) => `
+            <div style="margin-bottom:10px">
+              <input id="edit-def-en-${i}" class="text-input" value="${escapeHtml(d.en)}" placeholder="英文释义" style="margin-bottom:4px" />
+              <input id="edit-def-zh-${i}" class="text-input" value="${escapeHtml(d.zh)}" placeholder="中文释义" />
+            </div>
+          `).join("")}
+        </section>
+
+        <section class="detail-section">
+          <h3>变形（每行一个，格式：过去式·took）</h3>
+          <textarea id="edit-forms" class="textarea" style="min-height:60px" placeholder="took · 过去式&#10;taken · 过去分词">${(word.irregularForms || []).map(f => `${f.form} · ${f.label}`).join("\n")}</textarea>
+        </section>
+
+        <section class="detail-section">
+          <h3>词族（每行一个，格式：单词·词性·中文）</h3>
+          <textarea id="edit-family" class="textarea" style="min-height:80px" placeholder="mitigation · noun · 缓解">${(word.wordFamily || []).map(f => `${f.word} · ${f.pos} · ${f.zh}`).join("\n")}</textarea>
+        </section>
+
+        <section class="detail-section">
+          <h3>搭配（每行一个，格式：短语·中文·例句·例句翻译）</h3>
+          <textarea id="edit-collocations" class="textarea" style="min-height:100px" placeholder="mitigate the impact of · 减轻影响 · Public investment can mitigate... · 公共投资能减轻...">${(word.collocations || []).map(c => `${c.phrase} · ${c.zh} · ${c.example} · ${c.exampleZh}`).join("\n")}</textarea>
+        </section>
+
+        <section class="detail-section">
+          <h3>近义词（每行一个，格式：单词·辨析中文）</h3>
+          <textarea id="edit-synonyms" class="textarea" style="min-height:80px" placeholder="alleviate · 常用于减轻疼痛或压力">${(word.synonyms || []).map(s => `${s.word} · ${s.differenceZh}`).join("\n")}</textarea>
+        </section>
+
+        <div class="settings-actions" style="margin-top:24px">
+          <button class="button button-primary" data-action="save-edit" data-word-id="${word.id}">保存修改</button>
+          <button class="button button-ghost" data-close-detail>取消</button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  modalRoot.querySelector('[data-action="save-edit"]')?.addEventListener("click", () => {
+    saveWordEdit(word);
+  });
+}
+
+function saveWordEdit(word) {
+  word.partOfSpeech = document.querySelector("#edit-pos")?.value.trim() || word.partOfSpeech;
+
+  const defEns = modalRoot.querySelectorAll("[id^='edit-def-en-']");
+  const defZhs = modalRoot.querySelectorAll("[id^='edit-def-zh-']");
+  const defs = [];
+  for (let i = 0; i < defEns.length; i++) {
+    const en = defEns[i].value.trim();
+    const zh = defZhs[i].value.trim();
+    if (en || zh) defs.push({ en, zh });
+  }
+  if (defs.length) word.definitions = defs;
+
+  const formsRaw = modalRoot.querySelector("#edit-forms")?.value.trim();
+  if (formsRaw) {
+    word.irregularForms = formsRaw.split("\n").map(line => {
+      const [form, label] = line.split("·").map(s => s.trim());
+      return { form, label };
+    }).filter(f => f.form);
+  }
+
+  const familyRaw = modalRoot.querySelector("#edit-family")?.value.trim();
+  if (familyRaw) {
+    word.wordFamily = familyRaw.split("\n").map(line => {
+      const [w, pos, zh] = line.split("·").map(s => s.trim());
+      return { word: w, pos, zh };
+    }).filter(f => f.word);
+  }
+
+  const collRaw = modalRoot.querySelector("#edit-collocations")?.value.trim();
+  if (collRaw) {
+    word.collocations = collRaw.split("\n").map(line => {
+      const [phrase, zh, example, exampleZh] = line.split("·").map(s => s.trim());
+      return { phrase, zh, example, exampleZh };
+    }).filter(c => c.phrase);
+  }
+
+  const synRaw = modalRoot.querySelector("#edit-synonyms")?.value.trim();
+  if (synRaw) {
+    word.synonyms = synRaw.split("\n").map(line => {
+      const [w, differenceZh] = line.split("·").map(s => s.trim());
+      return { word: w, differenceZh };
+    }).filter(s => s.word);
+  }
+
+  saveState();
+  openWordDetail(word.id);
+  renderLibrary();
+  showToast("词条已更新");
+}
+
+function detailDefinitions(word) {
+  return `
+    <section class="detail-section">
+      <h3>双语释义</h3>
+      ${(word.definitions || [])
+        .map(
+          (item) => `
+            <div class="definition-item">
+              <div class="definition-en">${escapeHtml(item.en)}</div>
+              <div class="definition-zh">${escapeHtml(item.zh)}</div>
+            </div>
+          `
+        )
+        .join("") || `<div class="definition-zh">暂无释义</div>`}
+    </section>
+  `;
+}
+
+function detailIrregularForms(word) {
+  if (!word.irregularForms?.length) return "";
+  return `
+    <section class="detail-section">
+      <h3>特殊变形</h3>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        ${word.irregularForms.map((item) => `<span class="tag tag-muted">${escapeHtml(item.label)} · ${escapeHtml(item.form)}</span>`).join("")}
+      </div>
+    </section>
+  `;
+}
+
+function detailWordFamily(word) {
+  return `
+    <section class="detail-section">
+      <h3>词族与词性转换</h3>
+      ${(word.wordFamily || [])
+        .map(
+          (item) => `
+            <div class="family-item">
+              <strong>${escapeHtml(item.word)}</strong> <span class="pos-label">${escapeHtml(item.pos)}</span>
+              <div class="family-zh">${escapeHtml(item.zh)}</div>
+            </div>
+          `
+        )
+        .join("") || `<div class="definition-zh">暂无高价值派生词</div>`}
+    </section>
+  `;
+}
+
+function detailCollocations(word) {
+  return `
+    <section class="detail-section">
+      <h3>TOEFL 写作搭配</h3>
+      ${(word.collocations || [])
+        .map(
+          (item) => `
+            <div class="collocation-item">
+              <div class="collocation-phrase">${escapeHtml(item.phrase)}</div>
+              <div class="collocation-zh">${escapeHtml(item.zh)}</div>
+              <div class="example">
+                <div>${escapeHtml(item.example)}</div>
+                <div class="example-zh">${escapeHtml(item.exampleZh)}</div>
+              </div>
+            </div>
+          `
+        )
+        .join("") || `<div class="definition-zh">暂无写作搭配</div>`}
+    </section>
+  `;
+}
+
+function detailSynonyms(word) {
+  return `
+    <section class="detail-section">
+      <h3>阅读近义词辨析</h3>
+      ${(word.synonyms || [])
+        .map(
+          (item) => `
+            <div class="synonym-item">
+              <strong>${escapeHtml(item.word)}</strong>
+              <div class="synonym-diff">${escapeHtml(item.differenceZh)}</div>
+            </div>
+          `
+        )
+        .join("") || `<div class="definition-zh">暂无近义词辨析</div>`}
+    </section>
+  `;
+}
+
+function getDueWords() {
+  const now = Date.now();
+  return state.words.filter((word) => !word.srs?.dueAt || word.srs.dueAt <= now).sort((a, b) => (a.srs?.dueAt || 0) - (b.srs?.dueAt || 0));
+}
+
+function getPracticeWords(mode) {
+  if (mode === "recognition") return state.words.filter((word) => word.mode === "recognition");
+  if (mode === "spelling") return state.words.filter((word) => word.mode === "spelling");
+  return state.words.filter((word) => word.mode === "spelling" && word.audio);
+}
+
+function resetPracticeQueue(dueOnly = false) {
+  let queue = dueOnly ? getDueWords() : getPracticeWords(practiceMode);
+  practiceQueue = shuffle([...queue]);
+  practiceIndex = 0;
+  practiceRevealed = false;
+  spellingAnswered = false;
+}
+
+function checkSpellingAnswer() {
+  const word = practiceQueue[practiceIndex];
+  const input = document.querySelector("#spelling-answer");
+  const feedback = document.querySelector("#answer-feedback");
+  if (!word || !input || !input.value.trim()) return;
+  const correct = input.value.trim().toLowerCase() === word.word.toLowerCase();
+  input.classList.remove("is-wrong", "is-correct");
+  input.classList.add(correct ? "is-correct" : "is-wrong");
+  if (correct) {
+    spellingAnswered = true;
+    input.disabled = true;
+    feedback.textContent = "拼写正确 ✓";
+    setTimeout(renderPractice, 250);
+  } else {
+    feedback.textContent = "还差一点，再试一次";
+    setTimeout(() => input.classList.remove("is-wrong"), 400);
+  }
+}
+
+function rateCurrentWord(rating) {
+  const word = practiceQueue[practiceIndex];
+  if (!word) return;
+  updateSrs(word, rating);
+  state.reviewsToday += 1;
+  updateStreak();
+  saveState();
+  practiceIndex += 1;
+  practiceRevealed = false;
+  spellingAnswered = false;
+  renderPractice();
+}
+
+function updateSrs(word, rating) {
+  const srs = word.srs || defaultSrs();
+  const day = 24 * 60 * 60 * 1000;
+  if (rating === "again") {
+    srs.interval = 0.01;
+    srs.ease = Math.max(1.3, srs.ease - 0.2);
+    srs.lapses += 1;
+  } else if (rating === "hard") {
+    srs.interval = Math.max(1, srs.interval ? srs.interval * 1.35 : 1);
+    srs.ease = Math.max(1.3, srs.ease - 0.12);
+    srs.reps += 1;
+  } else if (rating === "good") {
+    srs.interval = srs.interval === 0 ? 1 : srs.interval === 1 ? 3 : Math.round(srs.interval * srs.ease);
+    srs.reps += 1;
+  } else {
+    srs.interval = srs.interval === 0 ? 3 : Math.max(5, Math.round(srs.interval * (srs.ease + 0.45)));
+    srs.ease += 0.08;
+    srs.reps += 1;
+  }
+  srs.lastReviewed = Date.now();
+  srs.dueAt = Date.now() + srs.interval * day;
+  word.srs = srs;
+}
+
+function updateStreak() {
+  const today = new Date().toISOString().slice(0, 10);
+  if (state.lastStudyDate === today) return;
+  const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+  state.streak = state.lastStudyDate === yesterday ? state.streak + 1 : 1;
+  state.lastStudyDate = today;
+}
+
+function playWordAudio(id) {
+  const word = state.words.find((item) => item.id === id);
+  if (!word?.audio) {
+    showToast("这个词没有可靠的词典录音", "error");
+    return;
+  }
+  const source = word.audio.startsWith("/media/")
+    ? word.audio
+    : `/api/audio?word=${encodeURIComponent(word.word)}`;
+  if (!activeAudioPlayer) {
+    activeAudioPlayer = document.createElement("audio");
+    activeAudioPlayer.id = "dictionary-audio-player";
+    activeAudioPlayer.preload = "auto";
+    activeAudioPlayer.setAttribute("playsinline", "");
+    activeAudioPlayer.hidden = true;
+    document.body.appendChild(activeAudioPlayer);
+  }
+  const audio = activeAudioPlayer;
+  audio.pause();
+  audio.currentTime = 0;
+  audio.src = source;
+  audio.load();
+  let errorShown = false;
+  const reportError = () => {
+    if (errorShown) return;
+    errorShown = true;
+    showToast("词典录音暂时无法播放，已保留文字练习", "error");
+  };
+  audio.onerror = reportError;
+  audio.play().catch((error) => {
+    console.warn("Dictionary audio playback failed:", error?.name || "Error", error?.message || "");
+    reportError();
+  });
+}
+
+async function saveApiKey() {
+  const input = document.querySelector("#deepseek-key");
+  const key = input?.value.trim();
+  if (!key) {
+    showToast("请输入 DeepSeek API Key", "error");
+    return;
+  }
+  if (currentUser) {
+    // Save to server
+    try {
+      const res = await fetch("/api/auth/api-key", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ apiKey: key }),
+      });
+      if (!res.ok) throw new Error();
+      serverHasApiKey = true;
+      if (input) input.value = "";
+      showToast("API Key 已加密存储在云端");
+    } catch { showToast("保存失败，请检查网络", "error"); }
+  } else {
+    localStorage.setItem(API_KEY_STORAGE, key);
+    if (input) input.value = "";
+    showToast("API Key 已保存在本机");
+  }
+  renderSettings();
+}
+
+async function removeApiKey() {
+  if (currentUser) {
+    try {
+      const response = await fetch("/api/auth/api-key", { method: "DELETE" });
+      if (response.ok) serverHasApiKey = false;
+    } catch {}
+  } else {
+    localStorage.removeItem(API_KEY_STORAGE);
+  }
+  showToast("已移除 API Key");
+  renderSettings();
+}
+
+async function testApi() {
+  const inputKey = document.querySelector("#deepseek-key")?.value.trim();
+  const apiKey = inputKey || (currentUser ? "" : localStorage.getItem(API_KEY_STORAGE));
+  // If logged in, server will auto-use stored key even if apiKey is empty
+  showToast("正在测试 DeepSeek 连接");
+  try {
+    const response = await fetch("/api/deepseek", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        apiKey,
+        model: state.settings.model,
+        messages: [{ role: "user", content: '只回复 JSON：{"status":"ok"}' }],
+      }),
+    });
+    if (!response.ok) {
+      const payload = await response.json().catch(() => ({}));
+      throw new Error(payload.error || `连接失败（${response.status}）`);
+    }
+    showToast("DeepSeek 连接成功");
+  } catch (error) {
+    showToast(error.message || "DeepSeek 连接失败", "error");
+  }
+}
+
+async function exportDocx() {
+  if (!state.words.length) { showToast("词库为空，请先导入词汇"); return; }
+  showToast("正在生成 Word 文档");
+  try {
+    if (currentUser) {
+      // Logged in: simple GET
+      const a = document.createElement("a");
+      a.href = "/api/export/docx";
+      a.download = `TOEFL词汇导出_${new Date().toISOString().slice(0, 10)}.docx`;
+      a.click();
+    } else {
+      // Not logged in: POST state data
+      const res = await fetch("/api/export/docx", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(state),
+      });
+      if (!res.ok) { showToast("导出失败", "error"); return; }
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `TOEFL词汇导出_${new Date().toISOString().slice(0, 10)}.docx`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+    setTimeout(() => showToast("Word 文档已开始下载"), 1000);
+  } catch { showToast("导出失败，请检查网络", "error"); }
+}
+
+function exportBackup() {
+  const backup = {
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    words: state.words,
+    settings: state.settings,
+    streak: state.streak,
+    reviewsToday: state.reviewsToday,
+    lastStudyDate: state.lastStudyDate,
+  };
+  const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = `toefl-vocab-backup-${new Date().toISOString().slice(0, 10)}.json`;
+  link.click();
+  URL.revokeObjectURL(link.href);
+  showToast("备份已导出");
+}
+
+async function importBackup(file) {
+  try {
+    const backup = JSON.parse(await file.text());
+    if (!Array.isArray(backup.words)) throw new Error("备份文件格式不正确");
+    state = {
+      ...defaultState(),
+      ...backup,
+      settings: { ...defaultState().settings, ...(backup.settings || {}) },
+    };
+    saveState();
+    showToast(`已恢复 ${state.words.length} 个词`);
+    renderSettings();
+  } catch (error) {
+    showToast(error.message || "备份导入失败", "error");
+  }
+}
+
+async function addDemoWords() {
+  const existing = new Map(state.words.map((word) => [word.word, word]));
+  const toAdd = [];
+  for (const word of DEMO_WORDS) {
+    if (!existing.has(word.word)) {
+      // Fetch audio from external API, fallback to wordbank
+      let audio = await fetchDictionaryAudio(word.word);
+      if (!audio) {
+        try {
+          const res = await fetch("/api/wordbank/lookup", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ words: [word.word] }),
+          });
+          const data = await res.json().catch(() => ({}));
+          if (data.found?.[word.word]?.audio) audio = data.found[word.word].audio;
+        } catch {}
+      }
+      toAdd.push({ ...word, id: crypto.randomUUID(), audio, srs: defaultSrs() });
+    }
+  }
+  toAdd.forEach((w) => existing.set(w.word, w));
+  state.words = [...existing.values()];
+  saveState();
+  showToast(`已加入 ${toAdd.length} 个示例词`);
+  setView("library");
+}
+
+function clearAllData() {
+  if (!confirm("确定清空词库和全部复习记录吗？此操作不会删除 DeepSeek API Key。")) return;
+  state = defaultState();
+  saveState();
+  showToast("学习数据已清空");
+  renderSettings();
+}
+
+function emptyState(icon, heading, text, buttonLabel, action) {
+  return `
+    <div class="empty-state">
+      <div>
+        <div class="empty-illustration">${icon}</div>
+        <h3>${heading}</h3>
+        <p>${text}</p>
+        <button class="button button-secondary button-small" data-action="${action}">${buttonLabel}</button>
+      </div>
+    </div>
+  `;
+}
+
+function firstDefinition(word) {
+  return word?.definitions?.[0] || null;
+}
+
+function shuffle(items) {
+  for (let i = items.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [items[i], items[j]] = [items[j], items[i]];
+  }
+  return items;
+}
+
+function escapeHtml(value = "") {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+// ── auth modal ──────────────────────────────────────────────
+
+function showAuthModal(mode) {
+  const isLogin = mode === "login";
+  modalRoot.innerHTML = `
+    <div class="detail-sheet" role="dialog" aria-modal="true" aria-label="${isLogin ? "登录" : "注册"}">
+      <div class="auth-card">
+        <button class="icon-button" data-close-detail aria-label="关闭" style="position:absolute;top:16px;right:16px">×</button>
+        <h2>${isLogin ? "登录" : "注册"}</h2>
+        <p style="color:var(--muted);font-size:12px;margin-bottom:20px">
+          ${isLogin ? "登录后，学习数据自动同步到云端" : "注册后即可在多台设备间同步学习进度"}
+        </p>
+        <form id="auth-form" onsubmit="return false">
+          <div class="form-group">
+            <label class="form-label" for="auth-email">邮箱</label>
+            <input id="auth-email" class="text-input" type="email" placeholder="your@email.com" autocomplete="email" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="auth-password">密码</label>
+            <input id="auth-password" class="text-input" type="password" placeholder="至少 6 位" autocomplete="${isLogin ? "current-password" : "new-password"}" />
+          </div>
+          <div id="auth-error" style="color:var(--red);font-size:11px;min-height:18px;margin-top:4px"></div>
+          <button type="submit" class="button button-primary" style="width:100%;margin-top:8px" data-action="auth-submit" data-auth-mode="${mode}">
+            ${isLogin ? "登录" : "注册"}
+          </button>
+        </form>
+        <p style="text-align:center;margin-top:16px;font-size:12px;color:var(--muted)">
+          ${isLogin ? "还没有账号？" : "已有账号？"}
+          <button class="button button-ghost button-small" data-action="auth-toggle" data-auth-mode="${isLogin ? "register" : "login"}">
+            ${isLogin ? "注册" : "登录"}
+          </button>
+        </p>
+      </div>
+    </div>
+  `;
+
+  // Bind submit
+  const form = modalRoot.querySelector("#auth-form");
+  form?.addEventListener("submit", () => handleAuthSubmit(mode));
+
+  // Focus email field
+  setTimeout(() => modalRoot.querySelector("#auth-email")?.focus(), 100);
+}
+
+async function handleAuthSubmit(mode) {
+  const email = modalRoot.querySelector("#auth-email")?.value.trim() || "";
+  const password = modalRoot.querySelector("#auth-password")?.value || "";
+  const errorEl = modalRoot.querySelector("#auth-error");
+  if (!email || !password) { errorEl.textContent = "请填写邮箱和密码"; return; }
+
+  try {
+    const res = await fetch(`/api/auth/${mode}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) { errorEl.textContent = data.error || "请求失败"; return; }
+    currentUser = data.user;
+    serverHasApiKey = Boolean(data.hasApiKey);
+    sharedAiEnabled = Boolean(data.sharedAiEnabled);
+    const serverState = await fetchServerState();
+    if (serverState) state = { ...defaultState(), ...serverState };
+    // Offer migration of local data
+    const localState = loadLocalState();
+    if (localState.words.length > 0 && (!state.words || !state.words.length)) {
+      state = { ...state, ...localState };
+      saveState();
+    }
+    modalRoot.innerHTML = "";
+    render();
+    showToast(`已${mode === "login" ? "登录" : "注册"}：${currentUser.email}`);
+  } catch {
+    errorEl.textContent = "网络错误，请重试";
+  }
+}
+
+async function handleLogout() {
+  try { await fetch("/api/auth/logout", { method: "POST" }); } catch {}
+  currentUser = null;
+  serverHasApiKey = false;
+  sharedAiEnabled = false;
+  state = loadLocalState();
+  stateDirty = false;
+  modalRoot.innerHTML = "";
+  render();
+  showToast("已退出登录，数据保存在本机");
+}
+
+async function migrateLocalData() {
+  const localState = loadLocalState();
+  if (!localState.words.length) { showToast("没有本地数据可迁移"); return; }
+  try {
+    const res = await fetch("/api/state", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(localState),
+    });
+    if (!res.ok) throw new Error();
+    state = localState;
+    saveState();
+    showToast(`已迁移 ${localState.words.length} 个词到云端`);
+    renderSettings();
+  } catch { showToast("迁移失败，请检查网络", "error"); }
+}
+
+function showToast(message, type = "") {
+  const toast = document.createElement("div");
+  toast.className = `toast ${type}`;
+  toast.textContent = message;
+  toastRoot.appendChild(toast);
+  setTimeout(() => toast.remove(), 3200);
+}

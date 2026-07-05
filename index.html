@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="面向 2026 TOEFL 的个人词汇整理与间隔复习工具"
+    />
+    <title>词研所 · TOEFL Vocab Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">V</div>
+          <div>
+            <div class="brand-name">词研所</div>
+            <div class="brand-subtitle">TOEFL VOCAB STUDIO</div>
+          </div>
+        </div>
+
+        <nav class="nav-list" aria-label="主导航">
+          <button class="nav-item is-active" data-view="dashboard">
+            <span class="nav-icon">⌂</span>
+            <span>今日</span>
+          </button>
+          <button class="nav-item" data-view="import">
+            <span class="nav-icon">＋</span>
+            <span>导入材料</span>
+          </button>
+          <button class="nav-item" data-view="library">
+            <span class="nav-icon">▤</span>
+            <span>存档词库</span>
+          </button>
+          <button class="nav-item" data-view="practice">
+            <span class="nav-icon">⌨</span>
+            <span>练习</span>
+          </button>
+        </nav>
+
+        <div class="sidebar-spacer"></div>
+
+        <div class="score-card" id="sidebar-stats">
+          <div class="score-card-label">学习统计</div>
+          <div class="score-row">
+            <span>词库总量</span>
+            <strong id="stat-total">0</strong>
+          </div>
+          <div class="score-row">
+            <span>拼写 / 识记</span>
+            <strong id="stat-mode">-</strong>
+          </div>
+          <div class="score-row">
+            <span>连续天数</span>
+            <strong id="stat-streak">0</strong>
+          </div>
+        </div>
+
+        <button class="nav-item settings-link" data-view="settings">
+          <span class="nav-icon">⚙</span>
+          <span>设置与备份</span>
+        </button>
+      </aside>
+
+      <main class="main-area">
+        <header class="topbar">
+          <div>
+            <div class="eyebrow" id="page-eyebrow">2026 TOEFL</div>
+            <h1 id="page-title">今天，先掌握一小组</h1>
+          </div>
+          <div class="topbar-actions" id="topbar-actions">
+            <div class="save-state" title="所有学习数据保存在本机浏览器">
+              <span class="save-dot"></span>
+              <span>本机存档</span>
+            </div>
+            <button class="button button-secondary button-small" data-action="show-auth-login">登录 / 注册</button>
+          </div>
+        </header>
+
+        <section id="app-content" class="content" aria-live="polite"></section>
+      </main>
+    </div>
+
+    <div id="modal-root"></div>
+    <div id="toast-root" class="toast-root" aria-live="polite"></div>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
