@@ -429,9 +429,9 @@ async function exportDocx(request, response) {
     });
   });
 
-  const doc = new Document({
+  //const doc = new Document({
     styles: {
-      default: { document: { run: { font: "Noto Sans SC", size: 20 } } },
+      //default: { document: { run: { font: "Noto Sans SC", size: 20 } } },
     },
     sections: [{
       properties: {
