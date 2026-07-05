@@ -463,7 +463,7 @@ async function exportDocx(request, response) {
   const buffer = await Packer.toBuffer(doc);
   const filename = `TOEFL-vocab-export-${new Date().toISOString().slice(0, 10)}.docx`;
   response.writeHead(200, {
-    "Content-Type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    //"Content-Type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     "Content-Disposition": `attachment; filename="${filename}"; filename*=UTF-8''${encodeURIComponent("TOEFL词汇导出")}_${new Date().toISOString().slice(0, 10)}.docx`,
     "Cache-Control": "no-store",
   });
