@@ -33,7 +33,7 @@ const PUBLIC_FILES = new Map([
   ["/", join(root, "index.html")],
   ["/index.html", join(root, "index.html")],
   ["/styles.css", join(root, "styles.css")],
-  ["/app.js", join(root, "app.js")],
+  //["/app.js", join(root, "app.js")],
   ["/vendor/pdf/pdf.min.mjs", join(root, "node_modules/pdfjs-dist/build/pdf.min.mjs")],
   ["/vendor/pdf/pdf.worker.min.mjs", join(root, "node_modules/pdfjs-dist/build/pdf.worker.min.mjs")],
   ["/vendor/mammoth/mammoth.browser.min.js", join(root, "node_modules/mammoth/mammoth.browser.min.js")],
