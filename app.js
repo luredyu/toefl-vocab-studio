@@ -1560,7 +1560,8 @@ async function readMaterialFile(file) {
 }
 
 async function extractPdfText(file) {
-  const pdfjs = await import("/vendor/pdf/pdf.min.mjs");
+  // const pdfjs = await import("/vendor/pdf/pdf.min.mjs");
+const pdfjs = { getDocument: () => ({ promise: Promise.resolve(null) }) };
   pdfjs.GlobalWorkerOptions.workerSrc = "/vendor/pdf/pdf.worker.min.mjs";
   const pdf = await pdfjs.getDocument({ data: await file.arrayBuffer() }).promise;
   const pages = [];
