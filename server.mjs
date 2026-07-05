@@ -3,8 +3,6 @@ import { readFile, stat, mkdir } from "node:fs/promises";
 import { basename, extname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import crypto from "node:crypto";
-import { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, HeadingLevel, AlignmentType, BorderStyle, WidthType, ShadingType } from "docx";
-import { createWorker } from "tesseract.js";
 import { createPersistence } from "./persistence.mjs";
 
 const root = fileURLToPath(new URL(".", import.meta.url));
