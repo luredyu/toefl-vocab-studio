@@ -6,7 +6,6 @@ import crypto from "node:crypto";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
 
-// 工具函数：解析请求体 JSON
 async function parseBody(req) {
   return new Promise((resolve, reject) => {
     let body = '';
@@ -21,7 +20,6 @@ async function parseBody(req) {
   });
 }
 
-// 辅助函数：从 Authorization 头提取 token
 function getTokenFromHeader(req) {
   const auth = req.headers.authorization;
   if (!auth || !auth.startsWith('Bearer ')) return null;
@@ -29,7 +27,6 @@ function getTokenFromHeader(req) {
 }
 
 export default async function handler(req, res) {
-  // CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
@@ -44,7 +41,7 @@ export default async function handler(req, res) {
   try {
     const persistence = await createPersistence(root);
 
-    // ---------- 检查当前会话（session） ----------
+    // ---------- session ----------
     if (pathname === '/api/auth/session' && req.method === 'GET') {
       const token = getTokenFromHeader(req);
       if (!token) {
@@ -56,21 +53,16 @@ export default async function handler(req, res) {
         res.status(401).json({ error: '会话无效或已过期' });
         return;
       }
-      // 获取用户信息
       const user = await persistence.getUserById(session.user_id);
       if (!user) {
         res.status(401).json({ error: '用户不存在' });
         return;
       }
-      res.status(200).json({
-        userId: user.id,
-        email: user.email,
-        createdAt: user.created_at
-      });
+      res.status(200).json({ userId: user.id, email: user.email, createdAt: user.created_at });
       return;
     }
 
-    // ---------- 用户注册 ----------
+    // ---------- 注册 ----------
     if (pathname === '/api/auth/register' && req.method === 'POST') {
       const { email, password } = await parseBody(req);
       if (!email || !password) {
@@ -85,19 +77,18 @@ export default async function handler(req, res) {
       const salt = crypto.randomBytes(16).toString('hex');
       const hash = crypto.createHash('sha256').update(password + salt).digest('hex');
       const userId = crypto.randomUUID();
-      const newUser = {
+      await persistence.createUser({
         id: userId,
         email,
         password_hash: hash,
         salt,
         created_at: new Date().toISOString(),
-      };
-      await persistence.createUser(newUser);
+      });
       res.status(201).json({ message: '注册成功', userId });
       return;
     }
 
-    // ---------- 用户登录 ----------
+    // ---------- 登录 ----------
     if (pathname === '/api/auth/login' && req.method === 'POST') {
       const { email, password } = await parseBody(req);
       if (!email || !password) {
@@ -120,7 +111,7 @@ export default async function handler(req, res) {
       return;
     }
 
-    // ---------- 获取用户状态 ----------
+    // ---------- 获取状态 ----------
     if (pathname === '/api/state' && req.method === 'GET') {
       const token = getTokenFromHeader(req);
       if (!token) {
@@ -137,7 +128,7 @@ export default async function handler(req, res) {
       return;
     }
 
-    // ---------- 保存用户状态 ----------
+    // ---------- 保存状态 ----------
     if (pathname === '/api/state' && req.method === 'POST') {
       const token = getTokenFromHeader(req);
       if (!token) {
@@ -165,7 +156,6 @@ export default async function handler(req, res) {
       return;
     }
 
-    // 未匹配的 API 路由
     res.status(404).json({ error: 'API endpoint not found' });
   } catch (error) {
     console.error('API Error:', error);
