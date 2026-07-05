@@ -3,6 +3,8 @@ import { readFile, stat, mkdir } from "node:fs/promises";
 import { basename, extname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import crypto from "node:crypto";
+import { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, AlignmentType, BorderStyle, WidthType, ShadingType } from "docx";
+import { createWorker } from "tesseract.js";
 import { createPersistence } from "./persistence.mjs";
 
 const root = fileURLToPath(new URL(".", import.meta.url));
@@ -33,7 +35,7 @@ const PUBLIC_FILES = new Map([
   ["/", join(root, "index.html")],
   ["/index.html", join(root, "index.html")],
   ["/styles.css", join(root, "styles.css")],
-  //["/app.js", join(root, "app.js")],
+  ["/app.js", join(root, "app.js")],
   ["/vendor/pdf/pdf.min.mjs", join(root, "node_modules/pdfjs-dist/build/pdf.min.mjs")],
   ["/vendor/pdf/pdf.worker.min.mjs", join(root, "node_modules/pdfjs-dist/build/pdf.worker.min.mjs")],
   ["/vendor/mammoth/mammoth.browser.min.js", join(root, "node_modules/mammoth/mammoth.browser.min.js")],
@@ -62,8 +64,15 @@ const SECURITY_HEADERS = {
 // ── data layer ──────────────────────────────────────────────
 
 await mkdir(OCR_CACHE_DIR, { recursive: true, mode: 0o700 });
-const persistence = await createPersistence(root);
-const serverSecret = persistence.secret;
+let persistence = null;
+let persistenceInitError = "";
+try {
+  persistence = await createPersistence(root);
+} catch (error) {
+  persistenceInitError = error.message || "云端存储初始化失败";
+  console.error("Persistence initialization failed:", persistenceInitError);
+}
+const serverSecret = persistence?.secret || "";
 const sharedAiEnabled = Boolean(String(process.env.DEEPSEEK_API_KEY || "").trim());
 
 const readUserState = (userId) => persistence.readState(userId);
@@ -109,6 +118,7 @@ function encryptionKey() {
 // ── session helpers ─────────────────────────────────────────
 
 async function getSessionUser(request) {
+  if (!persistence) return null;
   const cookie = parseCookies(request)["session"];
   if (!cookie) return null;
   const session = await persistence.getSession(cookie);
@@ -163,7 +173,41 @@ export async function handleRequest(request, response) {
 
     // Health check
     if (request.method === "GET" && url.pathname === "/api/health") {
-      return json(response, 200, { status: "ok" });
+      return json(response, persistence ? 200 : 503, {
+        status: persistence ? "ok" : "misconfigured",
+        storage: persistence?.kind || null,
+        error: persistence ? undefined : persistenceInitError,
+      });
+    }
+
+    // These routes do not require cloud storage and remain available without Supabase.
+    if (request.method === "POST" && url.pathname === "/api/ocr") {
+      return recognizeImage(request, response);
+    }
+    if (request.method === "POST" && url.pathname === "/api/deepseek") {
+      return proxyDeepSeek(request, response);
+    }
+    if (request.method === "GET" && url.pathname === "/api/dictionary") {
+      return lookupDictionaryAudio(url, response);
+    }
+    if (request.method === "GET" && url.pathname === "/api/audio") {
+      return streamWordAudio(request, url, response);
+    }
+    if (request.method === "POST" && url.pathname === "/api/wordbank/lookup") {
+      return lookupWordbank(request, response);
+    }
+    if (request.method === "POST" && url.pathname === "/api/lemmatize") {
+      return lemmatizeWords(request, response);
+    }
+    if ((request.method === "GET" || request.method === "POST") && url.pathname === "/api/export/docx") {
+      return exportDocx(request, response);
+    }
+
+    if (!persistence) {
+      return json(response, 503, {
+        error: persistenceInitError || "云端存储尚未配置",
+        code: "CLOUD_STORAGE_NOT_CONFIGURED",
+      });
     }
 
     // ── auth routes ──
@@ -293,32 +337,6 @@ export async function handleRequest(request, response) {
       return json(response, 200, { ok: true, hasApiKey: sharedAiEnabled });
     }
 
-    // ── existing routes ──
-
-    if (request.method === "POST" && url.pathname === "/api/ocr") {
-      return recognizeImage(request, response);
-    }
-
-    if (request.method === "POST" && url.pathname === "/api/deepseek") {
-      return proxyDeepSeek(request, response);
-    }
-
-    if (request.method === "GET" && url.pathname === "/api/dictionary") {
-      return lookupDictionaryAudio(url, response);
-    }
-
-    if (request.method === "GET" && url.pathname === "/api/audio") {
-      return streamWordAudio(request, url, response);
-    }
-
-    if (request.method === "POST" && url.pathname === "/api/wordbank/lookup") {
-      return lookupWordbank(request, response);
-    }
-
-    if ((request.method === "GET" || request.method === "POST") && url.pathname === "/api/export/docx") {
-      return exportDocx(request, response);
-    }
-
     // ── static files ──
 
     if (request.method !== "GET" && request.method !== "HEAD") {
@@ -429,9 +447,9 @@ async function exportDocx(request, response) {
     });
   });
 
-  //const doc = new Document({
+  const doc = new Document({
     styles: {
-      //default: { document: { run: { font: "Noto Sans SC", size: 20 } } },
+      default: { document: { run: { font: "Noto Sans SC", size: 20 } } },
     },
     sections: [{
       properties: {
@@ -463,7 +481,7 @@ async function exportDocx(request, response) {
   const buffer = await Packer.toBuffer(doc);
   const filename = `TOEFL-vocab-export-${new Date().toISOString().slice(0, 10)}.docx`;
   response.writeHead(200, {
-    //"Content-Type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "Content-Type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     "Content-Disposition": `attachment; filename="${filename}"; filename*=UTF-8''${encodeURIComponent("TOEFL词汇导出")}_${new Date().toISOString().slice(0, 10)}.docx`,
     "Cache-Control": "no-store",
   });
@@ -795,6 +813,128 @@ async function lookupWordbank(request, response) {
   } catch (error) {
     return json(response, 400, { error: error.message });
   }
+}
+
+async function lemmatizeWords(request, response) {
+  try {
+    const body = await readJsonBody(request, 1_000_000);
+    const words = Array.isArray(body.words) ? body.words : [];
+    if (words.length > 5000) {
+      return json(response, 413, { error: "一次最多处理 5000 个不同单词" });
+    }
+
+    const lemmas = {};
+    for (const value of words) {
+      const word = normalizeToken(value);
+      if (!word || lemmas[word]) continue;
+      lemmas[word] = resolveLemma(word);
+    }
+    return json(response, 200, { lemmas });
+  } catch (error) {
+    return json(response, 400, { error: error.message || "词形还原失败" });
+  }
+}
+
+function normalizeToken(value) {
+  return String(value || "")
+    .toLowerCase()
+    .replace(/[’]/g, "'")
+    .replace(/(?:'s|s')$/i, "")
+    .replace(/^'+|'+$/g, "");
+}
+
+function resolveLemma(word) {
+  const irregular = {
+    arose: "arise", arisen: "arise", became: "become", begun: "begin", began: "begin",
+    broke: "break", broken: "break", brought: "bring", built: "build", bought: "buy",
+    caught: "catch", chose: "choose", chosen: "choose", came: "come", dealt: "deal",
+    drew: "draw", drawn: "draw", driven: "drive", drove: "drive", fell: "fall",
+    fallen: "fall", found: "find", gave: "give", given: "give", grew: "grow",
+    grown: "grow", held: "hold", kept: "keep", led: "lead", left: "leave",
+    meant: "mean", met: "meet", paid: "pay", rose: "rise", risen: "rise",
+    ran: "run", sent: "send", spoke: "speak", spoken: "speak", spent: "spend",
+    stood: "stand", taught: "teach", told: "tell", understood: "understand",
+    wore: "wear", worn: "wear", wrote: "write", written: "write",
+  };
+  if (irregular[word]) return irregular[word];
+
+  const candidates = inflectionCandidates(word);
+  const derivedCandidates = candidates.filter((candidate) => candidate !== word);
+  const wordbankMatch = derivedCandidates.find((candidate) => wordbankMap.has(candidate));
+  const inflectionExceptions = new Set([
+    "anything", "ceiling", "darling", "during", "evening", "everything",
+    "king", "morning", "nothing", "offspring", "ring", "something",
+    "spring", "sterling", "string", "thing", "unwilling", "willing",
+  ]);
+  if (!wordbankMatch && inflectionExceptions.has(word)) return word;
+  return wordbankMatch || fallbackLemma(word);
+}
+
+function inflectionCandidates(word) {
+  const candidates = [];
+  const add = (value) => {
+    if (value?.length >= 3 && !candidates.includes(value)) candidates.push(value);
+  };
+
+  if (word.endsWith("ying") && word.length > 4) {
+    const root = word.slice(0, -4);
+    add(`${root}ie`);
+  }
+  if (word.endsWith("ing") && word.length >= 6) {
+    const root = word.slice(0, -3);
+    if (/([b-df-hj-np-tv-z])\1$/.test(root)) add(root.slice(0, -1));
+    add(`${root}e`);
+    add(root);
+  }
+  if (word.endsWith("ied") && word.length >= 5) add(`${word.slice(0, -3)}y`);
+  if (word.endsWith("ed") && word.length >= 5) {
+    const root = word.slice(0, -2);
+    if (/([b-df-hj-np-tv-z])\1$/.test(root)) add(root.slice(0, -1));
+    add(`${root}e`);
+    add(root);
+  }
+  if (word.endsWith("ies") && word.length >= 5) add(`${word.slice(0, -3)}y`);
+  if (word.endsWith("sses")) add(word.slice(0, -2));
+  if (/(ches|shes|xes|zes|oes)$/.test(word)) add(word.slice(0, -2));
+  if (word.endsWith("s") && !word.endsWith("ss") && word.length > 4) add(word.slice(0, -1));
+  if (word.endsWith("ly") && word.length > 5) {
+    add(word.slice(0, -2));
+    if (word.endsWith("ily")) add(`${word.slice(0, -3)}y`);
+  }
+  if (word.endsWith("est") && word.length > 6) {
+    const root = word.slice(0, -3);
+    add(`${root}e`);
+    add(root);
+  }
+  if (word.endsWith("er") && word.length > 5) {
+    const root = word.slice(0, -2);
+    add(`${root}e`);
+    add(root);
+  }
+
+  add(word);
+  return candidates;
+}
+
+function fallbackLemma(word) {
+  if (word.endsWith("ies") && word.length >= 5) return `${word.slice(0, -3)}y`;
+  if (word.endsWith("sses")) return word.slice(0, -2);
+  if (word.endsWith("ying") && word.length > 4) return `${word.slice(0, -4)}ie`;
+  if (word.endsWith("ing") && word.length >= 6) {
+    const root = word.slice(0, -3);
+    if (/([b-df-hj-np-tv-z])\1$/.test(root)) return root.slice(0, -1);
+    if (root.endsWith("at") || ["mak", "tak", "giv", "hav", "mov", "writ", "driv"].includes(root)) return `${root}e`;
+    return root;
+  }
+  if (word.endsWith("ied") && word.length >= 5) return `${word.slice(0, -3)}y`;
+  if (word.endsWith("ed") && word.length >= 5) {
+    const root = word.slice(0, -2);
+    if (/([b-df-hj-np-tv-z])\1$/.test(root)) return root.slice(0, -1);
+    if (root.endsWith("at") || ["us", "mov", "lov", "liv", "creat"].includes(root)) return `${root}e`;
+    return root;
+  }
+  if (word.endsWith("s") && !word.endsWith("ss") && word.length > 4) return word.slice(0, -1);
+  return word;
 }
 
 // ── utils ────────────────────────────────────────────────────

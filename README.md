@@ -43,6 +43,12 @@ openssl rand -hex 32
 
 设置 `DEEPSEEK_API_KEY` 后，登录用户无需填写自己的 Key。共享调用限制为每个账号每天 50 次，防止公开网址被无限消耗余额。
 
+部署完成后访问 `/api/health`：
+
+- `status: "ok"`：云端存储配置正常；
+- `status: "misconfigured"`：Vercel 环境变量缺失，登录与同步不可用；
+- 即使 Supabase 尚未配置，OCR、本地词库、词形还原和用户自带 Key 的 DeepSeek 调用仍可使用。
+
 ### 3. 部署
 
 将项目推送到 GitHub，然后在 Vercel 中导入仓库。Vercel 会读取 `vercel.json`，执行 `npm run build`，并生成：

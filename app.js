@@ -726,7 +726,9 @@ function renderCandidates() {
         <div class="panel-body">
           <div class="candidate-toolbar">
             <div class="candidate-summary">
-              找到 <strong>${visibleCandidates.length}</strong> 个候选词 · 已选 <strong>${selected.length}</strong> 个
+              共提取 <strong>${importSession.candidates.length}</strong> 个 · 当前显示 <strong>${visibleCandidates.length}</strong> 个
+              ${state.settings.hideBasic ? `（隐藏了 ${importSession.candidates.length - visibleCandidates.length} 个基础词）` : ""}
+              · 已选 <strong>${selected.length}</strong> 个
             </div>
             <div style="display:flex;align-items:center;gap:8px">
               <button class="button button-ghost button-small" data-action="select-recommended">推荐词设为识记</button>
@@ -1262,23 +1264,44 @@ function loadSampleMaterial() {
   renderImport();
 }
 
-function extractCandidatesFromMaterial() {
+async function extractCandidatesFromMaterial() {
   const text = importSession.text.trim();
   if (text.length < 20) {
     showToast("请先添加足够的英文材料", "error");
     return;
   }
-  importSession.candidates = extractCandidates(text);
-  importPhase = "classify";
-  renderCandidates();
+  showToast("正在提取并还原单词原型");
+  try {
+    importSession.candidates = await extractCandidates(text);
+    importPhase = "classify";
+    renderCandidates();
+  } catch (error) {
+    showToast(error.message || "提取单词失败", "error");
+  }
 }
 
-function extractCandidates(text) {
-  const tokens = text.toLowerCase().match(/[a-z][a-z'-]{2,}/g) || [];
+async function extractCandidates(text) {
+  const tokens = (text.toLowerCase().replace(/[’]/g, "'").match(/[a-z]+(?:'[a-z]+)?/g) || [])
+    .map(normalizeCandidateToken)
+    .filter((word) => word.length >= 3);
+  const uniqueTokens = [...new Set(tokens)];
+  let serverLemmas = {};
+
+  try {
+    const response = await fetch("/api/lemmatize", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ words: uniqueTokens }),
+    });
+    const payload = await response.json().catch(() => ({}));
+    if (response.ok && payload.lemmas) serverLemmas = payload.lemmas;
+  } catch {
+    // Local rules below keep extraction available when the server is temporarily unavailable.
+  }
+
   const counts = new Map();
   tokens.forEach((token) => {
-    const clean = token.replace(/^'+|'+$/g, "");
-    const lemma = lemmatize(clean);
+    const lemma = serverLemmas[token] || lemmatize(token);
     if (lemma.length < 3) return;
     counts.set(lemma, (counts.get(lemma) || 0) + 1);
   });
@@ -1294,23 +1317,33 @@ function extractCandidates(text) {
     });
 }
 
+function normalizeCandidateToken(word) {
+  return String(word || "")
+    .replace(/(?:'s|s')$/i, "")
+    .replace(/^'+|'+$/g, "");
+}
+
 function lemmatize(word) {
   if (IRREGULAR_LEMMAS[word]) return IRREGULAR_LEMMAS[word];
-  if (word.endsWith("ies") && word.length > 5) return `${word.slice(0, -3)}y`;
+  if (word.endsWith("ies") && word.length >= 5) return `${word.slice(0, -3)}y`;
   if (word.endsWith("sses")) return word.slice(0, -2);
-  if (word.endsWith("ing") && word.length > 6) {
+  if (word.endsWith("ying") && word.length > 4) return `${word.slice(0, -4)}ie`;
+  if (word.endsWith("ing") && word.length >= 6) {
     let root = word.slice(0, -3);
-    if (/([b-df-hj-np-tv-z])\1$/.test(root)) root = root.slice(0, -1);
-    if (["hous", "aris", "ris", "us", "giv", "tak", "mak", "hav", "mov", "driv", "deriv", "preserv"].includes(root)) {
+    const doubled = /([b-df-hj-np-tv-z])\1$/.test(root);
+    if (doubled) root = root.slice(0, -1);
+    if (!doubled && (root.endsWith("at") || ["hous", "aris", "ris", "us", "giv", "tak", "mak", "hav", "mov", "driv", "deriv", "preserv", "writ"].includes(root))) {
       root += "e";
     }
     return root;
   }
-  if (word.endsWith("ed") && word.length > 5) {
+  if (word.endsWith("ied") && word.length >= 5) return `${word.slice(0, -3)}y`;
+  if (word.endsWith("ed") && word.length >= 5) {
     let root = word.slice(0, -2);
     if (root.endsWith("i")) root = `${root.slice(0, -1)}y`;
-    if (/([b-df-hj-np-tv-z])\1$/.test(root)) root = root.slice(0, -1);
-    if (["us", "giv", "tak", "mak", "mov", "driv", "deriv", "preserv"].includes(root)) {
+    const doubled = /([b-df-hj-np-tv-z])\1$/.test(root);
+    if (doubled) root = root.slice(0, -1);
+    if (!doubled && (root.endsWith("at") || ["us", "giv", "tak", "mak", "mov", "driv", "deriv", "preserv", "writ"].includes(root))) {
       root += "e";
     }
     return root;
@@ -1560,8 +1593,7 @@ async function readMaterialFile(file) {
 }
 
 async function extractPdfText(file) {
-  // const pdfjs = await import("/vendor/pdf/pdf.min.mjs");
-const pdfjs = { getDocument: () => ({ promise: Promise.resolve(null) }) };
+  const pdfjs = await import("/vendor/pdf/pdf.min.mjs");
   pdfjs.GlobalWorkerOptions.workerSrc = "/vendor/pdf/pdf.worker.min.mjs";
   const pdf = await pdfjs.getDocument({ data: await file.arrayBuffer() }).promise;
   const pages = [];

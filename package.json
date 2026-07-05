@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server.mjs",
     "build": "node scripts/build-public.mjs",
-    "check": "node --check app.js && node --check server.mjs && node --check persistence.mjs && node --check api/index.mjs"
+    "check": "node --check app.js && node --check server.mjs && node --check persistence.mjs && node --check api/index.js"
   },
   "engines": {
     "node": ">=18"
