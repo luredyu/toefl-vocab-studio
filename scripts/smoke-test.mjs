@@ -22,6 +22,7 @@ class MockElement {
   querySelectorAll() { return []; }
   setAttribute() {}
   focus() {}
+  remove() {}
 }
 
 const elements = new Map();
@@ -161,6 +162,50 @@ vm.runInContext(`
   const sourceHtml = renderSourceCandidateView(importSession.candidates);
   if (!sourceHtml.includes("v. 参与，参加") || !sourceHtml.includes("is-recognition")) {
     throw new Error("Source text classification did not show the basic meaning and selected mode");
+  }
+
+  const localDrafts = parseCompleteWordsLocally(
+    "Fill in the missing letters.\\n\\nTh_ _ plants gr_ _ rapidly.\\n\\nAnswer Key\\n1 ese\\n2 ow"
+  );
+  if (localDrafts.length !== 1 || !localDrafts[0].text.includes("[[These]]") || !localDrafts[0].text.includes("[[grow]]")) {
+    throw new Error("Local Complete the Words conversion failed");
+  }
+
+  state.customExerciseSets = [{
+    id: "custom-set",
+    title: "Uploaded Set",
+    type: "complete",
+    createdAt: 100,
+    questions: [{
+      id: "custom-question",
+      topic: "Uploaded Set",
+      text: "Plants [[absorb]] light.",
+      targets: ["absorb"],
+    }],
+  }];
+  practiceMode = "simulation";
+  exerciseSetFilter = "custom-set";
+  resetPracticeQueue();
+  if (practiceQueue.length !== 1 || practiceQueue[0].setTitle !== "Uploaded Set") {
+    throw new Error("Archived custom exercise set was not added to practice");
+  }
+
+  customExerciseImport = {
+    phase: "review",
+    type: "sentence",
+    title: "Imported Sentences",
+    fileName: "sentences.pdf",
+    text: "",
+    status: "",
+    drafts: [{ cue: "I need help with the assignment.", answerText: "Can | you | explain | the instructions" }],
+  };
+  saveCustomExerciseSet();
+  if (!state.customExerciseSets.some((set) => set.title === "Imported Sentences" && set.questions.length === 1)) {
+    throw new Error("Converted exercise set was not archived");
+  }
+  openCustomExerciseImport();
+  if (!modalRoot.innerHTML.includes("选择 PDF / Word / 图片 / 文本")) {
+    throw new Error("Personal exercise import UI was not rendered");
   }
 `, context);
 
