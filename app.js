@@ -1330,7 +1330,16 @@ function renderClozePassage(passage, targets) {
       if (completeWordAnswered || result === "correct") {
         return `<span class="complete-word is-correct">${escapeHtml(word)}</span>`;
       }
-      return `<span class="complete-word"><strong>${escapeHtml(shown)}</strong><input class="complete-word-input ${result === "wrong" ? "is-wrong" : ""}" style="--missing-letters:${missing.length}" data-complete-word="${escapeHtml(word)}" value="${escapeHtml(completeAnswers[word] || "")}" maxlength="${missing.length}" size="${Math.max(2, missing.length)}" autocomplete="off" spellcheck="false" aria-label="补全 ${escapeHtml(word)} 的缺失字母" /></span>`;
+      const letterSlots = Array.from({ length: missing.length }, () => "<i></i>").join("");
+      return `
+        <span class="complete-word">
+          <strong>${escapeHtml(shown)}</strong>
+          <span class="complete-word-entry ${result === "wrong" ? "is-wrong" : ""}" style="--missing-letters:${missing.length}" data-missing-letters="${missing.length}">
+            <span class="complete-letter-slots" aria-hidden="true">${letterSlots}</span>
+            <input class="complete-word-input" data-complete-word="${escapeHtml(word)}" value="${escapeHtml(completeAnswers[word] || "")}" maxlength="${missing.length}" size="${Math.max(1, missing.length)}" inputmode="text" autocomplete="off" spellcheck="false" aria-label="补全 ${escapeHtml(word)} 的 ${missing.length} 个缺失字符" />
+          </span>
+        </span>
+      `;
     })
     .join("");
 }

@@ -124,6 +124,11 @@ vm.runInContext(`
   if ((completeHtml.match(/data-complete-word=/g) || []).length !== 5) {
     throw new Error("Multi-word Complete the Words inputs were not rendered");
   }
+  const missingCounts = [...completeHtml.matchAll(/data-missing-letters="(\\d+)"/g)].map((match) => Number(match[1]));
+  const slotCount = completeHtml.split("<i></i>").length - 1;
+  if (missingCounts.length !== 5 || slotCount !== missingCounts.reduce((sum, count) => sum + count, 0)) {
+    throw new Error("Complete the Words character slots do not match the missing-letter counts");
+  }
   completeAnswers = Object.fromEntries(
     getCurrentClozeTargets().map((word) => [word, word.slice(Math.max(1, Math.ceil(word.length / 2)))])
   );
