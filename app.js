@@ -152,49 +152,6 @@ const COMPLETE_SIMULATIONS = [
   },
 ];
 
-const SENTENCE_SIMULATIONS = [
-  {
-    id: "sentence-office-hours",
-    cue: "I need to ask the professor about my research proposal.",
-    answer: ["Do", "you", "know", "when", "her office hours are"],
-  },
-  {
-    id: "sentence-lab-report",
-    cue: "My laboratory report is due on Friday.",
-    answer: ["Have", "you", "finished", "analyzing", "the results"],
-  },
-  {
-    id: "sentence-library-room",
-    cue: "Our study group needs a quiet place to meet.",
-    answer: ["Why don't", "we", "reserve", "a room", "at the library"],
-  },
-  {
-    id: "sentence-lecture-recording",
-    cue: "I missed part of yesterday's biology lecture.",
-    answer: ["I can", "show you", "where", "the recording", "is posted"],
-  },
-  {
-    id: "sentence-field-trip",
-    cue: "The geology class is visiting a coastal site next week.",
-    answer: ["Do", "we", "need to bring", "any special", "equipment"],
-  },
-  {
-    id: "sentence-deadline",
-    cue: "Why are you checking the course website again?",
-    answer: ["I want", "to see", "whether", "the deadline", "has changed"],
-  },
-  {
-    id: "sentence-advisor",
-    cue: "I am considering changing my academic program.",
-    answer: ["Have", "you", "spoken", "with your advisor", "about it"],
-  },
-  {
-    id: "sentence-experiment",
-    cue: "The first experiment produced an unexpected result.",
-    answer: ["The researchers", "decided", "to repeat", "the procedure", "carefully"],
-  },
-];
-
 const DEMO_WORDS = [
   {
     id: crypto.randomUUID(),
@@ -408,6 +365,7 @@ let importSession = {
 let librarySearch = "";
 let libraryMode = "all";
 let practiceMode = "recognition";
+let practiceFocused = false;
 let exerciseSetFilter = "all";
 let practiceQueue = [];
 let practiceIndex = 0;
@@ -421,8 +379,6 @@ let completeWordAnswered = false;
 let completeWordHadError = false;
 let completeAnswers = {};
 let completeResults = {};
-let sentenceSelection = [];
-let sentenceAnswered = null;
 let contextSelectedWord = "";
 let lastAutoPlayedKey = "";
 const practiceQuestionCache = new Map();
@@ -831,7 +787,7 @@ function renderCandidates() {
         <div class="panel-header">
           <div>
             <h2 class="panel-title">先决定哪些词值得进入词库</h2>
-            <p class="panel-subtitle">每个候选词先显示最基础释义；未分类的词会自动忽略</p>
+            <p class="panel-subtitle">点击单词查看基础释义；未分类的词会自动忽略</p>
           </div>
           <div style="display:flex;gap:8px;align-items:center">
             <div class="candidate-view-tabs">
@@ -855,13 +811,14 @@ function renderCandidates() {
               </button>
             </div>
           </div>
+          ${renderActiveCandidateDetail()}
           ${
             candidateViewMode === "text"
               ? renderSourceCandidateView(visibleCandidates)
               : `
                 <div class="candidate-list">
                   <div class="candidate-head">
-                    <span>单词原型</span><span>最基础释义</span><span>出现</span><span>推荐度</span><span>你的选择</span>
+                    <span>单词原型</span><span>出现</span><span>推荐度</span><span>你的选择</span>
                   </div>
                   ${visibleCandidates.map(candidateRow).join("")}
                 </div>
@@ -890,10 +847,9 @@ function candidateRow(item) {
     <div class="${rowClass}" data-candidate="${escapeHtml(item.word)}">
       <div class="candidate-word">
         <span class="difficulty-dot ${item.score}"></span>
-        <strong>${escapeHtml(item.word)}</strong>
+        <button class="candidate-word-button" data-source-candidate="${escapeHtml(item.word)}">${escapeHtml(item.word)}</button>
         ${modeLabel ? `<span class="tag ${item.mode === "spelling" ? "tag-spelling" : "tag-recognition"}" style="margin-left:8px">${modeLabel}</span>` : ""}
       </div>
-      <span class="candidate-gloss">${escapeHtml(formatBasicGloss(item.gloss))}</span>
       <span>${item.count}</span>
       <span class="tag tag-muted">${recommendation}</span>
       <div class="mode-picker">
@@ -906,7 +862,6 @@ function candidateRow(item) {
 
 function renderSourceCandidateView(visibleCandidates) {
   const candidateMap = new Map(visibleCandidates.map((item) => [item.word, item]));
-  const active = importSession.candidates.find((item) => item.word === activeImportCandidate);
   const annotatedText = importSession.text
     .split(/([A-Za-z]+(?:['’-][A-Za-z]+)*)/)
     .map((part) => {
@@ -916,12 +871,7 @@ function renderSourceCandidateView(visibleCandidates) {
       const candidate = candidateMap.get(lemma);
       if (!candidate) return escapeHtml(part);
       const modeClass = candidate.mode ? `is-${candidate.mode}` : "is-unclassified";
-      return `
-        <span class="source-token ${modeClass}">
-          <button data-source-candidate="${escapeHtml(candidate.word)}">${escapeHtml(part)}</button>
-          <small>${escapeHtml(formatBasicGloss(candidate.gloss, "释义待补充"))}</small>
-        </span>
-      `;
+      return `<button class="source-token ${modeClass}" data-source-candidate="${escapeHtml(candidate.word)}">${escapeHtml(part)}</button>`;
     })
     .join("");
   return `
@@ -931,23 +881,26 @@ function renderSourceCandidateView(visibleCandidates) {
         <span><i class="legend-dot spelling"></i>拼写</span>
         <span><i class="legend-dot recognition"></i>识记</span>
       </div>
-      ${
-        active
-          ? `
-            <div class="source-active-word">
-              <div>
-                <strong>${escapeHtml(active.word)}</strong>
-                <span>${escapeHtml(formatBasicGloss(active.gloss))}</span>
-              </div>
-              <div class="mode-picker">
-                <button class="mode-option ${active.mode === "spelling" ? "is-selected" : ""}" data-candidate-mode="spelling" data-word="${escapeHtml(active.word)}">拼写</button>
-                <button class="mode-option ${active.mode === "recognition" ? "is-selected" : ""}" data-candidate-mode="recognition" data-word="${escapeHtml(active.word)}">识记</button>
-              </div>
-            </div>
-          `
-          : `<div class="source-active-word is-empty">点击原文中带释义的词，再选择“拼写”或“识记”。</div>`
-      }
       <article class="source-text">${annotatedText}</article>
+    </div>
+  `;
+}
+
+function renderActiveCandidateDetail() {
+  const active = importSession.candidates.find((item) => item.word === activeImportCandidate);
+  if (!active) {
+    return `<div class="source-active-word is-empty">点击单词查看基础释义，再决定是否归类。</div>`;
+  }
+  return `
+    <div class="source-active-word">
+      <div>
+        <strong>${escapeHtml(active.word)}</strong>
+        <span>${escapeHtml(formatBasicGloss(active.gloss))}</span>
+      </div>
+      <div class="mode-picker">
+        <button class="mode-option ${active.mode === "spelling" ? "is-selected" : ""}" data-candidate-mode="spelling" data-word="${escapeHtml(active.word)}">拼写</button>
+        <button class="mode-option ${active.mode === "recognition" ? "is-selected" : ""}" data-candidate-mode="recognition" data-word="${escapeHtml(active.word)}">识记</button>
+      </div>
     </div>
   `;
 }
@@ -1019,55 +972,19 @@ function wordCard(word) {
 }
 
 function renderPractice() {
+  if (!practiceFocused) {
+    renderPracticeChooser();
+    return;
+  }
   const eligible = getActivePracticeWords();
   if (!practiceQueue.length || practiceQueue.some((word) => !eligible.some((candidate) => candidate.id === word.id))) {
     resetPracticeQueue(practiceDueOnly);
   }
-  const groupCount = Math.max(1, Math.ceil(eligible.length / 20));
-  const currentGroupSize = Math.min(20, Math.max(0, eligible.length - practiceGroupIndex * 20));
 
   content.innerHTML = `
-    <div class="content-inner practice-layout">
-      <aside class="panel practice-sidebar">
-        <div class="section-kicker" style="margin-bottom:12px">练习模式</div>
-        <div class="practice-mode-list">
-          ${practiceModeButton("recognition", "快速识记", "释义回忆 + 自评")}
-          ${practiceModeButton("vocabulary", "文章近义词题", "学术短文 → 选择近义表达")}
-          ${practiceModeButton("spelling", "看义拼写", "中文释义 → 键盘输入")}
-          ${practiceModeButton("listening", "听音拼写", "词典录音 → 键盘输入")}
-          ${practiceModeButton("complete", "词库段落补词", "每篇同时考查最多 5 个拼写词")}
-          ${practiceModeButton("simulation", "真考补词模拟", "独立题库 · 不限于你的词库")}
-          ${practiceModeButton("sentence", "真考造句模拟", "Build a Sentence 词块排序")}
-        </div>
-        ${["simulation", "sentence"].includes(practiceMode) ? renderExerciseArchiveControls() : ""}
-        ${
-          eligible.length && !["simulation", "sentence"].includes(practiceMode)
-            ? `
-              <div class="practice-group-controls">
-                <label class="form-label" for="practice-sort">20 词一组</label>
-                <select id="practice-sort" class="select-input">
-                  <option value="created" ${practiceSort === "created" ? "selected" : ""}>按添加时间（早 → 晚）</option>
-                  <option value="mastery" ${practiceSort === "mastery" ? "selected" : ""}>按熟练度（弱 → 强）</option>
-                </select>
-                <select id="practice-group-index" class="select-input" aria-label="选择练习分组">
-                  ${Array.from({ length: groupCount }, (_, index) => {
-                    const start = index * 20 + 1;
-                    const end = Math.min(eligible.length, start + 19);
-                    return `<option value="${index}" ${index === practiceGroupIndex ? "selected" : ""}>第 ${index + 1} 组 · ${start}–${end}</option>`;
-                  }).join("")}
-                </select>
-                <div class="group-summary">本组 ${currentGroupSize} 词 · 共 ${eligible.length} 词</div>
-              </div>
-            `
-            : ["simulation", "sentence"].includes(practiceMode)
-              ? `<div class="group-summary simulation-summary">共 ${eligible.length} 篇原创模拟</div>`
-              : ""
-        }
-        <div class="privacy-note" style="margin-top:16px">
-          听音模式进入新词时自动播放。内置模拟为原创内容；个人题库会保留你上传资料的原文与答案。
-        </div>
-      </aside>
-      <section class="panel practice-stage">
+    <div class="content-inner practice-focus-layout">
+      ${renderFocusedPracticeToolbar(eligible)}
+      <section class="panel practice-stage practice-stage-focused">
         ${eligible.length ? renderPracticeStage() : renderPracticeEmpty()}
       </section>
     </div>
@@ -1077,6 +994,72 @@ function renderPractice() {
     requestAnimationFrame(() => document.querySelector("#spelling-answer, [data-complete-word]")?.focus());
   }
   requestPracticeGlosses();
+}
+
+function renderPracticeChooser() {
+  content.innerHTML = `
+    <div class="content-inner">
+      <section class="panel practice-picker">
+        <div class="panel-header">
+          <div>
+            <div class="section-kicker">PRACTICE</div>
+            <h2 class="panel-title">选择一种练习</h2>
+            <p class="panel-subtitle">进入后练习会全屏展开；随时可以返回这里切换。</p>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="practice-mode-grid">
+            ${practiceModeButton("recognition", "快速识记", "释义回忆 + 自评")}
+            ${practiceModeButton("vocabulary", "文章近义词题", "学术短文 → 选择近义表达")}
+            ${practiceModeButton("spelling", "看义拼写", "中文释义 → 键盘输入")}
+            ${practiceModeButton("listening", "听音拼写", "词典录音 → 键盘输入")}
+            ${practiceModeButton("complete", "词库段落补词", "每篇同时考查最多 5 个拼写词")}
+            ${practiceModeButton("simulation", "真考补词模拟", "内置题库 + 个人上传题库")}
+          </div>
+          ${practiceMode === "simulation" ? renderExerciseArchiveControls() : ""}
+        </div>
+      </section>
+    </div>
+  `;
+}
+
+function renderFocusedPracticeToolbar(eligible) {
+  const labels = {
+    recognition: "快速识记",
+    vocabulary: "文章近义词题",
+    spelling: "看义拼写",
+    listening: "听音拼写",
+    complete: "词库段落补词",
+    simulation: "真考补词模拟",
+  };
+  const groupCount = Math.max(1, Math.ceil(eligible.length / 20));
+  return `
+    <div class="focused-practice-toolbar">
+      <button class="button button-secondary button-small" data-action="back-practice-picker">← 返回练习选择</button>
+      <strong>${labels[practiceMode] || "练习"}</strong>
+      <div class="focused-practice-options">
+        ${
+          practiceMode === "simulation"
+            ? renderExerciseArchiveControls(true)
+            : eligible.length
+              ? `
+                <select id="practice-sort" class="select-input" aria-label="练习排序">
+                  <option value="created" ${practiceSort === "created" ? "selected" : ""}>按添加时间</option>
+                  <option value="mastery" ${practiceSort === "mastery" ? "selected" : ""}>按熟练度</option>
+                </select>
+                <select id="practice-group-index" class="select-input" aria-label="选择练习分组">
+                  ${Array.from({ length: groupCount }, (_, index) => {
+                    const start = index * 20 + 1;
+                    const end = Math.min(eligible.length, start + 19);
+                    return `<option value="${index}" ${index === practiceGroupIndex ? "selected" : ""}>第 ${index + 1} 组 · ${start}–${end}</option>`;
+                  }).join("")}
+                </select>
+              `
+              : ""
+        }
+      </div>
+    </div>
+  `;
 }
 
 function practiceModeButton(mode, label, description) {
@@ -1089,20 +1072,19 @@ function practiceModeButton(mode, label, description) {
   `;
 }
 
-function renderExerciseArchiveControls() {
-  const type = practiceMode === "simulation" ? "complete" : "sentence";
-  const sets = (state.customExerciseSets || []).filter((set) => set.type === type);
+function renderExerciseArchiveControls(compact = false) {
+  const sets = (state.customExerciseSets || []).filter((set) => set.type === "complete");
   return `
-    <div class="exercise-archive-controls">
-      <label class="form-label" for="exercise-set-filter">练习题库</label>
+    <div class="exercise-archive-controls ${compact ? "is-compact" : ""}">
+      ${compact ? "" : `<label class="form-label" for="exercise-set-filter">我的 Complete the Words 题库</label>`}
       <select id="exercise-set-filter" class="select-input">
         <option value="all" ${exerciseSetFilter === "all" ? "selected" : ""}>内置 + 全部存档</option>
         <option value="builtin" ${exerciseSetFilter === "builtin" ? "selected" : ""}>仅内置模拟</option>
         ${sets.map((set) => `<option value="${escapeHtml(set.id)}" ${exerciseSetFilter === set.id ? "selected" : ""}>${escapeHtml(set.title)} · ${set.questions.length}题</option>`).join("")}
       </select>
-      <button class="button button-secondary button-small" data-action="open-exercise-import">＋ 导入整份题目</button>
+      <button class="button button-secondary button-small" data-action="open-exercise-import">＋ 导入题目</button>
       ${
-        sets.length
+        sets.length && !compact
           ? `<div class="exercise-archive-list">${sets.map((set) => `
               <div>
                 <span title="${escapeHtml(set.title)}">${escapeHtml(set.title)}</span>
@@ -1122,10 +1104,6 @@ function renderPracticeStage() {
 
   if (practiceMode === "simulation") {
     return renderSimulationQuestion(word);
-  }
-
-  if (practiceMode === "sentence") {
-    return renderSentenceQuestion(word);
   }
 
   if (practiceMode === "vocabulary") {
@@ -1304,43 +1282,6 @@ function renderSimulationQuestion(question) {
   `;
 }
 
-function renderSentenceQuestion(question) {
-  const tiles = seededShuffle(
-    question.answer.map((text, index) => ({ index, text })),
-    question.id
-  );
-  const selectedSet = new Set(sentenceSelection);
-  const assembled = sentenceSelection.map((index) => question.answer[index]);
-  return `
-    <div class="objective-card sentence-question">
-      <div class="practice-counter">${practiceIndex + 1} / ${practiceQueue.length} · Build a Sentence${question.setTitle ? ` · ${escapeHtml(question.setTitle)}` : ""}</div>
-      <div class="question-instruction">根据情境点击词块，组成语法正确、语义自然的句子。</div>
-      <div class="sentence-cue">${escapeHtml(question.cue)}</div>
-      <div class="sentence-answer ${sentenceAnswered === true ? "is-correct" : sentenceAnswered === false ? "is-wrong" : ""}">
-        ${
-          assembled.length
-            ? assembled.map((text, position) => `<button data-sentence-remove="${position}" ${sentenceAnswered !== null ? "disabled" : ""}>${escapeHtml(text)}</button>`).join("")
-            : `<span>在这里组成句子</span>`
-        }
-      </div>
-      <div class="sentence-tiles">
-        ${tiles.map((tile) => `<button data-sentence-tile="${tile.index}" ${selectedSet.has(tile.index) || sentenceAnswered !== null ? "disabled" : ""}>${escapeHtml(tile.text)}</button>`).join("")}
-      </div>
-      ${
-        sentenceAnswered === null
-          ? `<button class="button button-primary button-small" data-action="check-sentence-answer" ${sentenceSelection.length === question.answer.length ? "" : "disabled"}>检查句子</button>`
-          : `
-              <div class="quiz-explanation ${sentenceAnswered ? "is-correct" : "is-wrong"}">
-                <strong>${sentenceAnswered ? "句子正确" : "正确顺序"}</strong>
-                <p>${escapeHtml(question.answer.join(" "))}.</p>
-              </div>
-              <button class="button button-primary" data-action="next-objective-question">下一题 <span>→</span></button>
-            `
-      }
-    </div>
-  `;
-}
-
 function getMultiWordPassage(words) {
   const cacheKey = `multi-complete:${words.map((word) => word.id).join(":")}`;
   if (practiceQuestionCache.has(cacheKey)) return practiceQuestionCache.get(cacheKey);
@@ -1506,8 +1447,7 @@ function renderAnnotatedPassageSegment(text, excludedWords = new Set()) {
       const normalized = normalizeCandidateToken(part.toLowerCase());
       const lemma = lemmatize(normalized);
       if (normalized.length >= 4 && !BASIC_WORDS.has(lemma) && !excludedWords.has(lemma)) {
-        const gloss = formatBasicGloss(getBasicGloss(lemma), "释义待补充");
-        return `<span class="article-token"><button class="article-word" data-article-word="${escapeHtml(lemma)}" title="点击归类这个词">${escapeHtml(part)}</button><small>${escapeHtml(gloss)}</small></span>`;
+        return `<button class="article-word" data-article-word="${escapeHtml(lemma)}" title="点击查看释义并归类">${escapeHtml(part)}</button>`;
       }
       return escapeHtml(part);
     })
@@ -1552,7 +1492,6 @@ function renderPracticeEmpty() {
     listening: ["暂时没有可用的词典录音", "只有拿到可靠词典录音的拼写词才会进入听音模式。"],
     complete: ["没有可练习的拼写词", "先加入拼写词，即可按 2026 TOEFL Complete the Words 形式练习。"],
     simulation: ["模拟题暂不可用", "请刷新页面后重试。"],
-    sentence: ["造句模拟暂不可用", "请刷新页面后重试。"],
   };
   return emptyState("⌨", messages[practiceMode][0], messages[practiceMode][1], "导入材料", "go-import");
 }
@@ -1671,7 +1610,7 @@ function renderSettings() {
       <section class="panel settings-card">
         <div class="section-kicker">示例与重置</div>
         <h2>体验完整流程</h2>
-        <p>没有 API Key 时，可以先加入 4 个示例词，查看词卡、基础释义预览和七种练习模式。</p>
+        <p>没有 API Key 时，可以先加入 4 个示例词，查看词卡、基础释义预览和六种练习模式。</p>
         <div class="settings-actions">
           <button class="button button-secondary" data-action="add-demo-words">加入示例词</button>
           <button class="button button-danger" data-action="clear-all-data">清空学习数据</button>
@@ -1684,6 +1623,7 @@ function renderSettings() {
 function handleGlobalClick(event) {
   const nav = event.target.closest("[data-view]");
   if (nav) {
+    if (nav.dataset.view === "practice") practiceFocused = false;
     setView(nav.dataset.view);
     return;
   }
@@ -1718,6 +1658,7 @@ function handleGlobalClick(event) {
   const practiceModeTarget = event.target.closest("[data-practice-mode]");
   if (practiceModeTarget) {
     practiceMode = practiceModeTarget.dataset.practiceMode;
+    practiceFocused = true;
     exerciseSetFilter = "all";
     practiceGroupIndex = 0;
     practiceDueOnly = false;
@@ -1729,18 +1670,6 @@ function handleGlobalClick(event) {
   const vocabularyOption = event.target.closest("[data-vocabulary-option]");
   if (vocabularyOption) {
     answerVocabularyQuestion(vocabularyOption.dataset.vocabularyOption);
-  }
-
-  const sentenceTile = event.target.closest("[data-sentence-tile]");
-  if (sentenceTile && sentenceAnswered === null) {
-    sentenceSelection.push(Number(sentenceTile.dataset.sentenceTile));
-    renderPractice();
-  }
-
-  const sentenceRemove = event.target.closest("[data-sentence-remove]");
-  if (sentenceRemove && sentenceAnswered === null) {
-    sentenceSelection.splice(Number(sentenceRemove.dataset.sentenceRemove), 1);
-    renderPractice();
   }
 
   const deleteExerciseSet = event.target.closest("[data-delete-exercise-set]");
@@ -1784,8 +1713,16 @@ function handleGlobalClick(event) {
 
 function handleAction(action, event) {
   if (action === "go-import") setView("import");
-  if (action === "go-practice") setView("practice");
+  if (action === "go-practice") {
+    practiceFocused = false;
+    setView("practice");
+  }
   if (action === "go-dashboard") setView("dashboard");
+  if (action === "back-practice-picker") {
+    practiceFocused = false;
+    activeAudioPlayer?.pause();
+    renderPractice();
+  }
   if (action === "next-practice-group") {
     practiceGroupIndex += 1;
     resetPracticeQueue(practiceDueOnly);
@@ -1794,6 +1731,7 @@ function handleAction(action, event) {
   if (action === "next-objective-question") advanceObjectiveQuestion();
   if (action === "start-due") {
     practiceMode = "recognition";
+    practiceFocused = true;
     practiceGroupIndex = 0;
     resetPracticeQueue(true);
     setView("practice");
@@ -1840,7 +1778,6 @@ function handleAction(action, event) {
   }
   if (action === "show-complete-answer") revealCompleteWordAnswer();
   if (action === "check-complete-answers") checkCompleteWordAnswer();
-  if (action === "check-sentence-answer") checkSentenceAnswer();
   if (action === "open-exercise-import") openCustomExerciseImport();
   if (action === "convert-exercise-ai") convertCustomExerciseWithAi();
   if (action === "prepare-exercise-manual") prepareCustomExerciseDrafts();
@@ -1882,14 +1819,6 @@ function handleGlobalInput(event) {
   if (event.target.matches("[data-exercise-passage]")) {
     const draft = customExerciseImport.drafts[Number(event.target.dataset.exercisePassage)];
     if (draft) draft.text = event.target.value;
-  }
-  if (event.target.matches("[data-exercise-cue]")) {
-    const draft = customExerciseImport.drafts[Number(event.target.dataset.exerciseCue)];
-    if (draft) draft.cue = event.target.value;
-  }
-  if (event.target.matches("[data-exercise-answer]")) {
-    const draft = customExerciseImport.drafts[Number(event.target.dataset.exerciseAnswer)];
-    if (draft) draft.answerText = event.target.value;
   }
   if (event.target.matches("[data-complete-word]")) {
     completeAnswers[event.target.dataset.completeWord] = event.target.value;
@@ -1937,11 +1866,6 @@ function handleGlobalChange(event) {
   }
   if (event.target.id === "custom-exercise-file" && event.target.files?.[0]) {
     readCustomExerciseFile(event.target.files[0]);
-  }
-  if (event.target.id === "custom-exercise-type") {
-    customExerciseImport.type = event.target.value;
-    customExerciseImport.drafts = [];
-    renderCustomExerciseImport();
   }
   if (event.target.id === "deepseek-model") {
     state.settings.model = event.target.value;
@@ -2884,18 +2808,7 @@ function getPracticeWords(mode) {
       word: question.topic,
       createdAt: index,
     }));
-    const custom = flattenCustomExercises("complete");
-    if (exerciseSetFilter === "builtin") return builtIn;
-    if (exerciseSetFilter !== "all") return custom.filter((question) => question.setId === exerciseSetFilter);
-    return [...builtIn, ...custom];
-  }
-  if (mode === "sentence") {
-    const builtIn = SENTENCE_SIMULATIONS.map((question, index) => ({
-      ...question,
-      word: question.answer.join(" "),
-      createdAt: index,
-    }));
-    const custom = flattenCustomExercises("sentence");
+    const custom = flattenCustomExercises();
     if (exerciseSetFilter === "builtin") return builtIn;
     if (exerciseSetFilter !== "all") return custom.filter((question) => question.setId === exerciseSetFilter);
     return [...builtIn, ...custom];
@@ -2903,16 +2816,16 @@ function getPracticeWords(mode) {
   return state.words.filter((word) => word.mode === "spelling" && word.audio);
 }
 
-function flattenCustomExercises(type) {
+function flattenCustomExercises() {
   return (state.customExerciseSets || [])
-    .filter((set) => set.type === type)
+    .filter((set) => set.type === "complete")
     .flatMap((set) => set.questions.map((question, index) => ({
       ...question,
       id: `${set.id}:${question.id || index}`,
       setId: set.id,
       setTitle: set.title,
       topic: question.topic || set.title,
-      word: type === "complete" ? question.topic || set.title : question.answer.join(" "),
+      word: question.topic || set.title,
       createdAt: set.createdAt + index,
     })));
 }
@@ -2955,8 +2868,6 @@ function resetPracticeQueue(dueOnly = false) {
   completeWordHadError = false;
   completeAnswers = {};
   completeResults = {};
-  sentenceSelection = [];
-  sentenceAnswered = null;
   contextSelectedWord = "";
   lastAutoPlayedKey = "";
 }
@@ -2988,17 +2899,6 @@ function answerVocabularyQuestion(selected) {
   const correct = selected === question.answer;
   vocabularyAnswered = { selected, correct };
   recordObjectiveResult(word, correct ? "good" : "again");
-  renderPractice();
-}
-
-function checkSentenceAnswer() {
-  if (practiceMode !== "sentence" || sentenceAnswered !== null) return;
-  const question = practiceQueue[practiceIndex];
-  if (!question || sentenceSelection.length !== question.answer.length) return;
-  sentenceAnswered = sentenceSelection.every((value, index) => value === index);
-  state.reviewsToday += 1;
-  updateStreak();
-  saveState();
   renderPractice();
 }
 
@@ -3079,8 +2979,6 @@ function advanceObjectiveQuestion() {
   completeWordHadError = false;
   completeAnswers = {};
   completeResults = {};
-  sentenceSelection = [];
-  sentenceAnswered = null;
   contextSelectedWord = "";
   renderPractice();
 }
@@ -3400,7 +3298,7 @@ function clearAllData() {
 function openCustomExerciseImport() {
   customExerciseImport = {
     phase: "input",
-    type: practiceMode === "sentence" ? "sentence" : "complete",
+    type: "complete",
     title: "",
     fileName: "",
     text: "",
@@ -3411,7 +3309,6 @@ function openCustomExerciseImport() {
 }
 
 function renderCustomExerciseImport() {
-  const isComplete = customExerciseImport.type === "complete";
   modalRoot.innerHTML = `
     <div class="detail-sheet exercise-import-sheet" role="dialog" aria-modal="true" aria-label="导入个人题库">
       <div class="exercise-import-card">
@@ -3423,18 +3320,9 @@ function renderCustomExerciseImport() {
           customExerciseImport.phase === "review"
             ? renderCustomExerciseDraftReview()
             : `
-              <div class="exercise-import-grid">
-                <div class="form-group">
-                  <label class="form-label" for="custom-exercise-title">题库名称</label>
-                  <input id="custom-exercise-title" class="text-input" value="${escapeHtml(customExerciseImport.title)}" placeholder="例如：Complete the Words 练习 2" />
-                </div>
-                <div class="form-group">
-                  <label class="form-label" for="custom-exercise-type">题型</label>
-                  <select id="custom-exercise-type" class="select-input">
-                    <option value="complete" ${isComplete ? "selected" : ""}>Complete the Words</option>
-                    <option value="sentence" ${!isComplete ? "selected" : ""}>Build a Sentence</option>
-                  </select>
-                </div>
+              <div class="form-group">
+                <label class="form-label" for="custom-exercise-title">题库名称</label>
+                <input id="custom-exercise-title" class="text-input" value="${escapeHtml(customExerciseImport.title)}" placeholder="例如：Complete the Words 练习 2" />
               </div>
               <div class="exercise-file-row">
                 <label class="button button-secondary" for="custom-exercise-file">选择 PDF / Word / 图片 / 文本</label>
@@ -3461,7 +3349,6 @@ function renderCustomExerciseImport() {
 }
 
 function renderCustomExerciseDraftReview() {
-  const isComplete = customExerciseImport.type === "complete";
   return `
     <div class="exercise-review-toolbar">
       <span>已转换 <strong>${customExerciseImport.drafts.length}</strong> 道题</span>
@@ -3477,21 +3364,9 @@ function renderCustomExerciseDraftReview() {
             <strong>第 ${index + 1} 题</strong>
             <button data-remove-exercise-draft="${index}" aria-label="删除第 ${index + 1} 题">删除</button>
           </div>
-          ${
-            isComplete
-              ? `
-                <label class="form-label">段落原文</label>
-                <textarea class="textarea exercise-draft-text" data-exercise-passage="${index}">${escapeHtml(draft.text || "")}</textarea>
-                <div class="input-hint">用双中括号标记完整答案，例如：Plants [[absorb]] sunlight。每个标记会自动变成补词框。</div>
-              `
-              : `
-                <label class="form-label">题目情境</label>
-                <textarea class="textarea exercise-draft-cue" data-exercise-cue="${index}">${escapeHtml(draft.cue || "")}</textarea>
-                <label class="form-label">正确词块顺序</label>
-                <input class="text-input" data-exercise-answer="${index}" value="${escapeHtml(draft.answerText || "")}" placeholder="Do | you | know | when | it begins" />
-                <div class="input-hint">用竖线 | 分隔词块；保存后系统会自动打乱。</div>
-              `
-          }
+          <label class="form-label">段落原文</label>
+          <textarea class="textarea exercise-draft-text" data-exercise-passage="${index}">${escapeHtml(draft.text || "")}</textarea>
+          <div class="input-hint">用双中括号标记完整答案，例如：Plants [[absorb]] sunlight。每个标记会自动变成补词框。</div>
         </section>
       `).join("")}
     </div>
@@ -3527,9 +3402,7 @@ async function convertCustomExerciseWithAi() {
   const source = customExerciseImport.text.trim();
   if (!source) return;
   const apiKey = currentUser ? "" : localStorage.getItem(API_KEY_STORAGE);
-  const typeInstruction = customExerciseImport.type === "complete"
-    ? `提取所有 Complete the Words 题。每题返回 {"text":"完整段落"}，必须保留原文措辞，并把每个缺字单词恢复为完整单词后写成 [[complete]] 形式。答案页中的答案必须正确对应到空格。`
-    : `提取所有 Build a Sentence 题。每题返回 {"cue":"题目前的情境句","answer":["正确顺序的词块"]}。必须保留原文词块，不要改写；根据答案页还原正确顺序。`;
+  const typeInstruction = `提取所有 Complete the Words 题。每题返回 {"text":"完整段落"}，必须保留原文措辞，并把每个缺字单词恢复为完整单词后写成 [[complete]] 形式。答案页中的答案必须正确对应到空格。`;
   try {
     const answerIndex = Math.max(source.lastIndexOf("Answer Key"), source.lastIndexOf("答案"));
     const answerReference = answerIndex >= 0 ? source.slice(answerIndex, answerIndex + 35_000) : "";
@@ -3610,9 +3483,7 @@ function splitExerciseSource(source, maxLength) {
 function deduplicateExerciseDrafts(drafts) {
   const seen = new Set();
   return drafts.filter((draft) => {
-    const key = customExerciseImport.type === "complete"
-      ? String(draft.text || "").replace(/\s+/g, " ").trim().toLowerCase()
-      : `${draft.cue || ""}|${draft.answerText || ""}`.replace(/\s+/g, " ").trim().toLowerCase();
+    const key = String(draft.text || "").replace(/\s+/g, " ").trim().toLowerCase();
     if (!key || seen.has(key)) return false;
     seen.add(key);
     return true;
@@ -3622,15 +3493,11 @@ function deduplicateExerciseDrafts(drafts) {
 function prepareCustomExerciseDrafts() {
   const text = customExerciseImport.text.trim();
   if (!text) return;
-  customExerciseImport.drafts = customExerciseImport.type === "complete"
-    ? parseCompleteWordsLocally(text)
-    : parseSentenceQuestionsLocally(text);
+  customExerciseImport.drafts = parseCompleteWordsLocally(text);
   if (!customExerciseImport.drafts.length) {
     customExerciseImport.status = "未能自动识别题目结构。已建立空白题目，请把原题复制进来并校正。";
     customExerciseImport.phase = "review";
-    customExerciseImport.drafts.push(
-      customExerciseImport.type === "complete" ? { text: "" } : { cue: "", answerText: "" }
-    );
+    customExerciseImport.drafts.push({ text: "" });
     renderCustomExerciseImport();
     return;
   }
@@ -3658,40 +3525,16 @@ function parseCompleteWordsLocally(source) {
   });
 }
 
-function parseSentenceQuestionsLocally(source) {
-  const lines = source.split(/\n/).map((line) => line.trim()).filter(Boolean);
-  const drafts = [];
-  lines.forEach((line, index) => {
-    if (!line.includes("/") || (line.match(/\//g) || []).length < 2) return;
-    const chunks = line.split("/").map((chunk) => chunk.trim()).filter(Boolean);
-    const cue = [...lines.slice(Math.max(0, index - 3), index)].reverse().find((candidate) => !candidate.includes("/")) || "";
-    drafts.push({ cue, answerText: chunks.join(" | ") });
-  });
-  return drafts;
-}
-
 function normalizeImportedExerciseDrafts(questions) {
   if (!Array.isArray(questions)) return [];
-  if (customExerciseImport.type === "complete") {
-    return questions
-      .map((question) => ({ text: String(question?.text || "").trim() }))
-      .filter((question) => question.text);
-  }
   return questions
-    .map((question) => ({
-      cue: String(question?.cue || "").trim(),
-      answerText: Array.isArray(question?.answer) ? question.answer.map(String).join(" | ") : String(question?.answer || ""),
-    }))
-    .filter((question) => question.cue || question.answerText);
+    .map((question) => ({ text: String(question?.text || "").trim() }))
+    .filter((question) => question.text);
 }
 
 function addCustomExerciseDraft() {
   customExerciseImport.phase = "review";
-  customExerciseImport.drafts.push(
-    customExerciseImport.type === "complete"
-      ? { text: "" }
-      : { cue: "", answerText: "" }
-  );
+  customExerciseImport.drafts.push({ text: "" });
   renderCustomExerciseImport();
 }
 
@@ -3699,31 +3542,20 @@ function saveCustomExerciseSet() {
   const title = customExerciseImport.title.trim() || customExerciseImport.fileName.replace(/\.[^.]+$/, "") || "我的练习题";
   let questions;
   try {
-    if (customExerciseImport.type === "complete") {
-      questions = customExerciseImport.drafts.map((draft, index) => {
-        const text = String(draft.text || "").trim();
-        const targets = [...text.matchAll(/\[\[([A-Za-z'-]+)\]\]/g)].map((match) => match[1].toLowerCase());
-        if (!text || !targets.length || targets.includes("answer")) {
-          throw new Error(`第 ${index + 1} 题缺少 [[完整答案]] 标记`);
-        }
-        return { id: crypto.randomUUID(), topic: title, text, targets };
-      });
-    } else {
-      questions = customExerciseImport.drafts.map((draft, index) => {
-        const cue = String(draft.cue || "").trim();
-        const answer = String(draft.answerText || "").split("|").map((chunk) => chunk.trim()).filter(Boolean);
-        if (!cue || answer.length < 2) {
-          throw new Error(`第 ${index + 1} 题需要情境句和至少两个词块`);
-        }
-        return { id: crypto.randomUUID(), cue, answer };
-      });
-    }
+    questions = customExerciseImport.drafts.map((draft, index) => {
+      const text = String(draft.text || "").trim();
+      const targets = [...text.matchAll(/\[\[([A-Za-z'-]+)\]\]/g)].map((match) => match[1].toLowerCase());
+      if (!text || !targets.length || targets.includes("answer")) {
+        throw new Error(`第 ${index + 1} 题缺少 [[完整答案]] 标记`);
+      }
+      return { id: crypto.randomUUID(), topic: title, text, targets };
+    });
     if (!questions.length) throw new Error("题库中没有可保存的题目");
     if (questions.length > 300) throw new Error("单个题库最多保存 300 道题，请拆分导入");
     const set = {
       id: crypto.randomUUID(),
       title,
-      type: customExerciseImport.type,
+      type: "complete",
       sourceName: customExerciseImport.fileName,
       createdAt: Date.now(),
       questions,
@@ -3734,7 +3566,8 @@ function saveCustomExerciseSet() {
     }
     state.customExerciseSets = nextSets;
     saveState();
-    practiceMode = set.type === "complete" ? "simulation" : "sentence";
+    practiceMode = "simulation";
+    practiceFocused = true;
     exerciseSetFilter = set.id;
     practiceGroupIndex = 0;
     resetPracticeQueue(false);

@@ -138,17 +138,6 @@ vm.runInContext(`
     throw new Error("TOEFL simulation inputs were not rendered");
   }
 
-  practiceMode = "sentence";
-  practiceGroupIndex = 0;
-  resetPracticeQueue();
-  const sentenceHtml = renderSentenceQuestion(practiceQueue[0]);
-  if ((sentenceHtml.match(/data-sentence-tile=/g) || []).length !== practiceQueue[0].answer.length) {
-    throw new Error("Build a Sentence tiles were not rendered");
-  }
-  sentenceSelection = practiceQueue[0].answer.map((_, index) => index);
-  checkSentenceAnswer();
-  if (sentenceAnswered !== true) throw new Error("Correct sentence order was not accepted");
-
   importSession.text = "Students participating in the study completed a survey.";
   importSession.tokenLemmas = { participating: "participate" };
   importSession.candidates = [{
@@ -160,8 +149,12 @@ vm.runInContext(`
     gloss: { partOfSpeech: "verb", zh: "参与，参加" },
   }];
   const sourceHtml = renderSourceCandidateView(importSession.candidates);
-  if (!sourceHtml.includes("v. 参与，参加") || !sourceHtml.includes("is-recognition")) {
-    throw new Error("Source text classification did not show the basic meaning and selected mode");
+  if (sourceHtml.includes("v. 参与，参加") || !sourceHtml.includes("is-recognition")) {
+    throw new Error("Source text classification should hide meanings until a word is selected");
+  }
+  activeImportCandidate = "participate";
+  if (!renderActiveCandidateDetail().includes("v. 参与，参加")) {
+    throw new Error("Selected source word did not show its basic meaning");
   }
 
   const localDrafts = parseCompleteWordsLocally(
@@ -192,19 +185,30 @@ vm.runInContext(`
 
   customExerciseImport = {
     phase: "review",
-    type: "sentence",
-    title: "Imported Sentences",
-    fileName: "sentences.pdf",
+    type: "complete",
+    title: "Imported Complete Words",
+    fileName: "complete.pdf",
     text: "",
     status: "",
-    drafts: [{ cue: "I need help with the assignment.", answerText: "Can | you | explain | the instructions" }],
+    drafts: [{ text: "Plants [[absorb]] light." }],
   };
   saveCustomExerciseSet();
-  if (!state.customExerciseSets.some((set) => set.title === "Imported Sentences" && set.questions.length === 1)) {
+  if (!state.customExerciseSets.some((set) => set.title === "Imported Complete Words" && set.questions.length === 1)) {
     throw new Error("Converted exercise set was not archived");
   }
+  practiceFocused = false;
+  renderPractice();
+  if (!content.innerHTML.includes("选择一种练习") || content.innerHTML.includes("practice-sidebar")) {
+    throw new Error("Practice chooser was not rendered without the old sidebar");
+  }
+  practiceFocused = true;
+  practiceMode = "simulation";
+  renderPractice();
+  if (!content.innerHTML.includes("back-practice-picker") || content.innerHTML.includes("practice-sidebar")) {
+    throw new Error("Focused practice view did not render its return control");
+  }
   openCustomExerciseImport();
-  if (!modalRoot.innerHTML.includes("选择 PDF / Word / 图片 / 文本")) {
+  if (!modalRoot.innerHTML.includes("选择 PDF / Word / 图片 / 文本") || modalRoot.innerHTML.includes("Build a Sentence")) {
     throw new Error("Personal exercise import UI was not rendered");
   }
 `, context);

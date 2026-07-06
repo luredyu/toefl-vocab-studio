@@ -782,7 +782,7 @@ button {
 .candidate-head,
 .candidate-row {
   display: grid;
-  grid-template-columns: minmax(170px, 1fr) minmax(180px, 1.15fr) 58px 96px 160px;
+  grid-template-columns: minmax(210px, 1.3fr) 70px 110px 170px;
   align-items: center;
   gap: 16px;
   padding: 13px 18px;
@@ -824,14 +824,20 @@ button {
   gap: 10px;
 }
 
-.candidate-word strong {
+.candidate-word-button {
+  padding: 2px 0;
+  border: 0;
+  border-bottom: 1px dashed #8aa697;
+  color: var(--ink);
+  background: transparent;
+  cursor: pointer;
+  font-family: Georgia, "Times New Roman", serif;
   font-size: 16px;
+  font-weight: 700;
 }
 
-.candidate-gloss {
-  color: var(--ink-soft);
-  font-size: 12px;
-  line-height: 1.55;
+.candidate-word-button:hover {
+  color: var(--green);
 }
 
 .difficulty-dot {
@@ -927,6 +933,7 @@ button {
   border: 1px solid var(--line);
   border-radius: 11px;
   background: var(--surface-soft);
+  margin-bottom: 16px;
 }
 
 .source-active-word strong {
@@ -952,48 +959,32 @@ button {
   background: #fcfcfa;
   font-family: Georgia, "Times New Roman", serif;
   font-size: 17px;
-  line-height: 2.75;
+  line-height: 2.1;
 }
 
 .source-token {
-  display: inline-flex;
-  position: relative;
-  top: 0.55em;
-  flex-direction: column;
-  align-items: center;
-  margin: 0 2px;
-  line-height: 1.05;
-  vertical-align: baseline;
-}
-
-.source-token button {
-  padding: 1px 3px 2px;
+  display: inline;
+  margin: 0;
+  padding: 1px 2px;
   border: 0;
-  border-bottom: 2px solid #b8bdb7;
+  border-bottom: 2px dashed #b8bdb7;
   color: inherit;
   background: transparent;
   cursor: pointer;
   font: inherit;
 }
 
-.source-token small {
-  max-width: 110px;
-  margin-top: 3px;
-  overflow: hidden;
-  color: var(--muted);
-  font-family: -apple-system, BlinkMacSystemFont, "Noto Sans SC", sans-serif;
-  font-size: 8px;
-  line-height: 1.15;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.source-token:hover {
+  color: var(--green);
+  background: var(--green-soft);
 }
 
-.source-token.is-spelling button {
+.source-token.is-spelling {
   border-color: var(--orange);
   background: var(--orange-soft);
 }
 
-.source-token.is-recognition button {
+.source-token.is-recognition {
   border-color: var(--blue);
   background: var(--blue-soft);
 }
@@ -1235,30 +1226,31 @@ button {
   color: var(--muted);
 }
 
-.practice-layout {
+.practice-focus-layout {
   display: grid;
-  grid-template-columns: 220px 1fr;
   gap: 18px;
 }
 
-.practice-sidebar {
-  align-self: start;
-  padding: 18px;
+.practice-picker {
+  overflow: hidden;
 }
 
-.practice-mode-list {
+.practice-mode-grid {
   display: grid;
-  gap: 8px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
 }
 
 .practice-mode {
-  padding: 13px;
-  border: 1px solid transparent;
-  border-radius: 10px;
+  min-height: 118px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
   color: var(--ink-soft);
-  background: transparent;
+  background: #fff;
   cursor: pointer;
   text-align: left;
+  transition: border-color 120ms ease, box-shadow 120ms ease, transform 120ms ease;
 }
 
 .practice-mode strong {
@@ -1268,14 +1260,54 @@ button {
 
 .practice-mode span {
   display: block;
-  margin-top: 4px;
+  margin-top: 8px;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.practice-mode:hover {
+  border-color: #92b09f;
+  box-shadow: 0 8px 20px rgba(35, 92, 74, 0.08);
+  transform: translateY(-1px);
 }
 
 .practice-mode.is-active {
   border-color: #b6cbbf;
   background: var(--green-soft);
+}
+
+.focused-practice-toolbar {
+  position: sticky;
+  z-index: 5;
+  top: 12px;
+  display: flex;
+  min-height: 60px;
+  align-items: center;
+  gap: 18px;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 8px 24px rgba(30, 41, 35, 0.08);
+  backdrop-filter: blur(12px);
+}
+
+.focused-practice-toolbar > strong {
+  white-space: nowrap;
+}
+
+.focused-practice-options {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.focused-practice-options > .select-input {
+  width: auto;
+  min-width: 150px;
 }
 
 .practice-group-controls {
@@ -1319,6 +1351,24 @@ button {
   min-width: 0;
 }
 
+.exercise-archive-controls.is-compact {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.exercise-archive-controls.is-compact .select-input,
+.exercise-archive-controls.is-compact .button {
+  width: auto;
+}
+
+.exercise-archive-controls.is-compact .select-input {
+  min-width: 190px;
+}
+
 .exercise-archive-list {
   display: grid;
   max-height: 118px;
@@ -1355,6 +1405,11 @@ button {
   min-height: 540px;
   place-items: center;
   padding: 32px;
+}
+
+.practice-stage-focused {
+  min-height: calc(100vh - 190px);
+  padding: clamp(30px, 5vw, 72px);
 }
 
 .flashcard {
@@ -1510,29 +1565,6 @@ button {
   color: var(--green);
   background: #dcebe2;
   font-weight: 700;
-}
-
-.article-token {
-  display: inline-flex;
-  position: relative;
-  top: 0.5em;
-  flex-direction: column;
-  align-items: center;
-  margin: 0 2px;
-  line-height: 1.05;
-  vertical-align: baseline;
-}
-
-.article-token small {
-  max-width: 96px;
-  margin-top: 3px;
-  overflow: hidden;
-  color: var(--muted);
-  font-family: -apple-system, BlinkMacSystemFont, "Noto Sans SC", sans-serif;
-  font-size: 8px;
-  line-height: 1.1;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .article-word {
@@ -1734,75 +1766,6 @@ button {
   font-size: 11px;
 }
 
-.sentence-cue {
-  margin-bottom: 18px;
-  padding: 16px 18px;
-  border-left: 4px solid var(--blue);
-  color: var(--ink-soft);
-  background: var(--blue-soft);
-  font-size: 15px;
-  line-height: 1.65;
-}
-
-.sentence-answer {
-  display: flex;
-  min-height: 76px;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 7px;
-  margin-bottom: 18px;
-  padding: 14px;
-  border: 2px dashed var(--line);
-  border-radius: 12px;
-  background: #fcfcfa;
-}
-
-.sentence-answer > span {
-  width: 100%;
-  color: var(--muted);
-  font-size: 12px;
-  text-align: center;
-}
-
-.sentence-answer button,
-.sentence-tiles button {
-  padding: 9px 12px;
-  border: 1px solid var(--line);
-  border-radius: 9px;
-  color: var(--ink);
-  background: #fff;
-  cursor: pointer;
-  font-size: 12px;
-}
-
-.sentence-answer button {
-  border-color: #a9c0d2;
-  background: var(--blue-soft);
-}
-
-.sentence-answer.is-correct {
-  border-color: #79a78f;
-  background: var(--green-soft);
-}
-
-.sentence-answer.is-wrong {
-  border-color: #c7786f;
-  background: #fff1ef;
-}
-
-.sentence-tiles {
-  display: flex;
-  min-height: 58px;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-
-.sentence-tiles button:disabled {
-  opacity: 0.25;
-  cursor: default;
-}
-
 .settings-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1902,6 +1865,20 @@ button {
 
   .word-grid {
     grid-template-columns: 1fr;
+  }
+
+  .practice-mode-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .focused-practice-toolbar {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .focused-practice-options {
+    width: 100%;
+    margin-left: 0;
   }
 }
 
