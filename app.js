@@ -486,6 +486,10 @@ document.addEventListener("keydown", handleGlobalKeydown);
   }
   // Retroactively fill audio for words missing it
   await backfillAudio();
+  // Preload wordbank for local exercise parsing
+  fetch("/wordbank.json").then(r => r.json()).then(words => {
+    window._wordbankWords = (Array.isArray(words) ? words : []).map(w => w.word);
+  }).catch(() => {});
   render();
 })();
 
@@ -3645,11 +3649,10 @@ function parseCompleteWordsLocally(source) {
     return prefix + "_".repeat(Math.min(underscoreCount, 12));
   });
   // Normalize: dots used as underscores (common OCR error)
-  text = text.replace(/([a-zA-Z])[.]{2,}(\s*[.])*/g, (m, prefix) => {
+  text = text.replace(/([a-zA-Z])[.]{3,}(\s*[.])*/g, (m, prefix) => {
     const dotCount = m.replace(/[^.]/g, "").length;
     return prefix + "_".repeat(Math.min(dotCount, 12));
   });
-  // Normalize: multiple underscores without spaces → same
   // Normalize: single underscores with spaces → compact (e.g., "_ _ _ _" → "____")
   text = text.replace(/(?<=[a-zA-Z])(_(\s+_)+)/g, (m) => m.replace(/\s+/g, ""));
   // Normalize: isolated underscore groups at start of line → join with previous line's trailing underscore
@@ -3658,28 +3661,61 @@ function parseCompleteWordsLocally(source) {
   const answerSectionIndex = Math.max(text.lastIndexOf("Answer Key"), text.lastIndexOf("答案"));
   const answerSource = answerSectionIndex >= 0 ? text.slice(answerSectionIndex) : "";
   const answers = [...answerSource.matchAll(/\b\d{1,3}[\s.:、-]+([A-Za-z'-]+)/g)].map((match) => match[1]);
-  let answerIndex = 0;
+  const remainingAnswers = [...answers];
+
   const blocks = text
     .slice(0, answerSectionIndex >= 0 ? answerSectionIndex : text.length)
     .split(/\n\s*\n/)
-    .filter((block) => /_[\s_]*_/.test(block) || /_[a-z]/i.test(block));
+    .filter((block) => /_[\s_]*_/.test(block) || /\b[a-zA-Z]+_/.test(block));
+
   return blocks.map((block) => {
-    const converted = block.replace(/\b([A-Za-z]{1,18})(_[\s_]*_){1,24}/g, (match, prefix) => {
-      const answer = answers[answerIndex++] || guessCompleteWord(match);
-      const answerClean = answer.replace(/[^A-Za-z'-]/g, "");
-      const full = answerClean.toLowerCase().startsWith(prefix.toLowerCase())
-        ? answerClean
-        : prefix + answerClean;
-      return `[[${full}]]`;
+    const converted = block.replace(/\b([A-Za-z]{1,18})(_+)/g, (match, prefix, underscores) => {
+      // Find best matching answer: starts with prefix, has right length
+      const expectedLen = prefix.length + underscores.length;
+      let answer = "";
+      let answerIdx = -1;
+      // First: find exact prefix match with correct length
+      for (let i = 0; i < remainingAnswers.length; i++) {
+        const a = remainingAnswers[i].replace(/[^A-Za-z'-]/g, "");
+        if (a.toLowerCase().startsWith(prefix.toLowerCase()) && a.length === expectedLen) {
+          answer = a;
+          answerIdx = i;
+          break;
+        }
+      }
+      // Second: find any prefix match
+      if (!answer) {
+        for (let i = 0; i < remainingAnswers.length; i++) {
+          const a = remainingAnswers[i].replace(/[^A-Za-z'-]/g, "");
+          if (a.toLowerCase().startsWith(prefix.toLowerCase())) {
+            answer = a;
+            answerIdx = i;
+            break;
+          }
+        }
+      }
+      // Third: guess from wordbank
+      if (!answer) {
+        answer = guessWordFromWordbank(prefix, underscores.length);
+      }
+      // Remove used answer
+      if (answerIdx >= 0) remainingAnswers.splice(answerIdx, 1);
+      return `[[${answer || prefix + "_".repeat(underscores.length)}]]`;
     });
     return { text: converted.trim() };
   });
 }
 
-function guessCompleteWord(blank) {
-  // If no answer key available, just keep the underscore pattern as-is
-  const prefix = blank.match(/^([A-Za-z]+)/);
-  return prefix ? prefix[1] : "ANSWER";
+function guessWordFromWordbank(prefix, missingCount) {
+  // Try to find a matching word in the wordbank
+  if (!window._wordbankWords) return prefix;
+  const expectedLen = prefix.length + missingCount;
+  for (const w of window._wordbankWords) {
+    if (w.length === expectedLen && w.toLowerCase().startsWith(prefix.toLowerCase())) {
+      return w;
+    }
+  }
+  return prefix;
 }
 
 function normalizeImportedExerciseDrafts(questions) {
