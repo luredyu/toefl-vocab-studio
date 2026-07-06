@@ -4570,5 +4570,874 @@
     "partOfSpeech": "",
     "zh": "年轻人",
     "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "thermohaline",
+    "partOfSpeech": "",
+    "zh": "温盐环流；温盐的；与温度和盐度有关的（尤指海水密度）",
+    "source": "桌面·词汇报告",
+    "mode": "recognition",
+    "collocations": [],
+    "synonyms": [
+      {
+        "word": "density-driven"
+      },
+      {
+        "word": "oceanic current"
+      },
+      {
+        "word": "convective current"
+      }
+    ]
+  },
+  {
+    "word": "circulation",
+    "partOfSpeech": "",
+    "zh": "指液体、气体或信息等在系统内的流动或循环；也指报纸、杂志等出版物的发行量；还可指货币的流通。",
+    "source": "桌面·词汇报告",
+    "mode": "recognition",
+    "collocations": [],
+    "synonyms": [
+      {
+        "word": "flow"
+      },
+      {
+        "word": "movement"
+      },
+      {
+        "word": "distribution"
+      },
+      {
+        "word": "spread"
+      },
+      {
+        "word": "diffusion"
+      }
+    ]
+  },
+  {
+    "word": "oceanography",
+    "partOfSpeech": "",
+    "zh": "研究海洋的科学，包括其物理、化学、生物和地质特征。",
+    "source": "桌面·词汇报告",
+    "mode": "recognition",
+    "collocations": [],
+    "synonyms": [
+      {
+        "word": "marine science"
+      },
+      {
+        "word": "oceanology"
+      },
+      {
+        "word": "marine biology"
+      },
+      {
+        "word": "hydrography"
+      },
+      {
+        "word": "marine science"
+      },
+      {
+        "word": "oceanology"
+      },
+      {
+        "word": "marine research"
+      }
+    ]
+  },
+  {
+    "word": "dynamic",
+    "partOfSpeech": "",
+    "zh": "动态的；有活力的；不断变化的；有进取心的；动力的",
+    "source": "桌面·词汇报告",
+    "mode": "spelling",
+    "collocations": [],
+    "synonyms": [
+      {
+        "word": "energetic"
+      },
+      {
+        "word": "active"
+      },
+      {
+        "word": "vibrant"
+      },
+      {
+        "word": "forceful"
+      },
+      {
+        "word": "evolving"
+      }
+    ]
+  },
+  {
+    "word": "prevalence",
+    "partOfSpeech": "",
+    "zh": "指某事物在特定人群或地区中存在的普遍性、流行程度或发生率。",
+    "source": "桌面·词汇报告",
+    "mode": "spelling",
+    "collocations": [],
+    "synonyms": [
+      {
+        "word": "commonness"
+      },
+      {
+        "word": "frequency"
+      },
+      {
+        "word": "occurrence"
+      },
+      {
+        "word": "pervasiveness"
+      },
+      {
+        "word": "ubiquity"
+      }
+    ]
+  },
+  {
+    "word": "camaraderie",
+    "partOfSpeech": "",
+    "zh": "同志情谊；友情；友爱；同袍情谊，指一群人之间相互信任、友好和支持的精神。",
+    "source": "桌面·词汇报告",
+    "mode": "recognition",
+    "collocations": [],
+    "synonyms": [
+      {
+        "word": "fellowship"
+      },
+      {
+        "word": "friendship"
+      },
+      {
+        "word": "companionship"
+      },
+      {
+        "word": "solidarity"
+      },
+      {
+        "word": "esprit de corps"
+      }
+    ]
+  },
+  {
+    "word": "helmet",
+    "partOfSpeech": "",
+    "zh": "一种用于保护头部免受撞击、跌落或其他伤害的防护装备，通常由坚硬的材料制成，如塑料、玻璃纤维或金属。",
+    "source": "桌面·词汇报告",
+    "mode": "recognition",
+    "collocations": [],
+    "synonyms": [
+      {
+        "word": "headgear"
+      },
+      {
+        "word": "hard hat"
+      },
+      {
+        "word": "protective headwear"
+      }
+    ]
+  },
+  {
+    "word": "franklin",
+    "partOfSpeech": "",
+    "zh": "弗兰克林（姓氏，如本杰明·弗兰克林）；在中世纪英国指拥有自由地产但非贵族的富裕地主或自耕农。",
+    "source": "桌面·词汇报告",
+    "mode": "recognition",
+    "collocations": [],
+    "synonyms": [
+      {
+        "word": "landowner"
+      },
+      {
+        "word": "freeholder"
+      },
+      {
+        "word": "yeoman"
+      }
+    ]
+  },
+  {
+    "word": "quad",
+    "partOfSpeech": "",
+    "zh": "四边形；四合院；四联体；股四头肌；四轮摩托车；（大学的）方院，四方院子；（俚语）四胞胎之一；（计算机）四倍字长",
+    "source": "桌面·词汇报告",
+    "mode": "recognition",
+    "collocations": [],
+    "synonyms": [
+      {
+        "word": "quadrangle"
+      },
+      {
+        "word": "courtyard"
+      },
+      {
+        "word": "four-wheeler"
+      }
+    ]
+  },
+  {
+    "word": "figuratively",
+    "partOfSpeech": "",
+    "zh": "比喻地；象征性地；非字面意义地",
+    "source": "桌面·词汇报告",
+    "mode": "recognition",
+    "collocations": [],
+    "synonyms": [
+      {
+        "word": "metaphorically"
+      },
+      {
+        "word": "symbolically"
+      },
+      {
+        "word": "allegorically"
+      }
+    ]
+  },
+  {
+    "word": "wander",
+    "partOfSpeech": "",
+    "zh": "漫步；闲逛；徘徊；（思想、目光等）走神，开小差；迷路；偏离正轨。",
+    "source": "桌面·词汇报告",
+    "mode": "recognition",
+    "collocations": [],
+    "synonyms": [
+      {
+        "word": "roam"
+      },
+      {
+        "word": "stroll"
+      },
+      {
+        "word": "ramble"
+      },
+      {
+        "word": "meander"
+      },
+      {
+        "word": "drift"
+      }
+    ]
+  },
+  {
+    "word": "juggle",
+    "partOfSpeech": "",
+    "zh": "1. 玩杂耍，抛接（多个物体）；2. 尽力同时处理（多项任务或活动）；3. 巧妙地改变或操纵（数字、事实等）以达到目的。",
+    "source": "桌面·词汇报告",
+    "mode": "recognition",
+    "collocations": [],
+    "synonyms": [
+      {
+        "word": "manipulate"
+      },
+      {
+        "word": "manage"
+      },
+      {
+        "word": "balance"
+      },
+      {
+        "word": "handle"
+      },
+      {
+        "word": "contrive"
+      }
+    ]
+  },
+  {
+    "word": "scenic",
+    "partOfSpeech": "",
+    "zh": "风景优美的；景色秀丽的",
+    "source": "桌面·词汇报告",
+    "mode": "spelling",
+    "collocations": [],
+    "synonyms": [
+      {
+        "word": "picturesque"
+      },
+      {
+        "word": "beautiful"
+      },
+      {
+        "word": "breathtaking"
+      },
+      {
+        "word": "panoramic"
+      }
+    ]
+  },
+  {
+    "word": "efficacy",
+    "partOfSpeech": "",
+    "zh": "指（药物、疗法、措施等）产生预期效果的能力；效力，功效，效能。",
+    "source": "桌面·词汇报告",
+    "mode": "recognition",
+    "collocations": [],
+    "synonyms": [
+      {
+        "word": "effectiveness"
+      },
+      {
+        "word": "potency"
+      },
+      {
+        "word": "power"
+      },
+      {
+        "word": "success"
+      },
+      {
+        "word": "capability"
+      }
+    ]
+  },
+  {
+    "word": "fine-tune",
+    "partOfSpeech": "",
+    "zh": "对某物进行微小调整或改进，使其达到最佳性能或状态；精细调整；微调。",
+    "source": "桌面·词汇报告",
+    "mode": "recognition",
+    "collocations": [],
+    "synonyms": [
+      {
+        "word": "adjust"
+      },
+      {
+        "word": "refine"
+      },
+      {
+        "word": "tweak"
+      },
+      {
+        "word": "optimize"
+      },
+      {
+        "word": "calibrate"
+      }
+    ]
+  },
+  {
+    "word": "computational",
+    "partOfSpeech": "",
+    "zh": "计算的；与计算有关的；需要计算机的",
+    "source": "桌面·词汇报告",
+    "mode": "spelling",
+    "collocations": [],
+    "synonyms": [
+      {
+        "word": "algorithmic"
+      },
+      {
+        "word": "numerical"
+      },
+      {
+        "word": "mathematical"
+      },
+      {
+        "word": "digital"
+      }
+    ]
+  },
+  {
+    "word": "therapeutic",
+    "partOfSpeech": "",
+    "zh": "治疗的；治疗性的；有益健康的；有疗效的",
+    "source": "桌面·词汇报告",
+    "mode": "spelling",
+    "collocations": [],
+    "synonyms": [
+      {
+        "word": "curative"
+      },
+      {
+        "word": "healing"
+      },
+      {
+        "word": "remedial"
+      },
+      {
+        "word": "restorative"
+      }
+    ]
+  },
+  {
+    "word": "seabed",
+    "partOfSpeech": "",
+    "zh": "海底；海床",
+    "source": "桌面·词汇报告",
+    "mode": "recognition",
+    "collocations": [],
+    "synonyms": [
+      {
+        "word": "ocean floor"
+      },
+      {
+        "word": "sea bottom"
+      },
+      {
+        "word": "benthos"
+      },
+      {
+        "word": "ocean bed"
+      }
+    ]
+  },
+  {
+    "word": "cobweb",
+    "partOfSpeech": "",
+    "zh": "蜘蛛网，尤指废弃或长时间未打扫地方的蜘蛛网；也可引申指陈旧、过时的思想、观念或事物。",
+    "source": "桌面·词汇报告",
+    "mode": "recognition",
+    "collocations": [],
+    "synonyms": [
+      {
+        "word": "spiderweb"
+      },
+      {
+        "word": "web"
+      },
+      {
+        "word": "filigree"
+      }
+    ]
+  },
+  {
+    "word": "bandage",
+    "partOfSpeech": "",
+    "zh": "绷带；用绷带包扎",
+    "source": "桌面·词汇报告",
+    "mode": "recognition",
+    "collocations": [],
+    "synonyms": [
+      {
+        "word": "dressing"
+      },
+      {
+        "word": "gauze"
+      },
+      {
+        "word": "patch"
+      },
+      {
+        "word": "wrap"
+      }
+    ]
+  },
+  {
+    "word": "breaking",
+    "partOfSpeech": "",
+    "zh": "1. 正在发生或首次披露的（新闻、事件）；突发的；爆炸性的。2. 违反（法律、规则等）的动作或行为。3. 中断，打断。",
+    "source": "桌面·词汇报告",
+    "mode": "spelling",
+    "collocations": [],
+    "synonyms": [
+      {
+        "word": "shattering"
+      },
+      {
+        "word": "rupturing"
+      },
+      {
+        "word": "cracking"
+      },
+      {
+        "word": "violating"
+      },
+      {
+        "word": "infringing"
+      },
+      {
+        "word": "disrupting"
+      }
+    ]
+  },
+  {
+    "word": "persistence",
+    "partOfSpeech": "",
+    "zh": "坚持不懈；毅力；持续性；韧性。",
+    "source": "桌面·词汇报告",
+    "mode": "spelling",
+    "collocations": [],
+    "synonyms": [
+      {
+        "word": "perseverance"
+      },
+      {
+        "word": "tenacity"
+      },
+      {
+        "word": "determination"
+      },
+      {
+        "word": "endurance"
+      }
+    ]
+  },
+  {
+    "word": "mastery",
+    "partOfSpeech": "",
+    "zh": "对某种技能、知识或事物的完全掌握、精通或熟练；控制力，支配权。",
+    "source": "桌面·词汇报告",
+    "mode": "spelling",
+    "collocations": [],
+    "synonyms": [
+      {
+        "word": "proficiency"
+      },
+      {
+        "word": "expertise"
+      },
+      {
+        "word": "skill"
+      },
+      {
+        "word": "command"
+      },
+      {
+        "word": "dominance"
+      }
+    ]
+  },
+  {
+    "word": "genuinely",
+    "partOfSpeech": "",
+    "zh": "真诚地；真正地；确实地；由衷地",
+    "source": "桌面·词汇报告",
+    "mode": "spelling",
+    "collocations": [],
+    "synonyms": [
+      {
+        "word": "truly"
+      },
+      {
+        "word": "really"
+      },
+      {
+        "word": "sincerely"
+      },
+      {
+        "word": "authentically"
+      },
+      {
+        "word": "veritably"
+      }
+    ]
+  },
+  {
+    "word": "turbulence",
+    "partOfSpeech": "",
+    "zh": "湍流，紊流；骚乱，动荡，混乱",
+    "source": "桌面·词汇报告",
+    "mode": "recognition",
+    "collocations": [],
+    "synonyms": [
+      {
+        "word": "commotion"
+      },
+      {
+        "word": "disorder"
+      },
+      {
+        "word": "upheaval"
+      },
+      {
+        "word": "agitation"
+      },
+      {
+        "word": "instability"
+      }
+    ]
+  },
+  {
+    "word": "unveil",
+    "partOfSpeech": "",
+    "zh": "揭幕；公布；展示；首次公开",
+    "source": "桌面·词汇报告",
+    "mode": "spelling",
+    "collocations": [],
+    "synonyms": [
+      {
+        "word": "reveal"
+      },
+      {
+        "word": "disclose"
+      },
+      {
+        "word": "present"
+      }
+    ]
+  },
+  {
+    "word": "optical",
+    "partOfSpeech": "",
+    "zh": "光学的；视觉的；视力的",
+    "source": "桌面·词汇报告",
+    "mode": "spelling",
+    "collocations": [],
+    "synonyms": [
+      {
+        "word": "visual"
+      },
+      {
+        "word": "ocular"
+      },
+      {
+        "word": "optic"
+      },
+      {
+        "word": "sight-related"
+      }
+    ]
+  },
+  {
+    "word": "expanse",
+    "partOfSpeech": "",
+    "zh": "广阔的区域；浩瀚的范围；宽广、无边无际的空间。",
+    "source": "桌面·词汇报告",
+    "mode": "spelling",
+    "collocations": [],
+    "synonyms": [
+      {
+        "word": "stretch"
+      },
+      {
+        "word": "area"
+      },
+      {
+        "word": "tract"
+      },
+      {
+        "word": "plain"
+      },
+      {
+        "word": "reach"
+      }
+    ]
+  },
+  {
+    "word": "astrophysics",
+    "partOfSpeech": "",
+    "zh": "天体物理学，是天文学的一个分支，主要研究宇宙中天体的物理性质（如光度、密度、温度、化学成分等）、结构、演化以及它们之间的相互作用。",
+    "source": "桌面·词汇报告",
+    "mode": "spelling",
+    "collocations": [],
+    "synonyms": [
+      {
+        "word": "cosmology"
+      },
+      {
+        "word": "astronomy"
+      },
+      {
+        "word": "space science"
+      }
+    ]
+  },
+  {
+    "word": "calibrate",
+    "partOfSpeech": "",
+    "zh": "校准；标定；使标准化，调整（仪器、测量工具等）以确保其准确性。",
+    "source": "桌面·词汇报告",
+    "mode": "recognition",
+    "collocations": [],
+    "synonyms": [
+      {
+        "word": "adjust"
+      },
+      {
+        "word": "standardize"
+      },
+      {
+        "word": "measure"
+      },
+      {
+        "word": "set"
+      },
+      {
+        "word": "fine-tune"
+      }
+    ]
+  },
+  {
+    "word": "high-stakes",
+    "partOfSpeech": "",
+    "zh": "指涉及巨大风险、重大后果或重要结果的，成败攸关的。",
+    "source": "桌面·词汇报告",
+    "mode": "recognition",
+    "collocations": [],
+    "synonyms": [
+      {
+        "word": "critical"
+      },
+      {
+        "word": "crucial"
+      },
+      {
+        "word": "momentous"
+      },
+      {
+        "word": "perilous"
+      },
+      {
+        "word": "risky"
+      }
+    ]
+  },
+  {
+    "word": "aerospace",
+    "partOfSpeech": "",
+    "zh": "航空航天；航空和宇宙航行空间；航空航天工业",
+    "source": "桌面·词汇报告",
+    "mode": "recognition",
+    "collocations": [],
+    "synonyms": [
+      {
+        "word": "aviation"
+      },
+      {
+        "word": "aeronautics"
+      },
+      {
+        "word": "space exploration"
+      }
+    ]
+  },
+  {
+    "word": "unintended",
+    "partOfSpeech": "",
+    "zh": "非故意的；无意的；未曾计划的；意外的",
+    "source": "桌面·词汇报告",
+    "mode": "spelling",
+    "collocations": [],
+    "synonyms": [
+      {
+        "word": "accidental"
+      },
+      {
+        "word": "inadvertent"
+      },
+      {
+        "word": "unplanned"
+      },
+      {
+        "word": "unforeseen"
+      }
+    ]
+  },
+  {
+    "word": "inherently",
+    "partOfSpeech": "",
+    "zh": "天生地；固有地；内在地；本质上地",
+    "source": "桌面·词汇报告",
+    "mode": "spelling",
+    "collocations": [],
+    "synonyms": [
+      {
+        "word": "intrinsically"
+      },
+      {
+        "word": "fundamentally"
+      },
+      {
+        "word": "essentially"
+      },
+      {
+        "word": "naturally"
+      }
+    ]
+  },
+  {
+    "word": "reliability",
+    "partOfSpeech": "",
+    "zh": "可靠性；可信赖性；（测量、数据等的）准确性，稳定性",
+    "source": "桌面·词汇报告",
+    "mode": "spelling",
+    "collocations": [],
+    "synonyms": [
+      {
+        "word": "dependability"
+      },
+      {
+        "word": "trustworthiness"
+      },
+      {
+        "word": "consistency"
+      },
+      {
+        "word": "accuracy"
+      }
+    ]
+  },
+  {
+    "word": "automate",
+    "partOfSpeech": "",
+    "zh": "使自动化；自动操作",
+    "source": "桌面·词汇报告",
+    "mode": "spelling",
+    "collocations": [],
+    "synonyms": [
+      {
+        "word": "mechanize"
+      },
+      {
+        "word": "robotize"
+      },
+      {
+        "word": "computerize"
+      },
+      {
+        "word": "streamline"
+      }
+    ]
+  },
+  {
+    "word": "manufacturing",
+    "partOfSpeech": "",
+    "zh": "指将原材料或零部件通过物理、化学或机械加工等方式，制造成最终产品或半成品的过程；也可指从事这种生产活动的行业。",
+    "source": "桌面·词汇报告",
+    "mode": "spelling",
+    "collocations": [],
+    "synonyms": [
+      {
+        "word": "production"
+      },
+      {
+        "word": "fabrication"
+      },
+      {
+        "word": "making"
+      },
+      {
+        "word": "assembly"
+      }
+    ]
+  },
+  {
+    "word": "initiative",
+    "partOfSpeech": "",
+    "zh": "主动性；积极性；倡议；新方案；主动权",
+    "source": "桌面·词汇报告",
+    "mode": "spelling",
+    "collocations": [],
+    "synonyms": [
+      {
+        "word": "enterprise"
+      },
+      {
+        "word": "drive"
+      },
+      {
+        "word": "ambition"
+      },
+      {
+        "word": "proposal"
+      },
+      {
+        "word": "plan"
+      }
+    ]
   }
 ]

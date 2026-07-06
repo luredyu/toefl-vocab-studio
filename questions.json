@@ -1,0 +1,35 @@
+[
+  {
+    "type": "vocab_choice",
+    "question": "The government tried to _____ the impact of the economic downturn.",
+    "choices": [
+      "mitigate",
+      "aggravate",
+      "ignore",
+      "celebrate"
+    ],
+    "answer": 0,
+    "explanation": "mitigate = 减轻，缓和（危害或不良影响）",
+    "source": "440道托福词汇题"
+  },
+  {
+    "type": "fill_blank",
+    "question": "The rapid _____ of urban areas can exacerbate environmental problems.",
+    "answer": "expansion",
+    "hint": "快速____（扩张）",
+    "source": "单词填空"
+  },
+  {
+    "type": "synonym_match",
+    "question": "ubiquitous",
+    "choices": [
+      "rare",
+      "everywhere",
+      "hidden",
+      "temporary"
+    ],
+    "answer": 1,
+    "explanation": "ubiquitous = present everywhere 无处不在的",
+    "source": "托福阅读词汇题"
+  }
+]

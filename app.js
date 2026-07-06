@@ -150,6 +150,66 @@ const COMPLETE_SIMULATIONS = [
     text: "Volcanic eruptions can be destructive, yet volcanic material may eventually produce [[fertile]] soil. Fresh ash contains minerals that become available to plants as the material is chemically [[weathered]]. The process can take many years and depends on rainfall, temperature, and the activity of microorganisms. Once vegetation becomes [[established]], roots help stabilize the surface and reduce [[erosion]]. For this reason, densely populated agricultural regions are sometimes found near volcanoes despite the continuing [[risk]] of future eruptions.",
     targets: ["fertile", "weathered", "established", "erosion", "risk"],
   },
+  {
+    id: "ancient-writing",
+    topic: "古代文字",
+    text: "The development of writing systems was a [[pivotal]] moment in human history. Early scripts allowed societies to [[record]] transactions, laws, and stories, creating permanent archives. The ability to [[transmit]] information across generations transformed how knowledge [[accumulated]]. Some scholars [[argue]] that written language also reshaped human cognition itself.",
+    targets: ["pivotal", "record", "transmit", "accumulated", "argue"],
+  },
+  {
+    id: "animal-behavior",
+    topic: "动物行为学",
+    text: "Many animals [[exhibit]] complex social behaviors that were once thought to be uniquely human. Primates, for example, can [[recognize]] individual faces and maintain long-term relationships. Some species [[cooperate]] during hunting or foraging, demonstrating a capacity for collective problem-solving. These [[observations]] challenge traditional distinctions between human and animal intelligence.",
+    targets: ["exhibit", "recognize", "cooperate", "observations"],
+  },
+  {
+    id: "energy-transition",
+    topic: "能源转型",
+    text: "The global transition toward renewable energy is [[accelerating]] as technology costs decline. Solar and wind power are now economically [[competitive]] with fossil fuels in many regions. However, challenges [[persist]] in energy storage and grid management. Governments must [[coordinate]] policies to ensure a reliable and affordable energy supply during the transition.",
+    targets: ["accelerating", "competitive", "persist", "coordinate"],
+  },
+  {
+    id: "linguistic-diversity",
+    topic: "语言多样性",
+    text: "Languages evolve through a [[dynamic]] process influenced by migration, trade, and cultural exchange. When two language groups come into contact, they may [[borrow]] vocabulary or develop simplified communication systems. Linguists [[document]] endangered languages to preserve cultural heritage, but many tongues continue to [[vanish]] at an alarming rate.",
+    targets: ["dynamic", "borrow", "document", "vanish"],
+  },
+  {
+    id: "art-history",
+    topic: "艺术史",
+    text: "Renaissance artists [[departed]] from medieval conventions by emphasizing realism and human emotion. This shift was partly [[facilitated]] by new techniques in perspective and anatomy. Patrons played a [[crucial]] role in supporting artists, commissioning works that reflected both religious devotion and personal [[prestige]]. The period's innovations continue to [[influence]] visual culture today.",
+    targets: ["departed", "facilitated", "crucial", "prestige", "influence"],
+  },
+  {
+    id: "economic-history",
+    topic: "经济史",
+    text: "The Industrial Revolution fundamentally [[altered]] economic and social structures. Factory production [[replaced]] artisan workshops as the dominant mode of manufacturing. This shift [[generated]] unprecedented wealth for some, while creating harsh working conditions for others. Historians continue to [[debate]] whether the overall impact on living standards was positive in the short term.",
+    targets: ["altered", "replaced", "generated", "debate"],
+  },
+  {
+    id: "astrobiology",
+    topic: "天体生物学",
+    text: "Astrobiologists search for [[evidence]] of life beyond Earth by studying extreme environments on our own planet. Organisms that [[thrive]] in deep-sea vents or frozen lakes [[suggest]] that life might exist in seemingly hostile conditions elsewhere. The discovery of even simple microbial life on another planet would [[revolutionize]] our understanding of biology.",
+    targets: ["evidence", "thrive", "suggest", "revolutionize"],
+  },
+  {
+    id: "public-health",
+    topic: "公共卫生",
+    text: "Effective public health campaigns must [[overcome]] misinformation and skepticism. During disease outbreaks, officials need to [[communicate]] risks clearly without causing unnecessary panic. Research has shown that trust in institutions is a key [[factor]] in whether people [[comply]] with health guidelines.",
+    targets: ["overcome", "communicate", "factor", "comply"],
+  },
+  {
+    id: "migration-studies",
+    topic: "移民研究",
+    text: "Human migration patterns are shaped by a [[complex]] interplay of economic, political, and environmental factors. Migrants often [[maintain]] connections with their places of origin while [[adapting]] to new cultural settings. This [[phenomenon]] creates transnational communities that challenge traditional notions of national identity.",
+    targets: ["complex", "maintain", "adapting", "phenomenon"],
+  },
+  {
+    id: "material-science",
+    topic: "材料科学",
+    text: "Engineers are developing materials with [[remarkable]] properties that were once thought impossible. These [[innovations]] include self-healing concrete, ultra-lightweight alloys, and coatings that repel water and ice. The [[widespread]] adoption of such materials could reduce maintenance costs and [[extend]] the lifespan of infrastructure.",
+    targets: ["remarkable", "innovations", "widespread", "extend"],
+  },
 ];
 
 const DEMO_WORDS = [
