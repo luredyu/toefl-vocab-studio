@@ -113,6 +113,88 @@ const ADVANCED_WORDS = new Set(
   `.trim().split(/\s+/)
 );
 
+const COMPLETE_SIMULATIONS = [
+  {
+    id: "ocean-circulation",
+    topic: "海洋与气候",
+    text: "Ocean [[currents]] redistribute heat across the planet. Near the equator, sunlight warms surface water, while colder water forms at higher [[latitudes]]. Differences in temperature and salinity affect water [[density]], causing large masses of water to sink or rise. This continuous [[circulation]] influences coastal climates, transports [[nutrients]], and supports marine [[organisms]]. Because the process is gradual, even a small disruption may eventually alter regional weather [[patterns]]. Scientists therefore monitor changes in ocean temperature to improve long-term climate [[predictions]].",
+    targets: ["currents", "latitudes", "density", "circulation", "nutrients", "organisms", "patterns", "predictions"],
+  },
+  {
+    id: "plant-signals",
+    topic: "植物生物学",
+    text: "Plants cannot move away from danger, but they can [[detect]] changes in their surroundings. When insects damage a leaf, chemical [[signals]] travel through the plant and may stimulate defensive responses in undamaged tissue. Some plants also release airborne compounds that [[attract]] predators of the insects. These reactions require energy, so the plant must [[balance]] immediate protection against continued growth. Researchers study this system to understand how plants [[allocate]] limited resources under environmental [[stress]].",
+    targets: ["detect", "signals", "attract", "balance", "allocate", "stress"],
+  },
+  {
+    id: "ancient-trade",
+    topic: "考古与贸易",
+    text: "Archaeologists often reconstruct ancient trade networks by examining ordinary objects. Pottery made in one region may contain minerals that are [[absent]] from local clay but common hundreds of kilometers away. Such evidence can [[indicate]] that finished containers or raw materials were transported between communities. Researchers also compare decorative styles, manufacturing [[techniques]], and signs of repeated use. When several kinds of evidence [[coincide]], the proposed connection becomes more [[credible]], although scholars still consider alternative explanations.",
+    targets: ["absent", "indicate", "techniques", "coincide", "credible"],
+  },
+  {
+    id: "urban-heat",
+    topic: "城市环境",
+    text: "Cities are often warmer than nearby rural areas because dark roofs and pavement [[absorb]] solar energy. Buildings can also restrict air movement, while vehicles and cooling systems release additional heat. This urban heat effect is especially [[pronounced]] at night, when stored energy gradually returns to the atmosphere. Planting trees can [[mitigate]] the problem by providing shade and releasing moisture. However, planners must select species that are [[resilient]] enough to survive limited soil, pollution, and prolonged dry periods.",
+    targets: ["absorb", "pronounced", "mitigate", "resilient"],
+  },
+  {
+    id: "memory-sleep",
+    topic: "认知科学",
+    text: "Sleep plays an important role in memory [[consolidation]]. During the day, new experiences create temporary patterns of neural activity. Some of these patterns are [[reinforced]] during sleep, making the information easier to retrieve later. Experiments show that participants who sleep after learning often perform more [[accurately]] than those who remain awake for the same period. The effect is not identical for every kind of task, so researchers distinguish between factual, procedural, and emotional [[memories]].",
+    targets: ["consolidation", "reinforced", "accurately", "memories"],
+  },
+  {
+    id: "volcanic-soil",
+    topic: "地质与农业",
+    text: "Volcanic eruptions can be destructive, yet volcanic material may eventually produce [[fertile]] soil. Fresh ash contains minerals that become available to plants as the material is chemically [[weathered]]. The process can take many years and depends on rainfall, temperature, and the activity of microorganisms. Once vegetation becomes [[established]], roots help stabilize the surface and reduce [[erosion]]. For this reason, densely populated agricultural regions are sometimes found near volcanoes despite the continuing [[risk]] of future eruptions.",
+    targets: ["fertile", "weathered", "established", "erosion", "risk"],
+  },
+];
+
+const SENTENCE_SIMULATIONS = [
+  {
+    id: "sentence-office-hours",
+    cue: "I need to ask the professor about my research proposal.",
+    answer: ["Do", "you", "know", "when", "her office hours are"],
+  },
+  {
+    id: "sentence-lab-report",
+    cue: "My laboratory report is due on Friday.",
+    answer: ["Have", "you", "finished", "analyzing", "the results"],
+  },
+  {
+    id: "sentence-library-room",
+    cue: "Our study group needs a quiet place to meet.",
+    answer: ["Why don't", "we", "reserve", "a room", "at the library"],
+  },
+  {
+    id: "sentence-lecture-recording",
+    cue: "I missed part of yesterday's biology lecture.",
+    answer: ["I can", "show you", "where", "the recording", "is posted"],
+  },
+  {
+    id: "sentence-field-trip",
+    cue: "The geology class is visiting a coastal site next week.",
+    answer: ["Do", "we", "need to bring", "any special", "equipment"],
+  },
+  {
+    id: "sentence-deadline",
+    cue: "Why are you checking the course website again?",
+    answer: ["I want", "to see", "whether", "the deadline", "has changed"],
+  },
+  {
+    id: "sentence-advisor",
+    cue: "I am considering changing my academic program.",
+    answer: ["Have", "you", "spoken", "with your advisor", "about it"],
+  },
+  {
+    id: "sentence-experiment",
+    cue: "The first experiment produced an unexpected result.",
+    answer: ["The researchers", "decided", "to repeat", "the procedure", "carefully"],
+  },
+];
+
 const DEMO_WORDS = [
   {
     id: crypto.randomUUID(),
@@ -313,11 +395,14 @@ let syncTimer = null;
 let activeView = "dashboard";
 let importMode = "paste";
 let importPhase = "input";
+let candidateViewMode = "list";
+let activeImportCandidate = "";
 let importSession = {
   text: "",
   fileName: "",
   candidates: [],
   status: "",
+  tokenLemmas: {},
 };
 let librarySearch = "";
 let libraryMode = "all";
@@ -332,9 +417,15 @@ let practiceDueOnly = false;
 let vocabularyAnswered = null;
 let completeWordAnswered = false;
 let completeWordHadError = false;
+let completeAnswers = {};
+let completeResults = {};
+let sentenceSelection = [];
+let sentenceAnswered = null;
 let contextSelectedWord = "";
 let lastAutoPlayedKey = "";
 const practiceQuestionCache = new Map();
+const glossCache = new Map();
+const glossRequests = new Set();
 let activeAudioPlayer = null;
 let browserOcrWorkerPromise = null;
 
@@ -729,9 +820,15 @@ function renderCandidates() {
         <div class="panel-header">
           <div>
             <h2 class="panel-title">先决定哪些词值得进入词库</h2>
-            <p class="panel-subtitle">点击已选中的分类可取消；未选择的词会自动忽略</p>
+            <p class="panel-subtitle">每个候选词先显示最基础释义；未分类的词会自动忽略</p>
           </div>
-          <button class="button button-secondary button-small" data-action="back-import">返回修改材料</button>
+          <div style="display:flex;gap:8px;align-items:center">
+            <div class="candidate-view-tabs">
+              <button class="tab-button ${candidateViewMode === "list" ? "is-active" : ""}" data-candidate-view="list">词表模式</button>
+              <button class="tab-button ${candidateViewMode === "text" ? "is-active" : ""}" data-candidate-view="text">原文点击模式</button>
+            </div>
+            <button class="button button-secondary button-small" data-action="back-import">返回修改材料</button>
+          </div>
         </div>
         <div class="panel-body">
           <div class="candidate-toolbar">
@@ -747,12 +844,18 @@ function renderCandidates() {
               </button>
             </div>
           </div>
-          <div class="candidate-list">
-            <div class="candidate-head">
-              <span>单词原型</span><span>出现次数</span><span>推荐度</span><span>你的选择</span>
-            </div>
-            ${visibleCandidates.map(candidateRow).join("")}
-          </div>
+          ${
+            candidateViewMode === "text"
+              ? renderSourceCandidateView(visibleCandidates)
+              : `
+                <div class="candidate-list">
+                  <div class="candidate-head">
+                    <span>单词原型</span><span>最基础释义</span><span>出现</span><span>推荐度</span><span>你的选择</span>
+                  </div>
+                  ${visibleCandidates.map(candidateRow).join("")}
+                </div>
+              `
+          }
           <div class="sticky-actionbar">
             <div>
               <strong>${selected.length}</strong> 个词将生成详情
@@ -779,12 +882,61 @@ function candidateRow(item) {
         <strong>${escapeHtml(item.word)}</strong>
         ${modeLabel ? `<span class="tag ${item.mode === "spelling" ? "tag-spelling" : "tag-recognition"}" style="margin-left:8px">${modeLabel}</span>` : ""}
       </div>
+      <span class="candidate-gloss">${escapeHtml(formatBasicGloss(item.gloss))}</span>
       <span>${item.count}</span>
       <span class="tag tag-muted">${recommendation}</span>
       <div class="mode-picker">
         <button class="mode-option ${item.mode === "spelling" ? "is-selected" : ""}" data-candidate-mode="spelling" data-word="${escapeHtml(item.word)}">拼写</button>
         <button class="mode-option ${item.mode === "recognition" ? "is-selected" : ""}" data-candidate-mode="recognition" data-word="${escapeHtml(item.word)}">识记</button>
       </div>
+    </div>
+  `;
+}
+
+function renderSourceCandidateView(visibleCandidates) {
+  const candidateMap = new Map(visibleCandidates.map((item) => [item.word, item]));
+  const active = importSession.candidates.find((item) => item.word === activeImportCandidate);
+  const annotatedText = importSession.text
+    .split(/([A-Za-z]+(?:['’-][A-Za-z]+)*)/)
+    .map((part) => {
+      if (!/^[A-Za-z]/.test(part)) return escapeHtml(part);
+      const token = normalizeCandidateToken(part.toLowerCase());
+      const lemma = importSession.tokenLemmas[token] || lemmatize(token);
+      const candidate = candidateMap.get(lemma);
+      if (!candidate) return escapeHtml(part);
+      const modeClass = candidate.mode ? `is-${candidate.mode}` : "is-unclassified";
+      return `
+        <span class="source-token ${modeClass}">
+          <button data-source-candidate="${escapeHtml(candidate.word)}">${escapeHtml(part)}</button>
+          <small>${escapeHtml(formatBasicGloss(candidate.gloss, "释义待补充"))}</small>
+        </span>
+      `;
+    })
+    .join("");
+  return `
+    <div class="source-classifier">
+      <div class="source-classifier-legend">
+        <span><i class="legend-dot unclassified"></i>未分类</span>
+        <span><i class="legend-dot spelling"></i>拼写</span>
+        <span><i class="legend-dot recognition"></i>识记</span>
+      </div>
+      ${
+        active
+          ? `
+            <div class="source-active-word">
+              <div>
+                <strong>${escapeHtml(active.word)}</strong>
+                <span>${escapeHtml(formatBasicGloss(active.gloss))}</span>
+              </div>
+              <div class="mode-picker">
+                <button class="mode-option ${active.mode === "spelling" ? "is-selected" : ""}" data-candidate-mode="spelling" data-word="${escapeHtml(active.word)}">拼写</button>
+                <button class="mode-option ${active.mode === "recognition" ? "is-selected" : ""}" data-candidate-mode="recognition" data-word="${escapeHtml(active.word)}">识记</button>
+              </div>
+            </div>
+          `
+          : `<div class="source-active-word is-empty">点击原文中带释义的词，再选择“拼写”或“识记”。</div>`
+      }
+      <article class="source-text">${annotatedText}</article>
     </div>
   `;
 }
@@ -872,10 +1024,12 @@ function renderPractice() {
           ${practiceModeButton("vocabulary", "文章近义词题", "学术短文 → 选择近义表达")}
           ${practiceModeButton("spelling", "看义拼写", "中文释义 → 键盘输入")}
           ${practiceModeButton("listening", "听音拼写", "词典录音 → 键盘输入")}
-          ${practiceModeButton("complete", "段落补词", "2026 Complete the Words 形式")}
+          ${practiceModeButton("complete", "词库段落补词", "每篇同时考查最多 5 个拼写词")}
+          ${practiceModeButton("simulation", "真考补词模拟", "独立题库 · 不限于你的词库")}
+          ${practiceModeButton("sentence", "真考造句模拟", "Build a Sentence 词块排序")}
         </div>
         ${
-          eligible.length
+          eligible.length && !["simulation", "sentence"].includes(practiceMode)
             ? `
               <div class="practice-group-controls">
                 <label class="form-label" for="practice-sort">20 词一组</label>
@@ -893,7 +1047,9 @@ function renderPractice() {
                 <div class="group-summary">本组 ${currentGroupSize} 词 · 共 ${eligible.length} 词</div>
               </div>
             `
-            : ""
+            : ["simulation", "sentence"].includes(practiceMode)
+              ? `<div class="group-summary simulation-summary">共 ${eligible.length} 篇原创模拟</div>`
+              : ""
         }
         <div class="privacy-note" style="margin-top:16px">
           听音模式进入每个单词时会自动播放，也可以点击播放按钮重听。文章题为原创练习，不复制 ETS 真题。
@@ -904,10 +1060,11 @@ function renderPractice() {
       </section>
     </div>
   `;
-  if (["spelling", "listening", "complete"].includes(practiceMode)) {
+  if (["spelling", "listening", "complete", "simulation"].includes(practiceMode)) {
     if (practiceMode === "listening" && !spellingAnswered) autoPlayCurrentListeningWord();
-    requestAnimationFrame(() => document.querySelector("#spelling-answer, #complete-word-answer")?.focus());
+    requestAnimationFrame(() => document.querySelector("#spelling-answer, [data-complete-word]")?.focus());
   }
+  requestPracticeGlosses();
 }
 
 function practiceModeButton(mode, label, description) {
@@ -925,12 +1082,20 @@ function renderPracticeStage() {
   if (!word) return renderPracticeComplete();
   const definition = firstDefinition(word);
 
+  if (practiceMode === "simulation") {
+    return renderSimulationQuestion(word);
+  }
+
+  if (practiceMode === "sentence") {
+    return renderSentenceQuestion(word);
+  }
+
   if (practiceMode === "vocabulary") {
     return renderVocabularyQuestion(word);
   }
 
   if (practiceMode === "complete") {
-    return renderCompleteWordsQuestion(word);
+    return renderCompleteWordsQuestion();
   }
 
   if (practiceMode === "recognition") {
@@ -1030,30 +1195,171 @@ function renderVocabularyQuestion(word) {
   `;
 }
 
-function renderCompleteWordsQuestion(word) {
-  const question = getPracticeQuestion(word);
-  const splitAt = Math.max(1, Math.ceil(word.word.length / 2));
-  const missing = word.word.slice(splitAt);
+function renderCompleteWordsQuestion() {
+  const words = practiceQueue.slice(practiceIndex, practiceIndex + 5);
+  const passage = getMultiWordPassage(words);
+  const correctCount = Object.values(completeResults).filter((result) => result === "correct").length;
   return `
     <div class="objective-card">
-      <div class="practice-counter">${practiceIndex + 1} / ${practiceQueue.length} · Complete the Words</div>
-      <div class="question-instruction">根据段落语境补全缺失字母，只输入横线部分。</div>
+      <div class="practice-counter">${Math.floor(practiceIndex / 5) + 1} / ${Math.ceil(practiceQueue.length / 5)} · Complete the Words</div>
+      <div class="question-instruction">根据同一段落的语境补全 ${words.length} 个单词，只输入横线部分。</div>
       <article class="academic-passage complete-passage">
-        ${renderInteractivePassage(question.passage, word.word, {
-          missingWord: true,
-          splitAt,
-          answered: completeWordAnswered,
-        })}
+        ${renderClozePassage(passage, words.map((word) => word.word))}
       </article>
       <div class="answer-feedback" id="answer-feedback">
-        ${completeWordAnswered ? `正确：${escapeHtml(word.word)} ✓` : `需要填写 ${missing.length} 个字母，按 Enter 检查`}
+        ${
+          completeWordAnswered
+            ? `${words.length} 个单词全部正确 ✓`
+            : Object.keys(completeResults).length
+              ? `已答对 ${correctCount} / ${words.length}，红色部分请再试一次`
+              : "填写全部空格后按 Enter，或点击“检查答案”"
+        }
       </div>
       ${
         completeWordAnswered
-          ? `<button class="button button-primary" data-action="next-objective-question">下一题 <span>→</span></button>`
-          : `<button class="button button-ghost button-small" data-action="show-complete-answer">想不起来，显示答案</button>`
+          ? `<button class="button button-primary" data-action="next-objective-question">下一篇 <span>→</span></button>`
+          : `
+              <div class="complete-actions">
+                <button class="button button-primary button-small" data-action="check-complete-answers">检查答案</button>
+                <button class="button button-ghost button-small" data-action="show-complete-answer">显示全部答案</button>
+              </div>
+            `
       }
       ${renderArticleWordPicker()}
+    </div>
+  `;
+}
+
+function renderSimulationQuestion(question) {
+  const correctCount = Object.values(completeResults).filter((result) => result === "correct").length;
+  return `
+    <div class="objective-card">
+      <div class="practice-counter">${practiceIndex + 1} / ${practiceQueue.length} · 真考补词模拟 · ${escapeHtml(question.topic)}</div>
+      <div class="question-instruction">模拟 2026 TOEFL Complete the Words：这些词不受个人词库限制。</div>
+      <article class="academic-passage complete-passage">
+        ${renderClozePassage(question.text, question.targets)}
+      </article>
+      <div class="answer-feedback" id="answer-feedback">
+        ${
+          completeWordAnswered
+            ? `${question.targets.length} 个空格全部完成 ✓`
+            : Object.keys(completeResults).length
+              ? `已答对 ${correctCount} / ${question.targets.length}，继续修正红色空格`
+              : "填写所有缺失字母后检查答案"
+        }
+      </div>
+      ${
+        completeWordAnswered
+          ? `
+              ${renderClozeAnswerGlosses(question.targets)}
+              <button class="button button-primary" data-action="next-objective-question">下一篇 <span>→</span></button>
+            `
+          : `
+              <div class="complete-actions">
+                <button class="button button-primary button-small" data-action="check-complete-answers">检查答案</button>
+                <button class="button button-ghost button-small" data-action="show-complete-answer">显示全部答案</button>
+              </div>
+            `
+      }
+      ${renderArticleWordPicker()}
+    </div>
+  `;
+}
+
+function renderSentenceQuestion(question) {
+  const tiles = seededShuffle(
+    question.answer.map((text, index) => ({ index, text })),
+    question.id
+  );
+  const selectedSet = new Set(sentenceSelection);
+  const assembled = sentenceSelection.map((index) => question.answer[index]);
+  return `
+    <div class="objective-card sentence-question">
+      <div class="practice-counter">${practiceIndex + 1} / ${practiceQueue.length} · Build a Sentence</div>
+      <div class="question-instruction">根据情境点击词块，组成语法正确、语义自然的句子。</div>
+      <div class="sentence-cue">${escapeHtml(question.cue)}</div>
+      <div class="sentence-answer ${sentenceAnswered === true ? "is-correct" : sentenceAnswered === false ? "is-wrong" : ""}">
+        ${
+          assembled.length
+            ? assembled.map((text, position) => `<button data-sentence-remove="${position}" ${sentenceAnswered !== null ? "disabled" : ""}>${escapeHtml(text)}</button>`).join("")
+            : `<span>在这里组成句子</span>`
+        }
+      </div>
+      <div class="sentence-tiles">
+        ${tiles.map((tile) => `<button data-sentence-tile="${tile.index}" ${selectedSet.has(tile.index) || sentenceAnswered !== null ? "disabled" : ""}>${escapeHtml(tile.text)}</button>`).join("")}
+      </div>
+      ${
+        sentenceAnswered === null
+          ? `<button class="button button-primary button-small" data-action="check-sentence-answer" ${sentenceSelection.length === question.answer.length ? "" : "disabled"}>检查句子</button>`
+          : `
+              <div class="quiz-explanation ${sentenceAnswered ? "is-correct" : "is-wrong"}">
+                <strong>${sentenceAnswered ? "句子正确" : "正确顺序"}</strong>
+                <p>${escapeHtml(question.answer.join(" "))}.</p>
+              </div>
+              <button class="button button-primary" data-action="next-objective-question">下一题 <span>→</span></button>
+            `
+      }
+    </div>
+  `;
+}
+
+function getMultiWordPassage(words) {
+  const cacheKey = `multi-complete:${words.map((word) => word.id).join(":")}`;
+  if (practiceQuestionCache.has(cacheKey)) return practiceQuestionCache.get(cacheKey);
+  const topics = [
+    "A research team compared evidence collected from several ecosystems.",
+    "Scholars examined how a community responded to a period of rapid change.",
+    "The study combined laboratory measurements with observations from the field.",
+    "Researchers used several kinds of evidence to explain an unexpected historical pattern.",
+  ];
+  const intro = topics[stableHash(cacheKey) % topics.length];
+  const sentences = words.map((word, index) => buildClozeTargetSentence(word, index));
+  const passage = `${intro} ${sentences.join(" ")} Together, these observations provided a more complete explanation of the pattern.`;
+  practiceQuestionCache.set(cacheKey, passage);
+  return passage;
+}
+
+function buildClozeTargetSentence(word, index) {
+  const target = `[[${word.word}]]`;
+  const part = String(word.partOfSpeech || "").toLowerCase();
+  const leads = ["First", "In addition", "By contrast", "Later", "Finally"];
+  const lead = leads[index % leads.length];
+  if (part.includes("adverb") || part === "adv." || part === "adv") {
+    return `${lead}, one response occurred ${target}, making it easier for the investigators to distinguish it from the other results.`;
+  }
+  if (part.includes("adjective") || part === "adj." || part === "adj") {
+    return `${lead}, the authors described one feature as ${target} because it remained visible across several independent samples.`;
+  }
+  if (part.includes("verb") || part === "v." || part === "v") {
+    return `${lead}, the evidence suggested that a change in local conditions could ${target} the process over time.`;
+  }
+  return `${lead}, the report emphasized the role of ${target} and treated it as a meaningful part of the explanation.`;
+}
+
+function renderClozePassage(passage, targets) {
+  const targetSet = new Set(targets.map((word) => word.toLowerCase()));
+  return passage
+    .split(/(\[\[[A-Za-z'-]+\]\])/)
+    .map((part) => {
+      const match = part.match(/^\[\[([A-Za-z'-]+)\]\]$/);
+      if (!match) return renderAnnotatedPassageSegment(part, targetSet);
+      const word = match[1].toLowerCase();
+      const splitAt = Math.max(1, Math.ceil(word.length / 2));
+      const shown = word.slice(0, splitAt);
+      const missing = word.slice(splitAt);
+      const result = completeResults[word] || "";
+      if (completeWordAnswered || result === "correct") {
+        return `<span class="complete-word is-correct">${escapeHtml(word)}</span>`;
+      }
+      return `<span class="complete-word"><strong>${escapeHtml(shown)}</strong><input class="complete-word-input ${result === "wrong" ? "is-wrong" : ""}" style="--missing-letters:${missing.length}" data-complete-word="${escapeHtml(word)}" value="${escapeHtml(completeAnswers[word] || "")}" maxlength="${missing.length}" size="${Math.max(2, missing.length)}" autocomplete="off" spellcheck="false" aria-label="补全 ${escapeHtml(word)} 的缺失字母" /></span>`;
+    })
+    .join("");
+}
+
+function renderClozeAnswerGlosses(targets) {
+  return `
+    <div class="cloze-answer-glosses">
+      ${targets.map((word) => `<span><strong>${escapeHtml(word)}</strong>${escapeHtml(formatBasicGloss(getBasicGloss(word)))}</span>`).join("")}
     </div>
   `;
 }
@@ -1145,28 +1451,25 @@ function buildTargetSentence(word) {
   return `The report emphasized the concept of ${target}, treating it as an important part of the explanation rather than a minor detail.`;
 }
 
-function renderInteractivePassage(passage, targetWord, options = {}) {
-  let targetRendered = false;
-  const cleanPassage = passage.replace(`[[${targetWord}]]`, targetWord);
-  return cleanPassage
+function renderInteractivePassage(passage, targetWord) {
+  const marker = `[[${targetWord}]]`;
+  const parts = passage.split(marker);
+  if (parts.length === 1) {
+    return renderAnnotatedPassageSegment(passage, new Set([targetWord.toLowerCase()]));
+  }
+  return `${renderAnnotatedPassageSegment(parts[0], new Set([targetWord.toLowerCase()]))}<mark class="target-word">${escapeHtml(targetWord)}</mark>${renderAnnotatedPassageSegment(parts.slice(1).join(marker), new Set([targetWord.toLowerCase()]))}`;
+}
+
+function renderAnnotatedPassageSegment(text, excludedWords = new Set()) {
+  return text
     .split(/([A-Za-z]+(?:['’-][A-Za-z]+)*)/)
     .map((part) => {
       if (!/^[A-Za-z]/.test(part)) return escapeHtml(part);
       const normalized = normalizeCandidateToken(part.toLowerCase());
-      if (!targetRendered && normalized === targetWord.toLowerCase()) {
-        targetRendered = true;
-        if (options.missingWord) {
-          const splitAt = options.splitAt;
-          const shown = targetWord.slice(0, splitAt);
-          const missing = targetWord.slice(splitAt);
-          return options.answered
-            ? `<span class="complete-word is-correct">${escapeHtml(targetWord)}</span>`
-            : `<span class="complete-word"><strong>${escapeHtml(shown)}</strong><input id="complete-word-answer" class="complete-word-input" style="--missing-letters:${missing.length}" maxlength="${missing.length}" size="${Math.max(2, missing.length)}" autocomplete="off" spellcheck="false" aria-label="补全 ${escapeHtml(targetWord)} 的缺失字母" /></span>`;
-        }
-        return `<mark class="target-word">${escapeHtml(part)}</mark>`;
-      }
-      if (normalized.length >= 4 && !BASIC_WORDS.has(lemmatize(normalized))) {
-        return `<button class="article-word" data-article-word="${escapeHtml(lemmatize(normalized))}" title="点击归类这个词">${escapeHtml(part)}</button>`;
+      const lemma = lemmatize(normalized);
+      if (normalized.length >= 4 && !BASIC_WORDS.has(lemma) && !excludedWords.has(lemma)) {
+        const gloss = formatBasicGloss(getBasicGloss(lemma), "释义待补充");
+        return `<span class="article-token"><button class="article-word" data-article-word="${escapeHtml(lemma)}" title="点击归类这个词">${escapeHtml(part)}</button><small>${escapeHtml(gloss)}</small></span>`;
       }
       return escapeHtml(part);
     })
@@ -1178,9 +1481,14 @@ function renderArticleWordPicker() {
     return `<div class="article-word-hint">文章中的虚线词可点击，并直接归类为拼写词或识记词。</div>`;
   }
   const existing = state.words.find((word) => word.word.toLowerCase() === contextSelectedWord);
+  const gloss = getBasicGloss(contextSelectedWord);
   return `
     <div class="article-word-picker">
-      <div><strong>${escapeHtml(contextSelectedWord)}</strong>${existing ? ` · 当前为${existing.mode === "spelling" ? "拼写词" : "识记词"}` : " · 加入词库"}</div>
+      <div>
+        <strong>${escapeHtml(contextSelectedWord)}</strong>
+        <span>${escapeHtml(formatBasicGloss(gloss))}</span>
+        ${existing ? `<em>当前为${existing.mode === "spelling" ? "拼写词" : "识记词"}</em>` : ""}
+      </div>
       <div class="mode-picker">
         <button class="mode-option ${existing?.mode === "spelling" ? "is-selected" : ""}" data-article-mode="spelling" data-word="${escapeHtml(contextSelectedWord)}">拼写</button>
         <button class="mode-option ${existing?.mode === "recognition" ? "is-selected" : ""}" data-article-mode="recognition" data-word="${escapeHtml(contextSelectedWord)}">识记</button>
@@ -1205,6 +1513,8 @@ function renderPracticeEmpty() {
     spelling: ["没有可练习的拼写词", "先从材料中选择一些拼写词，生成后就能进行键盘练习。"],
     listening: ["暂时没有可用的词典录音", "只有拿到可靠词典录音的拼写词才会进入听音模式。"],
     complete: ["没有可练习的拼写词", "先加入拼写词，即可按 2026 TOEFL Complete the Words 形式练习。"],
+    simulation: ["模拟题暂不可用", "请刷新页面后重试。"],
+    sentence: ["造句模拟暂不可用", "请刷新页面后重试。"],
   };
   return emptyState("⌨", messages[practiceMode][0], messages[practiceMode][1], "导入材料", "go-import");
 }
@@ -1323,7 +1633,7 @@ function renderSettings() {
       <section class="panel settings-card">
         <div class="section-kicker">示例与重置</div>
         <h2>体验完整流程</h2>
-        <p>没有 API Key 时，可以先加入 4 个示例词，查看词卡、近义词辨析和五种练习模式。</p>
+        <p>没有 API Key 时，可以先加入 4 个示例词，查看词卡、基础释义预览和七种练习模式。</p>
         <div class="settings-actions">
           <button class="button button-secondary" data-action="add-demo-words">加入示例词</button>
           <button class="button button-danger" data-action="clear-all-data">清空学习数据</button>
@@ -1354,6 +1664,19 @@ function handleGlobalClick(event) {
     setCandidateMode(candidateMode.dataset.word, candidateMode.dataset.candidateMode);
   }
 
+  const candidateView = event.target.closest("[data-candidate-view]");
+  if (candidateView) {
+    candidateViewMode = candidateView.dataset.candidateView;
+    activeImportCandidate = "";
+    renderCandidates();
+  }
+
+  const sourceCandidate = event.target.closest("[data-source-candidate]");
+  if (sourceCandidate) {
+    activeImportCandidate = sourceCandidate.dataset.sourceCandidate;
+    renderCandidates();
+  }
+
   const practiceModeTarget = event.target.closest("[data-practice-mode]");
   if (practiceModeTarget) {
     practiceMode = practiceModeTarget.dataset.practiceMode;
@@ -1367,6 +1690,18 @@ function handleGlobalClick(event) {
   const vocabularyOption = event.target.closest("[data-vocabulary-option]");
   if (vocabularyOption) {
     answerVocabularyQuestion(vocabularyOption.dataset.vocabularyOption);
+  }
+
+  const sentenceTile = event.target.closest("[data-sentence-tile]");
+  if (sentenceTile && sentenceAnswered === null) {
+    sentenceSelection.push(Number(sentenceTile.dataset.sentenceTile));
+    renderPractice();
+  }
+
+  const sentenceRemove = event.target.closest("[data-sentence-remove]");
+  if (sentenceRemove && sentenceAnswered === null) {
+    sentenceSelection.splice(Number(sentenceRemove.dataset.sentenceRemove), 1);
+    renderPractice();
   }
 
   const articleWord = event.target.closest("[data-article-word]");
@@ -1417,6 +1752,7 @@ function handleAction(action, event) {
   if (action === "extract-candidates") extractCandidatesFromMaterial();
   if (action === "back-import") {
     importPhase = "input";
+    activeImportCandidate = "";
     renderImport();
   }
   if (action === "toggle-basic") {
@@ -1453,6 +1789,8 @@ function handleAction(action, event) {
     }
   }
   if (action === "show-complete-answer") revealCompleteWordAnswer();
+  if (action === "check-complete-answers") checkCompleteWordAnswer();
+  if (action === "check-sentence-answer") checkSentenceAnswer();
   if (action === "save-api-key") saveApiKey();
   if (action === "remove-api-key") removeApiKey();
   if (action === "test-api") testApi();
@@ -1476,6 +1814,9 @@ function handleAction(action, event) {
 }
 
 function handleGlobalInput(event) {
+  if (event.target.matches("[data-complete-word]")) {
+    completeAnswers[event.target.dataset.completeWord] = event.target.value;
+  }
   if (event.target.id === "material-text") {
     importSession.text = event.target.value;
     const button = document.querySelector('[data-action="extract-candidates"]');
@@ -1538,7 +1879,7 @@ function handleGlobalKeydown(event) {
   if ((practiceMode === "spelling" || practiceMode === "listening") && event.key === "Enter" && !spellingAnswered) {
     checkSpellingAnswer();
   }
-  if (practiceMode === "complete" && event.key === "Enter" && !completeWordAnswered) {
+  if (["complete", "simulation"].includes(practiceMode) && event.key === "Enter" && !completeWordAnswered) {
     checkCompleteWordAnswer();
   }
   // Keyboard rating shortcuts: 1=again 2=hard 3=good 4=easy
@@ -1553,6 +1894,7 @@ function setCandidateMode(word, mode) {
   const item = importSession.candidates.find((candidate) => candidate.word === word);
   if (!item) return;
   item.mode = item.mode === mode ? null : mode;
+  activeImportCandidate = item.word;
   renderCandidates();
 }
 
@@ -1597,22 +1939,29 @@ async function extractCandidates(text) {
     // Local rules below keep extraction available when the server is temporarily unavailable.
   }
 
+  importSession.tokenLemmas = {};
   const counts = new Map();
   tokens.forEach((token) => {
     const lemma = serverLemmas[token] || lemmatize(token);
     if (lemma.length < 3) return;
+    importSession.tokenLemmas[token] = lemma;
     counts.set(lemma, (counts.get(lemma) || 0) + 1);
   });
-  return [...counts.entries()]
+  const candidates = [...counts.entries()]
     .map(([word, count]) => {
       const basic = BASIC_WORDS.has(word);
       const score = ADVANCED_WORDS.has(word) || word.length >= 10 ? "high" : word.length >= 7 ? "medium" : "low";
-      return { word, count, basic, score, mode: null };
+      return { word, count, basic, score, mode: null, gloss: null };
     })
     .sort((a, b) => {
       const rank = { high: 0, medium: 1, low: 2 };
       return rank[a.score] - rank[b.score] || b.count - a.count || a.word.localeCompare(b.word);
     });
+  await fetchBasicGlosses(candidates.map((item) => item.word));
+  candidates.forEach((item) => {
+    item.gloss = glossCache.get(item.word) || null;
+  });
+  return candidates;
 }
 
 function normalizeCandidateToken(word) {
@@ -1648,6 +1997,84 @@ function lemmatize(word) {
   }
   if (word.endsWith("s") && !word.endsWith("ss") && word.length > 4) return word.slice(0, -1);
   return word;
+}
+
+async function fetchBasicGlosses(words) {
+  const requested = uniqueStrings(words.map((word) => String(word || "").toLowerCase()))
+    .filter((word) => !glossCache.has(word) && !glossRequests.has(word));
+  if (!requested.length) return;
+  requested.forEach((word) => glossRequests.add(word));
+  try {
+    const response = await fetch("/api/glossary/lookup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ words: requested }),
+    });
+    const payload = await response.json().catch(() => ({}));
+    requested.forEach((word) => glossCache.set(word, payload.found?.[word] || null));
+  } catch {
+    requested.forEach((word) => glossCache.set(word, null));
+  } finally {
+    requested.forEach((word) => glossRequests.delete(word));
+  }
+}
+
+function getBasicGloss(word) {
+  const key = String(word || "").toLowerCase();
+  const saved = state.words.find((item) => item.word.toLowerCase() === key);
+  if (saved) {
+    return {
+      partOfSpeech: saved.partOfSpeech || "",
+      zh: firstDefinition(saved)?.zh || "",
+    };
+  }
+  const candidate = importSession.candidates.find((item) => item.word === key);
+  return candidate?.gloss || glossCache.get(key) || null;
+}
+
+function formatPartOfSpeech(partOfSpeech) {
+  const value = String(partOfSpeech || "").toLowerCase();
+  if (value.includes("noun") && value.includes("verb")) return "n./v.";
+  if (value.includes("noun") && value.includes("adjective")) return "n./adj.";
+  if (value.includes("noun") || value === "n.") return "n.";
+  if (value.includes("verb") || value === "v.") return "v.";
+  if (value.includes("adjective") || value === "adj.") return "adj.";
+  if (value.includes("adverb") || value === "adv.") return "adv.";
+  return partOfSpeech || "";
+}
+
+function formatBasicGloss(gloss, fallback = "基础释义暂未收录") {
+  if (!gloss?.zh) return fallback;
+  const part = formatPartOfSpeech(gloss.partOfSpeech);
+  return `${part ? `${part} ` : ""}${gloss.zh}`;
+}
+
+function requestPracticeGlosses() {
+  if (!["vocabulary", "complete", "simulation"].includes(practiceMode)) return;
+  let passage = "";
+  if (practiceMode === "vocabulary") {
+    const word = practiceQueue[practiceIndex];
+    if (word) passage = getVocabularyQuestion(word).passage;
+  } else if (practiceMode === "complete") {
+    const words = practiceQueue.slice(practiceIndex, practiceIndex + 5);
+    if (words.length) passage = getMultiWordPassage(words);
+  } else {
+    passage = practiceQueue[practiceIndex]?.text || "";
+  }
+  const words = uniqueStrings(
+    (passage.match(/[A-Za-z]+(?:['’-][A-Za-z]+)*/g) || [])
+      .map((word) => lemmatize(normalizeCandidateToken(word.toLowerCase())))
+      .filter((word) => word.length >= 4 && !BASIC_WORDS.has(word))
+  );
+  const pending = words.filter((word) => !glossCache.has(word) && !glossRequests.has(word));
+  if (!pending.length) return;
+  const modeAtRequest = practiceMode;
+  const indexAtRequest = practiceIndex;
+  fetchBasicGlosses(pending).then(() => {
+    if (activeView === "practice" && practiceMode === modeAtRequest && practiceIndex === indexAtRequest) {
+      renderPractice();
+    }
+  });
 }
 
 async function generateSelectedWords() {
@@ -1756,7 +2183,8 @@ async function generateSelectedWords() {
     enriched.forEach((word) => existing.set(word.word.toLowerCase(), word));
     state.words = [...existing.values()];
     saveState();
-    importSession = { text: "", fileName: "", candidates: [], status: "" };
+    importSession = { text: "", fileName: "", candidates: [], status: "", tokenLemmas: {} };
+    activeImportCandidate = "";
     importPhase = "input";
     const fromLocal = enriched.length - missing.length;
     const msg = missing.length
@@ -2340,6 +2768,20 @@ function getDueWords() {
 function getPracticeWords(mode) {
   if (mode === "recognition" || mode === "vocabulary") return state.words.filter((word) => word.mode === "recognition");
   if (mode === "spelling" || mode === "complete") return state.words.filter((word) => word.mode === "spelling");
+  if (mode === "simulation") {
+    return COMPLETE_SIMULATIONS.map((question, index) => ({
+      ...question,
+      word: question.topic,
+      createdAt: index,
+    }));
+  }
+  if (mode === "sentence") {
+    return SENTENCE_SIMULATIONS.map((question, index) => ({
+      ...question,
+      word: question.answer.join(" "),
+      createdAt: index,
+    }));
+  }
   return state.words.filter((word) => word.mode === "spelling" && word.audio);
 }
 
@@ -2379,6 +2821,10 @@ function resetPracticeQueue(dueOnly = false) {
   vocabularyAnswered = null;
   completeWordAnswered = false;
   completeWordHadError = false;
+  completeAnswers = {};
+  completeResults = {};
+  sentenceSelection = [];
+  sentenceAnswered = null;
   contextSelectedWord = "";
   lastAutoPlayedKey = "";
 }
@@ -2413,34 +2859,78 @@ function answerVocabularyQuestion(selected) {
   renderPractice();
 }
 
+function checkSentenceAnswer() {
+  if (practiceMode !== "sentence" || sentenceAnswered !== null) return;
+  const question = practiceQueue[practiceIndex];
+  if (!question || sentenceSelection.length !== question.answer.length) return;
+  sentenceAnswered = sentenceSelection.every((value, index) => value === index);
+  state.reviewsToday += 1;
+  updateStreak();
+  saveState();
+  renderPractice();
+}
+
 function checkCompleteWordAnswer() {
-  const word = practiceQueue[practiceIndex];
-  const input = document.querySelector("#complete-word-answer");
-  const feedback = document.querySelector("#answer-feedback");
-  if (!word || !input || !input.value.trim()) return;
-  const splitAt = Math.max(1, Math.ceil(word.word.length / 2));
-  const expected = word.word.slice(splitAt).toLowerCase();
-  const correct = input.value.trim().toLowerCase() === expected;
-  input.classList.remove("is-wrong", "is-correct");
-  input.classList.add(correct ? "is-correct" : "is-wrong");
-  if (correct) {
-    completeWordAnswered = true;
-    recordObjectiveResult(word, completeWordHadError ? "hard" : "good");
-    renderPractice();
-  } else {
+  if (completeWordAnswered) return;
+  document.querySelectorAll("[data-complete-word]").forEach((input) => {
+    completeAnswers[input.dataset.completeWord] = input.value.trim().toLowerCase();
+  });
+  const targets = getCurrentClozeTargets();
+  if (!targets.length) return;
+  const results = {};
+  targets.forEach((word) => {
+    const splitAt = Math.max(1, Math.ceil(word.length / 2));
+    const expected = word.slice(splitAt).toLowerCase();
+    results[word] = completeResults[word] === "correct" || completeAnswers[word] === expected ? "correct" : "wrong";
+  });
+  completeResults = results;
+  const allCorrect = targets.every((word) => results[word] === "correct");
+  if (!allCorrect) {
     completeWordHadError = true;
-    if (feedback) feedback.textContent = "缺失字母不正确，请结合上下文再试一次";
-    setTimeout(() => input.classList.remove("is-wrong"), 450);
+    renderPractice();
+    return;
   }
+  completeWordAnswered = true;
+  if (practiceMode === "complete") {
+    practiceQueue.slice(practiceIndex, practiceIndex + targets.length).forEach((word) => {
+      recordObjectiveResult(word, completeWordHadError ? "hard" : "good");
+    });
+  } else {
+    state.reviewsToday += 1;
+    updateStreak();
+    saveState();
+  }
+  renderPractice();
 }
 
 function revealCompleteWordAnswer() {
-  const word = practiceQueue[practiceIndex];
-  if (!word || completeWordAnswered) return;
+  const targets = getCurrentClozeTargets();
+  if (!targets.length || completeWordAnswered) return;
   completeWordHadError = true;
   completeWordAnswered = true;
-  recordObjectiveResult(word, "again");
+  targets.forEach((word) => {
+    const splitAt = Math.max(1, Math.ceil(word.length / 2));
+    completeAnswers[word] = word.slice(splitAt);
+    completeResults[word] = "correct";
+  });
+  if (practiceMode === "complete") {
+    practiceQueue.slice(practiceIndex, practiceIndex + targets.length).forEach((word) => recordObjectiveResult(word, "again"));
+  } else {
+    state.reviewsToday += 1;
+    updateStreak();
+    saveState();
+  }
   renderPractice();
+}
+
+function getCurrentClozeTargets() {
+  if (practiceMode === "simulation") {
+    return practiceQueue[practiceIndex]?.targets || [];
+  }
+  if (practiceMode === "complete") {
+    return practiceQueue.slice(practiceIndex, practiceIndex + 5).map((word) => word.word);
+  }
+  return [];
 }
 
 function recordObjectiveResult(word, rating) {
@@ -2451,10 +2941,14 @@ function recordObjectiveResult(word, rating) {
 }
 
 function advanceObjectiveQuestion() {
-  practiceIndex += 1;
+  practiceIndex += practiceMode === "complete" ? Math.min(5, practiceQueue.length - practiceIndex) : 1;
   vocabularyAnswered = null;
   completeWordAnswered = false;
   completeWordHadError = false;
+  completeAnswers = {};
+  completeResults = {};
+  sentenceSelection = [];
+  sentenceAnswered = null;
   contextSelectedWord = "";
   renderPractice();
 }
@@ -2486,11 +2980,12 @@ async function addArticleWord(rawWord, mode) {
     // A minimal local card below keeps article classification usable offline.
   }
 
+  const preview = getBasicGloss(word);
   state.words.push({
     ...(entry || {
       word,
-      partOfSpeech: "",
-      definitions: [{ en: "Definition pending", zh: "释义待补充" }],
+      partOfSpeech: preview?.partOfSpeech || "",
+      definitions: [{ en: "Definition pending", zh: preview?.zh || "释义待补充" }],
       irregularForms: [],
       wordFamily: [],
       collocations: [],

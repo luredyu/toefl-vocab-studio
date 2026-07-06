@@ -782,7 +782,7 @@ button {
 .candidate-head,
 .candidate-row {
   display: grid;
-  grid-template-columns: minmax(210px, 1.3fr) 90px 110px 170px;
+  grid-template-columns: minmax(170px, 1fr) minmax(180px, 1.15fr) 58px 96px 160px;
   align-items: center;
   gap: 16px;
   padding: 13px 18px;
@@ -828,6 +828,12 @@ button {
   font-size: 16px;
 }
 
+.candidate-gloss {
+  color: var(--ink-soft);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
 .difficulty-dot {
   width: 7px;
   height: 7px;
@@ -859,15 +865,136 @@ button {
   font-weight: 700;
 }
 
-.mode-option[data-mode="spelling"].is-selected {
+.mode-option[data-candidate-mode="spelling"].is-selected,
+.mode-option[data-article-mode="spelling"].is-selected {
   color: #95501e;
   border-color: #e8b48f;
   background: var(--orange-soft);
 }
 
-.mode-option[data-mode="recognition"].is-selected {
+.mode-option[data-candidate-mode="recognition"].is-selected,
+.mode-option[data-article-mode="recognition"].is-selected {
   color: var(--blue);
   border-color: #a9c0d2;
+  background: var(--blue-soft);
+}
+
+.candidate-view-tabs {
+  display: flex;
+  width: 240px;
+}
+
+.candidate-view-tabs .tab-button {
+  flex: 1;
+  padding: 9px 10px;
+}
+
+.source-classifier {
+  display: grid;
+  gap: 14px;
+}
+
+.source-classifier-legend {
+  display: flex;
+  gap: 16px;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.source-classifier-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.legend-dot.unclassified { background: #b8bdb7; }
+.legend-dot.spelling { background: var(--orange); }
+.legend-dot.recognition { background: var(--blue); }
+
+.source-active-word {
+  display: flex;
+  min-height: 54px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 11px 14px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: var(--surface-soft);
+}
+
+.source-active-word strong {
+  margin-right: 10px;
+  font-family: Georgia, serif;
+  font-size: 20px;
+}
+
+.source-active-word span {
+  color: var(--ink-soft);
+  font-size: 12px;
+}
+
+.source-active-word.is-empty {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.source-text {
+  padding: 28px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fcfcfa;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 17px;
+  line-height: 2.75;
+}
+
+.source-token {
+  display: inline-flex;
+  position: relative;
+  top: 0.55em;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 2px;
+  line-height: 1.05;
+  vertical-align: baseline;
+}
+
+.source-token button {
+  padding: 1px 3px 2px;
+  border: 0;
+  border-bottom: 2px solid #b8bdb7;
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+}
+
+.source-token small {
+  max-width: 110px;
+  margin-top: 3px;
+  overflow: hidden;
+  color: var(--muted);
+  font-family: -apple-system, BlinkMacSystemFont, "Noto Sans SC", sans-serif;
+  font-size: 8px;
+  line-height: 1.15;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.source-token.is-spelling button {
+  border-color: var(--orange);
+  background: var(--orange-soft);
+}
+
+.source-token.is-recognition button {
+  border-color: var(--blue);
   background: var(--blue-soft);
 }
 
@@ -1171,6 +1298,13 @@ button {
   text-align: center;
 }
 
+.simulation-summary {
+  margin-top: 18px;
+  padding: 10px;
+  border-radius: 9px;
+  background: var(--surface-soft);
+}
+
 .practice-stage {
   display: grid;
   min-height: 540px;
@@ -1333,6 +1467,29 @@ button {
   font-weight: 700;
 }
 
+.article-token {
+  display: inline-flex;
+  position: relative;
+  top: 0.5em;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 2px;
+  line-height: 1.05;
+  vertical-align: baseline;
+}
+
+.article-token small {
+  max-width: 96px;
+  margin-top: 3px;
+  overflow: hidden;
+  color: var(--muted);
+  font-family: -apple-system, BlinkMacSystemFont, "Noto Sans SC", sans-serif;
+  font-size: 8px;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .article-word {
   display: inline;
   margin: 0;
@@ -1437,6 +1594,21 @@ button {
   font-size: 11px;
 }
 
+.article-word-picker > div:first-child {
+  display: grid;
+  gap: 3px;
+}
+
+.article-word-picker span {
+  color: var(--ink-soft);
+}
+
+.article-word-picker em {
+  color: var(--muted);
+  font-size: 10px;
+  font-style: normal;
+}
+
 .article-word-picker {
   display: flex;
   align-items: center;
@@ -1486,6 +1658,104 @@ button {
 .complete-word-input.is-correct {
   color: var(--green);
   border-color: var(--green);
+}
+
+.complete-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+.cloze-answer-glosses {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 14px 0;
+}
+
+.cloze-answer-glosses span {
+  display: inline-grid;
+  gap: 2px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  color: var(--muted);
+  background: var(--surface-soft);
+  font-size: 9px;
+}
+
+.cloze-answer-glosses strong {
+  color: var(--ink);
+  font-size: 11px;
+}
+
+.sentence-cue {
+  margin-bottom: 18px;
+  padding: 16px 18px;
+  border-left: 4px solid var(--blue);
+  color: var(--ink-soft);
+  background: var(--blue-soft);
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.sentence-answer {
+  display: flex;
+  min-height: 76px;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 18px;
+  padding: 14px;
+  border: 2px dashed var(--line);
+  border-radius: 12px;
+  background: #fcfcfa;
+}
+
+.sentence-answer > span {
+  width: 100%;
+  color: var(--muted);
+  font-size: 12px;
+  text-align: center;
+}
+
+.sentence-answer button,
+.sentence-tiles button {
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  color: var(--ink);
+  background: #fff;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.sentence-answer button {
+  border-color: #a9c0d2;
+  background: var(--blue-soft);
+}
+
+.sentence-answer.is-correct {
+  border-color: #79a78f;
+  background: var(--green-soft);
+}
+
+.sentence-answer.is-wrong {
+  border-color: #c7786f;
+  background: #fff1ef;
+}
+
+.sentence-tiles {
+  display: flex;
+  min-height: 58px;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.sentence-tiles button:disabled {
+  opacity: 0.25;
+  cursor: default;
 }
 
 .settings-grid {

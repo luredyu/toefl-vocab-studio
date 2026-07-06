@@ -1,0 +1,4574 @@
+[
+  {
+    "word": "abandon",
+    "partOfSpeech": "",
+    "zh": "放弃",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "ability",
+    "partOfSpeech": "",
+    "zh": "能力",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "abolish",
+    "partOfSpeech": "",
+    "zh": "废除；取消",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "absence",
+    "partOfSpeech": "",
+    "zh": "缺席",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "absorb",
+    "partOfSpeech": "verb",
+    "zh": "吸收",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "absorption",
+    "partOfSpeech": "",
+    "zh": "吸收",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "abstract",
+    "partOfSpeech": "",
+    "zh": "抽象的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "abundant",
+    "partOfSpeech": "adjective",
+    "zh": "丰富的，充裕组织",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "abuse",
+    "partOfSpeech": "",
+    "zh": "滥用",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "accelerate",
+    "partOfSpeech": "",
+    "zh": "加快",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "access",
+    "partOfSpeech": "verb",
+    "zh": "进入",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "accompany",
+    "partOfSpeech": "",
+    "zh": "陪伴",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "accomplish",
+    "partOfSpeech": "",
+    "zh": "完成",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "account",
+    "partOfSpeech": "",
+    "zh": "帐户",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "accumulate",
+    "partOfSpeech": "",
+    "zh": "积累",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "accurate",
+    "partOfSpeech": "",
+    "zh": "准确的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "achieve",
+    "partOfSpeech": "",
+    "zh": "实现",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "acknowledge",
+    "partOfSpeech": "verb",
+    "zh": "承认，确认收到",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "acquire",
+    "partOfSpeech": "",
+    "zh": "获得",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "adapt",
+    "partOfSpeech": "",
+    "zh": "适应",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "adaptation",
+    "partOfSpeech": "noun",
+    "zh": "适应",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "additional",
+    "partOfSpeech": "",
+    "zh": "额外的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "adjacent",
+    "partOfSpeech": "",
+    "zh": "邻近的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "adjust",
+    "partOfSpeech": "",
+    "zh": "调整",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "administration",
+    "partOfSpeech": "",
+    "zh": "管理",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "adolescent",
+    "partOfSpeech": "",
+    "zh": "青少年",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "adopt",
+    "partOfSpeech": "",
+    "zh": "采用",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "advocate",
+    "partOfSpeech": "verb",
+    "zh": "提倡，支持",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "affair",
+    "partOfSpeech": "",
+    "zh": "事件",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "affect",
+    "partOfSpeech": "",
+    "zh": "影响",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "afford",
+    "partOfSpeech": "",
+    "zh": "承担得起",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "aggregate",
+    "partOfSpeech": "",
+    "zh": "总计",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "aggressive",
+    "partOfSpeech": "",
+    "zh": "好斗的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "agricultural",
+    "partOfSpeech": "adjective",
+    "zh": "农业的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "alarm",
+    "partOfSpeech": "",
+    "zh": "使担心",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "algorithm",
+    "partOfSpeech": "noun",
+    "zh": "算法",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "allocation",
+    "partOfSpeech": "noun",
+    "zh": "分配，配置",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "alter",
+    "partOfSpeech": "",
+    "zh": "改变",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "alternative",
+    "partOfSpeech": "noun / adjective",
+    "zh": "替代品",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "altitude",
+    "partOfSpeech": "",
+    "zh": "海拔高度",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "ambitious",
+    "partOfSpeech": "",
+    "zh": "雄心勃勃的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "analyze",
+    "partOfSpeech": "verb",
+    "zh": "分析",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "ancestor",
+    "partOfSpeech": "",
+    "zh": "祖先",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "ancient",
+    "partOfSpeech": "",
+    "zh": "古代的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "annual",
+    "partOfSpeech": "",
+    "zh": "年度的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "anthropology",
+    "partOfSpeech": "",
+    "zh": "人类学",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "antibiotic",
+    "partOfSpeech": "noun",
+    "zh": "抗生素",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "anticipate",
+    "partOfSpeech": "",
+    "zh": "预料",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "apparent",
+    "partOfSpeech": "",
+    "zh": "显然的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "appearance",
+    "partOfSpeech": "",
+    "zh": "外观",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "appreciate",
+    "partOfSpeech": "",
+    "zh": "欣赏",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "approach",
+    "partOfSpeech": "",
+    "zh": "方法",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "appropriate",
+    "partOfSpeech": "adjective",
+    "zh": "适当的，恰当的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "appropriately",
+    "partOfSpeech": "",
+    "zh": "适当地",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "approximately",
+    "partOfSpeech": "",
+    "zh": "大约",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "architecture",
+    "partOfSpeech": "",
+    "zh": "建筑",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "argument",
+    "partOfSpeech": "noun",
+    "zh": "论点，争论",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "arid",
+    "partOfSpeech": "",
+    "zh": "干旱的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "artifact",
+    "partOfSpeech": "noun",
+    "zh": "人工制品，文物",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "artificial",
+    "partOfSpeech": "",
+    "zh": "人工的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "artisanal",
+    "partOfSpeech": "adjective",
+    "zh": "手工艺的，工匠精神的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "aspect",
+    "partOfSpeech": "",
+    "zh": "方面",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "aspiration",
+    "partOfSpeech": "",
+    "zh": "渴望",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "assemble",
+    "partOfSpeech": "",
+    "zh": "集合；组装",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "assess",
+    "partOfSpeech": "",
+    "zh": "评估",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "assign",
+    "partOfSpeech": "",
+    "zh": "分配",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "assist",
+    "partOfSpeech": "",
+    "zh": "协助",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "associate",
+    "partOfSpeech": "",
+    "zh": "联系",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "assure",
+    "partOfSpeech": "",
+    "zh": "使确信",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "asteroid",
+    "partOfSpeech": "",
+    "zh": "小行星",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "atmospheric",
+    "partOfSpeech": "adjective",
+    "zh": "大气的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "atom",
+    "partOfSpeech": "",
+    "zh": "原子",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "attach",
+    "partOfSpeech": "",
+    "zh": "使附着",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "attain",
+    "partOfSpeech": "",
+    "zh": "得到",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "attempt",
+    "partOfSpeech": "",
+    "zh": "尝试",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "attribute",
+    "partOfSpeech": "",
+    "zh": "属性；特征",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "audience",
+    "partOfSpeech": "",
+    "zh": "观众",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "audit",
+    "partOfSpeech": "verb",
+    "zh": "/n. 旁听；审计",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "authority",
+    "partOfSpeech": "",
+    "zh": "权威",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "automatic",
+    "partOfSpeech": "",
+    "zh": "自动的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "available",
+    "partOfSpeech": "",
+    "zh": "可用的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "aware",
+    "partOfSpeech": "",
+    "zh": "意识到",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "barrier",
+    "partOfSpeech": "",
+    "zh": "障碍",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "basin",
+    "partOfSpeech": "",
+    "zh": "盆地",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "battle",
+    "partOfSpeech": "",
+    "zh": "战斗",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "beneficial",
+    "partOfSpeech": "adjective",
+    "zh": "有益的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "benefit",
+    "partOfSpeech": "",
+    "zh": "好处",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "bias",
+    "partOfSpeech": "",
+    "zh": "偏见",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "biochemistry",
+    "partOfSpeech": "noun",
+    "zh": "生物化学",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "biodiversity",
+    "partOfSpeech": "noun",
+    "zh": "生物多样性",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "boundary",
+    "partOfSpeech": "",
+    "zh": "边界",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "box office",
+    "partOfSpeech": "",
+    "zh": "售票处",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "branch",
+    "partOfSpeech": "",
+    "zh": "分支",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "brevity",
+    "partOfSpeech": "",
+    "zh": "简洁",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "bulky",
+    "partOfSpeech": "",
+    "zh": "笨重的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "capable",
+    "partOfSpeech": "",
+    "zh": "有能力的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "capital",
+    "partOfSpeech": "",
+    "zh": "资本",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "carpool",
+    "partOfSpeech": "verb",
+    "zh": "/n. 拼车",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "catalyst",
+    "partOfSpeech": "noun",
+    "zh": "催化剂，促进因素",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "category",
+    "partOfSpeech": "",
+    "zh": "种类",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "cease",
+    "partOfSpeech": "",
+    "zh": "停止",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "celestial",
+    "partOfSpeech": "adjective",
+    "zh": "天空的，天体的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "chaos",
+    "partOfSpeech": "",
+    "zh": "混乱",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "chemical",
+    "partOfSpeech": "",
+    "zh": "化学",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "chief",
+    "partOfSpeech": "",
+    "zh": "首领；主要的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "circulate",
+    "partOfSpeech": "",
+    "zh": "循环",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "circumstance",
+    "partOfSpeech": "",
+    "zh": "条件；状况",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "citizen",
+    "partOfSpeech": "",
+    "zh": "公民",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "civilization",
+    "partOfSpeech": "noun",
+    "zh": "文明",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "claim",
+    "partOfSpeech": "",
+    "zh": "宣称",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "clan",
+    "partOfSpeech": "",
+    "zh": "家族",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "clarify",
+    "partOfSpeech": "",
+    "zh": "澄清",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "classic",
+    "partOfSpeech": "",
+    "zh": "经典",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "classification",
+    "partOfSpeech": "",
+    "zh": "分类",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "climate",
+    "partOfSpeech": "",
+    "zh": "气候",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "closure",
+    "partOfSpeech": "noun",
+    "zh": "关闭，倒闭",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "cognition",
+    "partOfSpeech": "noun",
+    "zh": "认知能力",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "cohesion",
+    "partOfSpeech": "noun",
+    "zh": "凝聚力",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "cohesive",
+    "partOfSpeech": "",
+    "zh": "有凝聚力的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "coincide",
+    "partOfSpeech": "",
+    "zh": "重合",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "collaboration",
+    "partOfSpeech": "noun",
+    "zh": "合作（形容词形式为collaborative",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "collapse",
+    "partOfSpeech": "",
+    "zh": "崩溃",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "colleague",
+    "partOfSpeech": "",
+    "zh": "同事",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "combine",
+    "partOfSpeech": "",
+    "zh": "结合",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "comment",
+    "partOfSpeech": "",
+    "zh": "评论",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "commercial",
+    "partOfSpeech": "",
+    "zh": "商业的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "commit",
+    "partOfSpeech": "",
+    "zh": "犯罪",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "commodity",
+    "partOfSpeech": "",
+    "zh": "商品",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "community",
+    "partOfSpeech": "",
+    "zh": "社区",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "commute",
+    "partOfSpeech": "verb",
+    "zh": "/n. 通勤",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "comparatively",
+    "partOfSpeech": "",
+    "zh": "相对地",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "compelling",
+    "partOfSpeech": "adjective",
+    "zh": "令人信服的，引人入胜的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "competitive",
+    "partOfSpeech": "adjective",
+    "zh": "有竞争力的（高频短语： competitive edge 竞争力）",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "complex",
+    "partOfSpeech": "",
+    "zh": "复杂的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "complexity",
+    "partOfSpeech": "noun",
+    "zh": "复杂性",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "complicate",
+    "partOfSpeech": "",
+    "zh": "复杂化",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "component",
+    "partOfSpeech": "noun",
+    "zh": "成分，组成部分",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "compose",
+    "partOfSpeech": "",
+    "zh": "组成",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "composition",
+    "partOfSpeech": "",
+    "zh": "作文；构成",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "compost",
+    "partOfSpeech": "noun / verb",
+    "zh": "堆肥",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "compound",
+    "partOfSpeech": "",
+    "zh": "复合物",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "compress",
+    "partOfSpeech": "",
+    "zh": "压缩",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "compromise",
+    "partOfSpeech": "",
+    "zh": "妥协",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "concentrate",
+    "partOfSpeech": "verb",
+    "zh": "集中，专心",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "conclusion",
+    "partOfSpeech": "",
+    "zh": "结论",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "confidence",
+    "partOfSpeech": "",
+    "zh": "信心",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "confirm",
+    "partOfSpeech": "",
+    "zh": "确认",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "conflict",
+    "partOfSpeech": "",
+    "zh": "冲突",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "conform",
+    "partOfSpeech": "",
+    "zh": "符合",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "confront",
+    "partOfSpeech": "",
+    "zh": "面对",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "conquest",
+    "partOfSpeech": "",
+    "zh": "征服",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "consent",
+    "partOfSpeech": "",
+    "zh": "同意",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "consequence",
+    "partOfSpeech": "",
+    "zh": "结果",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "consequently",
+    "partOfSpeech": "adverb",
+    "zh": "结果，因此",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "conservation",
+    "partOfSpeech": "noun",
+    "zh": "保护（动植物/自然资源）",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "considerable",
+    "partOfSpeech": "",
+    "zh": "相当大的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "consist",
+    "partOfSpeech": "",
+    "zh": "包括",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "consolidate",
+    "partOfSpeech": "verb",
+    "zh": "巩固，整合",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "constant",
+    "partOfSpeech": "",
+    "zh": "常数；不变的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "construct",
+    "partOfSpeech": "",
+    "zh": "建造",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "consume",
+    "partOfSpeech": "",
+    "zh": "消费",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "contemporary",
+    "partOfSpeech": "adjective",
+    "zh": "当代的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "context",
+    "partOfSpeech": "noun",
+    "zh": "语境，背景",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "contract",
+    "partOfSpeech": "",
+    "zh": "合同",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "contradiction",
+    "partOfSpeech": "",
+    "zh": "矛盾",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "contrary",
+    "partOfSpeech": "",
+    "zh": "相反的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "contrast",
+    "partOfSpeech": "noun / verb",
+    "zh": "对比",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "contribute",
+    "partOfSpeech": "",
+    "zh": "贡献",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "controversy",
+    "partOfSpeech": "noun",
+    "zh": "争端，争议",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "convenient",
+    "partOfSpeech": "adjective",
+    "zh": "方便的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "conventional",
+    "partOfSpeech": "adjective",
+    "zh": "传统的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "convert",
+    "partOfSpeech": "",
+    "zh": "转换",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "convince",
+    "partOfSpeech": "",
+    "zh": "说服",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "cooperate",
+    "partOfSpeech": "",
+    "zh": "合作",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "coordinate",
+    "partOfSpeech": "",
+    "zh": "协调",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "core",
+    "partOfSpeech": "",
+    "zh": "核心",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "corporation",
+    "partOfSpeech": "noun",
+    "zh": "大公司",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "correspond",
+    "partOfSpeech": "",
+    "zh": "符合；相一致",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "countercurrent",
+    "partOfSpeech": "",
+    "zh": "反向电流",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "counterpart",
+    "partOfSpeech": "",
+    "zh": "对应的事物",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "creature",
+    "partOfSpeech": "",
+    "zh": "生物",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "credit",
+    "partOfSpeech": "",
+    "zh": "信用；贷款",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "crime",
+    "partOfSpeech": "",
+    "zh": "罪行",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "crisis",
+    "partOfSpeech": "",
+    "zh": "危机",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "critic",
+    "partOfSpeech": "",
+    "zh": "评论家",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "criticism",
+    "partOfSpeech": "noun",
+    "zh": "批评",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "crucial",
+    "partOfSpeech": "",
+    "zh": "至关重要的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "crust",
+    "partOfSpeech": "",
+    "zh": "地壳",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "crystal",
+    "partOfSpeech": "noun",
+    "zh": "水晶",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "culture",
+    "partOfSpeech": "",
+    "zh": "文化",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "currency",
+    "partOfSpeech": "",
+    "zh": "货币",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "decade",
+    "partOfSpeech": "",
+    "zh": "十年",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "decline",
+    "partOfSpeech": "",
+    "zh": "下降",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "decompose",
+    "partOfSpeech": "",
+    "zh": "分解",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "defend",
+    "partOfSpeech": "",
+    "zh": "保卫",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "deficient",
+    "partOfSpeech": "",
+    "zh": "有缺陷的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "define",
+    "partOfSpeech": "",
+    "zh": "定义",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "deform",
+    "partOfSpeech": "",
+    "zh": "变形",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "degradation",
+    "partOfSpeech": "noun",
+    "zh": "降解，退化",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "degrade",
+    "partOfSpeech": "",
+    "zh": "降低",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "demand",
+    "partOfSpeech": "noun / verb",
+    "zh": "需求",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "democracy",
+    "partOfSpeech": "",
+    "zh": "民主",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "demonstrate",
+    "partOfSpeech": "",
+    "zh": "演示",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "deny",
+    "partOfSpeech": "",
+    "zh": "否认",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "depict",
+    "partOfSpeech": "",
+    "zh": "描述",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "depletion",
+    "partOfSpeech": "noun",
+    "zh": "消耗，枯竭",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "deposit",
+    "partOfSpeech": "",
+    "zh": "存款",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "depress",
+    "partOfSpeech": "",
+    "zh": "使沮丧",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "derive",
+    "partOfSpeech": "",
+    "zh": "得到；起源",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "descend",
+    "partOfSpeech": "",
+    "zh": "下降",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "desirable",
+    "partOfSpeech": "",
+    "zh": "可取的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "destructive",
+    "partOfSpeech": "",
+    "zh": "破坏性的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "detect",
+    "partOfSpeech": "",
+    "zh": "发现；查明",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "deviate",
+    "partOfSpeech": "",
+    "zh": "偏离",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "device",
+    "partOfSpeech": "",
+    "zh": "设备",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "devoid",
+    "partOfSpeech": "",
+    "zh": "缺乏",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "devotion",
+    "partOfSpeech": "",
+    "zh": "奉献",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "differentiate",
+    "partOfSpeech": "",
+    "zh": "区分",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "diffuse",
+    "partOfSpeech": "",
+    "zh": "扩散",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "digitize",
+    "partOfSpeech": "verb",
+    "zh": "数字化",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "dilemma",
+    "partOfSpeech": "",
+    "zh": "困境",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "dimension",
+    "partOfSpeech": "noun",
+    "zh": "维度，规模",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "diminish",
+    "partOfSpeech": "",
+    "zh": "减少",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "discharge",
+    "partOfSpeech": "",
+    "zh": "排出",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "disgust",
+    "partOfSpeech": "",
+    "zh": "厌恶",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "displace",
+    "partOfSpeech": "",
+    "zh": "取代",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "display",
+    "partOfSpeech": "",
+    "zh": "显示",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "dispose",
+    "partOfSpeech": "",
+    "zh": "处置",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "dispute",
+    "partOfSpeech": "",
+    "zh": "争端",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "disruption",
+    "partOfSpeech": "noun",
+    "zh": "中断，瓦解",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "dissolve",
+    "partOfSpeech": "",
+    "zh": "溶解",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "distinct",
+    "partOfSpeech": "",
+    "zh": "不同的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "distinctive",
+    "partOfSpeech": "adjective",
+    "zh": "独特的，与众不同的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "distinguish",
+    "partOfSpeech": "",
+    "zh": "区分",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "distort",
+    "partOfSpeech": "",
+    "zh": "扭曲",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "distract",
+    "partOfSpeech": "",
+    "zh": "分散",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "distribute",
+    "partOfSpeech": "",
+    "zh": "分发",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "diverse",
+    "partOfSpeech": "adjective",
+    "zh": "多样化的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "domesticate",
+    "partOfSpeech": "",
+    "zh": "驯化",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "dominant",
+    "partOfSpeech": "",
+    "zh": "占优势的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "dominate",
+    "partOfSpeech": "",
+    "zh": "支配；控制",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "dormitory",
+    "partOfSpeech": "",
+    "zh": "宿舍",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "downsize",
+    "partOfSpeech": "verb",
+    "zh": "裁员，缩小规模",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "downtime",
+    "partOfSpeech": "noun",
+    "zh": "停工期，休息时间",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "dramatic",
+    "partOfSpeech": "",
+    "zh": "戏剧性的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "drought",
+    "partOfSpeech": "",
+    "zh": "干旱",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "duration",
+    "partOfSpeech": "",
+    "zh": "持续时间",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "eager",
+    "partOfSpeech": "",
+    "zh": "渴望的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "eccentric",
+    "partOfSpeech": "",
+    "zh": "古怪的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "echo",
+    "partOfSpeech": "",
+    "zh": "回声",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "ecological",
+    "partOfSpeech": "adjective",
+    "zh": "生态的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "ecosystem",
+    "partOfSpeech": "noun",
+    "zh": "生态系统",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "effect",
+    "partOfSpeech": "noun",
+    "zh": "效应",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "efficiency",
+    "partOfSpeech": "noun",
+    "zh": "效率",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "elaborate",
+    "partOfSpeech": "",
+    "zh": "精心制作的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "electronic",
+    "partOfSpeech": "adjective",
+    "zh": "电子的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "elementary",
+    "partOfSpeech": "",
+    "zh": "初级的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "elevation",
+    "partOfSpeech": "",
+    "zh": "高程",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "eliminate",
+    "partOfSpeech": "",
+    "zh": "消除",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "emerge",
+    "partOfSpeech": "",
+    "zh": "显现",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "emigration",
+    "partOfSpeech": "",
+    "zh": "移民",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "emission",
+    "partOfSpeech": "noun",
+    "zh": "排放",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "emit",
+    "partOfSpeech": "",
+    "zh": "发出",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "emotion",
+    "partOfSpeech": "",
+    "zh": "情感",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "emphasis",
+    "partOfSpeech": "noun",
+    "zh": "强调",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "empirical",
+    "partOfSpeech": "",
+    "zh": "经验主义的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "enable",
+    "partOfSpeech": "",
+    "zh": "使可能",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "encounter",
+    "partOfSpeech": "",
+    "zh": "遇到",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "endangered",
+    "partOfSpeech": "adjective",
+    "zh": "濒危的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "enforce",
+    "partOfSpeech": "",
+    "zh": "执行；强迫",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "engaging",
+    "partOfSpeech": "adjective",
+    "zh": "迷人的，吸引人的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "enhance",
+    "partOfSpeech": "",
+    "zh": "增强",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "enormous",
+    "partOfSpeech": "",
+    "zh": "巨大的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "enroll",
+    "partOfSpeech": "verb",
+    "zh": "注册，登记",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "ensure",
+    "partOfSpeech": "",
+    "zh": "确保",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "entertainment",
+    "partOfSpeech": "",
+    "zh": "娱乐",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "enthusiast",
+    "partOfSpeech": "noun",
+    "zh": "爱好者，热衷者",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "entrepreneur",
+    "partOfSpeech": "noun",
+    "zh": "企业家",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "envision",
+    "partOfSpeech": "",
+    "zh": "想象",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "enzyme",
+    "partOfSpeech": "noun",
+    "zh": "酶",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "ephemeral",
+    "partOfSpeech": "",
+    "zh": "短暂的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "equate",
+    "partOfSpeech": "",
+    "zh": "等同起来",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "equilibrium",
+    "partOfSpeech": "noun",
+    "zh": "平衡",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "equivalent",
+    "partOfSpeech": "",
+    "zh": "相等的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "erosion",
+    "partOfSpeech": "",
+    "zh": "腐蚀",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "eruption",
+    "partOfSpeech": "",
+    "zh": "喷发",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "essay",
+    "partOfSpeech": "noun",
+    "zh": "论文",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "essential",
+    "partOfSpeech": "adjective",
+    "zh": "本质的，极其重要的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "establish",
+    "partOfSpeech": "",
+    "zh": "建立",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "estimate",
+    "partOfSpeech": "",
+    "zh": "估计",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "ethic",
+    "partOfSpeech": "",
+    "zh": "伦理",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "ethics",
+    "partOfSpeech": "noun",
+    "zh": "伦理，道德",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "ethnic",
+    "partOfSpeech": "",
+    "zh": "民族的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "evaporate",
+    "partOfSpeech": "",
+    "zh": "蒸发",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "eventually",
+    "partOfSpeech": "",
+    "zh": "最后",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "evidence",
+    "partOfSpeech": "noun",
+    "zh": "证据",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "evident",
+    "partOfSpeech": "",
+    "zh": "明显的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "evolution",
+    "partOfSpeech": "noun",
+    "zh": "进化",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "evolve",
+    "partOfSpeech": "",
+    "zh": "进化",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "exaggerate",
+    "partOfSpeech": "",
+    "zh": "夸大",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "excavate",
+    "partOfSpeech": "",
+    "zh": "挖掘",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "exceedingly",
+    "partOfSpeech": "",
+    "zh": "极其",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "excess",
+    "partOfSpeech": "",
+    "zh": "过度的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "exclusive",
+    "partOfSpeech": "",
+    "zh": "独家",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "exhaust",
+    "partOfSpeech": "",
+    "zh": "耗尽",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "exhibit",
+    "partOfSpeech": "",
+    "zh": "展览",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "exhibition",
+    "partOfSpeech": "noun",
+    "zh": "展览",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "exist",
+    "partOfSpeech": "",
+    "zh": "存在",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "exotic",
+    "partOfSpeech": "",
+    "zh": "异国情调的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "expand",
+    "partOfSpeech": "",
+    "zh": "扩大",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "expansion",
+    "partOfSpeech": "noun",
+    "zh": "扩张，膨胀",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "expedition",
+    "partOfSpeech": "",
+    "zh": "探险",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "expertise",
+    "partOfSpeech": "",
+    "zh": "专业知识",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "explicit",
+    "partOfSpeech": "",
+    "zh": "明确的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "exploit",
+    "partOfSpeech": "",
+    "zh": "开发；利用",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "explore",
+    "partOfSpeech": "",
+    "zh": "探索",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "export",
+    "partOfSpeech": "",
+    "zh": "出口",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "expose",
+    "partOfSpeech": "",
+    "zh": "暴露",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "extension",
+    "partOfSpeech": "noun",
+    "zh": "延期 (如申请作业延交)",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "extensive",
+    "partOfSpeech": "",
+    "zh": "广泛的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "external",
+    "partOfSpeech": "",
+    "zh": "外部的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "extinct",
+    "partOfSpeech": "",
+    "zh": "灭绝的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "extract",
+    "partOfSpeech": "",
+    "zh": "提取",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "extraterrestrial",
+    "partOfSpeech": "adjective",
+    "zh": "地外的，外星的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "extremely",
+    "partOfSpeech": "",
+    "zh": "非常",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "facilitate",
+    "partOfSpeech": "verb",
+    "zh": "促进，使便利",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "fascinate",
+    "partOfSpeech": "",
+    "zh": "深深吸引",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "fauna",
+    "partOfSpeech": "",
+    "zh": "动物群",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "feasible",
+    "partOfSpeech": "",
+    "zh": "可行的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "feature",
+    "partOfSpeech": "",
+    "zh": "特色；特征",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "federal",
+    "partOfSpeech": "",
+    "zh": "联邦的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "fee",
+    "partOfSpeech": "",
+    "zh": "费用",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "feedback",
+    "partOfSpeech": "noun",
+    "zh": "反馈",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "fertile",
+    "partOfSpeech": "adjective",
+    "zh": "肥沃的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "fertility",
+    "partOfSpeech": "",
+    "zh": "富饶",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "finance",
+    "partOfSpeech": "",
+    "zh": "金融",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "finite",
+    "partOfSpeech": "",
+    "zh": "有限的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "flexible",
+    "partOfSpeech": "adjective",
+    "zh": "灵活的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "flexibly",
+    "partOfSpeech": "",
+    "zh": "灵活地",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "flourish",
+    "partOfSpeech": "",
+    "zh": "繁荣",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "fluctuate",
+    "partOfSpeech": "verb",
+    "zh": "波动，变动",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "fluent",
+    "partOfSpeech": "",
+    "zh": "流利的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "focus",
+    "partOfSpeech": "",
+    "zh": "焦点",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "footprint",
+    "partOfSpeech": "noun",
+    "zh": "足迹",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "formal",
+    "partOfSpeech": "adjective",
+    "zh": "正式的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "formation",
+    "partOfSpeech": "",
+    "zh": "形成",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "fort",
+    "partOfSpeech": "",
+    "zh": "堡垒",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "foster",
+    "partOfSpeech": "verb",
+    "zh": "培养，促进",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "foundation",
+    "partOfSpeech": "",
+    "zh": "基础；基金会",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "fragment",
+    "partOfSpeech": "",
+    "zh": "片段；碎片",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "fulfil",
+    "partOfSpeech": "",
+    "zh": "履行；完成",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "function",
+    "partOfSpeech": "",
+    "zh": "功能",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "fundamental",
+    "partOfSpeech": "",
+    "zh": "基本的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "furthermore",
+    "partOfSpeech": "adverb",
+    "zh": "而且",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "generate",
+    "partOfSpeech": "",
+    "zh": "生成",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "genetic",
+    "partOfSpeech": "adjective",
+    "zh": "基因的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "genre",
+    "partOfSpeech": "noun",
+    "zh": "题材，类型",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "geologist",
+    "partOfSpeech": "",
+    "zh": "地质学家",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "geometry",
+    "partOfSpeech": "",
+    "zh": "几何学",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "giant",
+    "partOfSpeech": "",
+    "zh": "巨人",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "glacier",
+    "partOfSpeech": "",
+    "zh": "冰川",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "globalization",
+    "partOfSpeech": "noun",
+    "zh": "全球化",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "grand",
+    "partOfSpeech": "",
+    "zh": "宏伟的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "grandiose",
+    "partOfSpeech": "",
+    "zh": "浮夸的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "granite",
+    "partOfSpeech": "",
+    "zh": "花岗岩",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "grant",
+    "partOfSpeech": "",
+    "zh": "授予",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "gravitational force",
+    "partOfSpeech": "",
+    "zh": "引力",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "gravity",
+    "partOfSpeech": "",
+    "zh": "重力",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "greatly",
+    "partOfSpeech": "adverb",
+    "zh": "非常；极大地",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "guarantee",
+    "partOfSpeech": "",
+    "zh": "保证",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "habitat",
+    "partOfSpeech": "noun",
+    "zh": "栖息地",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "headline",
+    "partOfSpeech": "",
+    "zh": "头条新闻",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "hemisphere",
+    "partOfSpeech": "",
+    "zh": "半球",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "herbivore",
+    "partOfSpeech": "",
+    "zh": "食草动物",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "heritage",
+    "partOfSpeech": "noun",
+    "zh": "遗产，继承物",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "hierarchy",
+    "partOfSpeech": "",
+    "zh": "等级制度",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "hinder",
+    "partOfSpeech": "verb",
+    "zh": "阻碍",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "honor",
+    "partOfSpeech": "",
+    "zh": "荣誉",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "horizon",
+    "partOfSpeech": "",
+    "zh": "地平线；眼界",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "hormone",
+    "partOfSpeech": "noun",
+    "zh": "荷尔蒙，激素",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "host",
+    "partOfSpeech": "",
+    "zh": "主办方",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "humble",
+    "partOfSpeech": "",
+    "zh": "谦虚的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "humorous",
+    "partOfSpeech": "",
+    "zh": "幽默的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "hydrogen",
+    "partOfSpeech": "",
+    "zh": "氢",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "hypothesis",
+    "partOfSpeech": "",
+    "zh": "假设",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "identify",
+    "partOfSpeech": "",
+    "zh": "识别",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "ideologically",
+    "partOfSpeech": "",
+    "zh": "意识形态上",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "ignore",
+    "partOfSpeech": "",
+    "zh": "忽略",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "illuminate",
+    "partOfSpeech": "",
+    "zh": "照亮",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "illusion",
+    "partOfSpeech": "noun",
+    "zh": "错觉，幻觉",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "illustrate",
+    "partOfSpeech": "",
+    "zh": "说明",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "imitate",
+    "partOfSpeech": "",
+    "zh": "模仿",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "immediately",
+    "partOfSpeech": "",
+    "zh": "立即",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "immense",
+    "partOfSpeech": "",
+    "zh": "巨大的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "immigrate",
+    "partOfSpeech": "",
+    "zh": "移民",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "immunity",
+    "partOfSpeech": "noun",
+    "zh": "免疫力",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "impact",
+    "partOfSpeech": "",
+    "zh": "影响",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "impetus",
+    "partOfSpeech": "",
+    "zh": "动力",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "implement",
+    "partOfSpeech": "",
+    "zh": "实施；工具",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "implementation",
+    "partOfSpeech": "noun",
+    "zh": "实施，执行",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "implicate",
+    "partOfSpeech": "",
+    "zh": "牵涉",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "import",
+    "partOfSpeech": "",
+    "zh": "进口",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "impose",
+    "partOfSpeech": "",
+    "zh": "把……强加于",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "inadequate",
+    "partOfSpeech": "",
+    "zh": "不充分的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "incentive",
+    "partOfSpeech": "noun",
+    "zh": "激励",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "income",
+    "partOfSpeech": "",
+    "zh": "收入",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "independent",
+    "partOfSpeech": "",
+    "zh": "独立的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "indicate",
+    "partOfSpeech": "",
+    "zh": "表明",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "indispensable",
+    "partOfSpeech": "adjective",
+    "zh": "不可或缺的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "individual",
+    "partOfSpeech": "",
+    "zh": "个人",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "induce",
+    "partOfSpeech": "",
+    "zh": "诱导",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "industrialization",
+    "partOfSpeech": "",
+    "zh": "工业化",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "inevitable",
+    "partOfSpeech": "",
+    "zh": "不可避免的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "infant",
+    "partOfSpeech": "",
+    "zh": "婴儿",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "influential",
+    "partOfSpeech": "",
+    "zh": "有很大影响的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "infrastructure",
+    "partOfSpeech": "noun",
+    "zh": "基础设施",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "ingenuity",
+    "partOfSpeech": "noun",
+    "zh": "独创性，聪明才智",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "inhabit",
+    "partOfSpeech": "",
+    "zh": "居住在",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "inhabitant",
+    "partOfSpeech": "noun",
+    "zh": "居民",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "inherent",
+    "partOfSpeech": "",
+    "zh": "固有的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "inhibit",
+    "partOfSpeech": "",
+    "zh": "抑制",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "inhospitable",
+    "partOfSpeech": "",
+    "zh": "不适宜居住的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "initially",
+    "partOfSpeech": "",
+    "zh": "最初",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "innovation",
+    "partOfSpeech": "",
+    "zh": "创新",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "innovative",
+    "partOfSpeech": "adjective",
+    "zh": "创新的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "input",
+    "partOfSpeech": "",
+    "zh": "输入",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "inquire",
+    "partOfSpeech": "",
+    "zh": "询问",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "insight",
+    "partOfSpeech": "",
+    "zh": "洞察力",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "inspire",
+    "partOfSpeech": "",
+    "zh": "激励",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "instruct",
+    "partOfSpeech": "",
+    "zh": "指导",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "insufficient",
+    "partOfSpeech": "",
+    "zh": "不足的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "integral",
+    "partOfSpeech": "",
+    "zh": "整体",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "intelligence",
+    "partOfSpeech": "noun",
+    "zh": "智能",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "intense",
+    "partOfSpeech": "",
+    "zh": "强烈的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "interact",
+    "partOfSpeech": "",
+    "zh": "互动",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "interaction",
+    "partOfSpeech": "noun",
+    "zh": "互动",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "intermediate",
+    "partOfSpeech": "",
+    "zh": "中间的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "internal",
+    "partOfSpeech": "",
+    "zh": "内部的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "interpret",
+    "partOfSpeech": "",
+    "zh": "解释",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "interval",
+    "partOfSpeech": "",
+    "zh": "时间间隔",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "intervene",
+    "partOfSpeech": "",
+    "zh": "干预",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "intrinsic",
+    "partOfSpeech": "",
+    "zh": "内在的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "inundate",
+    "partOfSpeech": "",
+    "zh": "淹没；泛滥",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "invasion",
+    "partOfSpeech": "",
+    "zh": "入侵",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "invasive",
+    "partOfSpeech": "adjective",
+    "zh": "侵略性的，扩散性的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "investigate",
+    "partOfSpeech": "",
+    "zh": "调查",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "investment",
+    "partOfSpeech": "",
+    "zh": "投资",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "invoke",
+    "partOfSpeech": "",
+    "zh": "援引；调用",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "involve",
+    "partOfSpeech": "",
+    "zh": "涉及",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "irrigation",
+    "partOfSpeech": "noun",
+    "zh": "灌溉",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "isolate",
+    "partOfSpeech": "",
+    "zh": "隔离",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "isolation",
+    "partOfSpeech": "noun",
+    "zh": "孤立，隔绝",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "issue",
+    "partOfSpeech": "",
+    "zh": "问题",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "justify",
+    "partOfSpeech": "",
+    "zh": "证明正当",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "labor",
+    "partOfSpeech": "",
+    "zh": "劳动",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "latitude",
+    "partOfSpeech": "",
+    "zh": "纬度",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "layer",
+    "partOfSpeech": "",
+    "zh": "层",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "lease",
+    "partOfSpeech": "noun / verb",
+    "zh": "租约，租赁",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "legal",
+    "partOfSpeech": "",
+    "zh": "合法的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "liberal",
+    "partOfSpeech": "",
+    "zh": "自由的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "limited",
+    "partOfSpeech": "adjective",
+    "zh": "有限的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "literature",
+    "partOfSpeech": "",
+    "zh": "文学",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "local",
+    "partOfSpeech": "",
+    "zh": "当地的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "longitude",
+    "partOfSpeech": "",
+    "zh": "经度",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "magma",
+    "partOfSpeech": "",
+    "zh": "岩浆",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "magnify",
+    "partOfSpeech": "",
+    "zh": "放大",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "maintain",
+    "partOfSpeech": "",
+    "zh": "维持；保养",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "maintenance",
+    "partOfSpeech": "noun",
+    "zh": "维修",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "major",
+    "partOfSpeech": "",
+    "zh": "主要的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "majority",
+    "partOfSpeech": "",
+    "zh": "大多数",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "mandatory",
+    "partOfSpeech": "adjective",
+    "zh": "强制性的，必修的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "manipulate",
+    "partOfSpeech": "",
+    "zh": "操作",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "mantle",
+    "partOfSpeech": "",
+    "zh": "地幔；斗篷",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "manual",
+    "partOfSpeech": "",
+    "zh": "手册；说明书",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "manufacture",
+    "partOfSpeech": "",
+    "zh": "制造",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "margin",
+    "partOfSpeech": "",
+    "zh": "边缘；差额",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "marine",
+    "partOfSpeech": "",
+    "zh": "海的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "massive",
+    "partOfSpeech": "",
+    "zh": "大量的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "matter",
+    "partOfSpeech": "noun",
+    "zh": "物质",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "maturation",
+    "partOfSpeech": "",
+    "zh": "成熟",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "maximize",
+    "partOfSpeech": "",
+    "zh": "最大化",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "meager",
+    "partOfSpeech": "",
+    "zh": "贫瘠的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "mechanism",
+    "partOfSpeech": "",
+    "zh": "机制",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "media",
+    "partOfSpeech": "",
+    "zh": "媒体",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "mediate",
+    "partOfSpeech": "",
+    "zh": "调解",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "medical",
+    "partOfSpeech": "",
+    "zh": "医疗的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "mental",
+    "partOfSpeech": "",
+    "zh": "精神的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "merchant",
+    "partOfSpeech": "",
+    "zh": "商人",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "meridian",
+    "partOfSpeech": "",
+    "zh": "子午线",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "metabolism",
+    "partOfSpeech": "noun",
+    "zh": "新陈代谢",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "meticulously",
+    "partOfSpeech": "adverb",
+    "zh": "细致地，一丝不苟地",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "microbe",
+    "partOfSpeech": "noun",
+    "zh": "微生物",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "microbiome",
+    "partOfSpeech": "noun",
+    "zh": "微生物组",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "microscopic",
+    "partOfSpeech": "adjective",
+    "zh": "极小的，显微镜可见的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "migrate",
+    "partOfSpeech": "",
+    "zh": "迁移",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "military",
+    "partOfSpeech": "",
+    "zh": "军事的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "minimal",
+    "partOfSpeech": "",
+    "zh": "最小的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "minor",
+    "partOfSpeech": "",
+    "zh": "少数的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "misleading",
+    "partOfSpeech": "",
+    "zh": "误导",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "mitigate",
+    "partOfSpeech": "verb",
+    "zh": "减轻，缓和",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "modify",
+    "partOfSpeech": "",
+    "zh": "修改",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "moist",
+    "partOfSpeech": "",
+    "zh": "潮湿的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "monitor",
+    "partOfSpeech": "",
+    "zh": "监视",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "moral",
+    "partOfSpeech": "",
+    "zh": "道德的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "moreover",
+    "partOfSpeech": "adverb",
+    "zh": "此外",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "motive",
+    "partOfSpeech": "",
+    "zh": "动机",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "multiple",
+    "partOfSpeech": "",
+    "zh": "倍数",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "municipal",
+    "partOfSpeech": "adjective",
+    "zh": "市政的，市里的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "mutual",
+    "partOfSpeech": "",
+    "zh": "相互的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "mystery",
+    "partOfSpeech": "",
+    "zh": "神秘的事物",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "narrative",
+    "partOfSpeech": "noun",
+    "zh": "叙述；故事",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "native",
+    "partOfSpeech": "adjective",
+    "zh": "本土的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "navigate",
+    "partOfSpeech": "verb",
+    "zh": "导航，操纵",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "necessitate",
+    "partOfSpeech": "",
+    "zh": "使成为必要",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "negative",
+    "partOfSpeech": "",
+    "zh": "消极的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "network",
+    "partOfSpeech": "",
+    "zh": "网络",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "neutral",
+    "partOfSpeech": "",
+    "zh": "中立的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "nevertheless",
+    "partOfSpeech": "",
+    "zh": "然而；不过",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "newsletter",
+    "partOfSpeech": "noun",
+    "zh": "简报",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "nonetheless",
+    "partOfSpeech": "",
+    "zh": "尽管如此",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "nonetheless / nevertheless",
+    "partOfSpeech": "adverb",
+    "zh": "尽管如此",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "normal",
+    "partOfSpeech": "",
+    "zh": "正常的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "notable",
+    "partOfSpeech": "",
+    "zh": "值得注意的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "nourish",
+    "partOfSpeech": "",
+    "zh": "滋养；培养",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "novelty",
+    "partOfSpeech": "",
+    "zh": "新奇的事物",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "numerous",
+    "partOfSpeech": "",
+    "zh": "众多的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "nutrient",
+    "partOfSpeech": "noun",
+    "zh": "营养物质",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "obtain",
+    "partOfSpeech": "",
+    "zh": "获得",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "obviously",
+    "partOfSpeech": "",
+    "zh": "明显地",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "occupy",
+    "partOfSpeech": "",
+    "zh": "占领",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "occur",
+    "partOfSpeech": "",
+    "zh": "发生",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "odd",
+    "partOfSpeech": "",
+    "zh": "奇怪的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "offset",
+    "partOfSpeech": "",
+    "zh": "抵消",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "opinion",
+    "partOfSpeech": "noun",
+    "zh": "意见",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "option",
+    "partOfSpeech": "",
+    "zh": "选项；选修课",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "organism",
+    "partOfSpeech": "",
+    "zh": "生物；有机体",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "orient",
+    "partOfSpeech": "",
+    "zh": "东方",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "output",
+    "partOfSpeech": "",
+    "zh": "输出",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "overlap",
+    "partOfSpeech": "",
+    "zh": "重叠",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "overseas",
+    "partOfSpeech": "",
+    "zh": "海外的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "paradigm",
+    "partOfSpeech": "noun",
+    "zh": "范式，典型示例",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "paradox",
+    "partOfSpeech": "noun",
+    "zh": "悖论，矛盾的情况",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "parasite",
+    "partOfSpeech": "",
+    "zh": "寄生虫",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "participate",
+    "partOfSpeech": "",
+    "zh": "参与",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "participation",
+    "partOfSpeech": "noun",
+    "zh": "参与",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "particle",
+    "partOfSpeech": "",
+    "zh": "粒子",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "passionate",
+    "partOfSpeech": "",
+    "zh": "充满激情的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "passive",
+    "partOfSpeech": "adjective",
+    "zh": "被动的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "patient",
+    "partOfSpeech": "",
+    "zh": "病人",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "perceive",
+    "partOfSpeech": "",
+    "zh": "感知",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "permanent",
+    "partOfSpeech": "",
+    "zh": "永久的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "persist",
+    "partOfSpeech": "",
+    "zh": "坚持",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "perspective",
+    "partOfSpeech": "noun",
+    "zh": "视角；观点；透视",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "phenomenon",
+    "partOfSpeech": "",
+    "zh": "现象",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "philosophy",
+    "partOfSpeech": "",
+    "zh": "哲学",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "physical",
+    "partOfSpeech": "",
+    "zh": "身体的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "pivotal",
+    "partOfSpeech": "adjective",
+    "zh": "关键的，中枢的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "plasticity",
+    "partOfSpeech": "noun",
+    "zh": "可塑性",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "platform",
+    "partOfSpeech": "noun",
+    "zh": "平台",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "platinum",
+    "partOfSpeech": "",
+    "zh": "铂",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "pollution",
+    "partOfSpeech": "noun",
+    "zh": "污染",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "portion",
+    "partOfSpeech": "",
+    "zh": "部分",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "positive",
+    "partOfSpeech": "",
+    "zh": "积极的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "potential",
+    "partOfSpeech": "",
+    "zh": "潜在的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "precious",
+    "partOfSpeech": "",
+    "zh": "珍贵的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "precipitate",
+    "partOfSpeech": "",
+    "zh": "加速",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "precipitation",
+    "partOfSpeech": "",
+    "zh": "降水",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "precise",
+    "partOfSpeech": "",
+    "zh": "精确的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "precursor",
+    "partOfSpeech": "",
+    "zh": "前身；先驱",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "predator",
+    "partOfSpeech": "",
+    "zh": "捕食者",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "predict",
+    "partOfSpeech": "",
+    "zh": "预测",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "predominant",
+    "partOfSpeech": "",
+    "zh": "主导的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "preference",
+    "partOfSpeech": "noun",
+    "zh": "偏好，倾向",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "pregnant",
+    "partOfSpeech": "",
+    "zh": "怀孕的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "prehistoric",
+    "partOfSpeech": "adjective",
+    "zh": "史前的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "preliminary",
+    "partOfSpeech": "",
+    "zh": "初步的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "prerequisite",
+    "partOfSpeech": "noun",
+    "zh": "先修课程；先决条件",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "presence",
+    "partOfSpeech": "",
+    "zh": "存在",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "preserve",
+    "partOfSpeech": "verb",
+    "zh": "保存，保护",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "pressure",
+    "partOfSpeech": "",
+    "zh": "压力",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "prevalent",
+    "partOfSpeech": "",
+    "zh": "流行的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "previous",
+    "partOfSpeech": "",
+    "zh": "以前的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "primarily",
+    "partOfSpeech": "",
+    "zh": "主要地",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "principal",
+    "partOfSpeech": "",
+    "zh": "主要的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "principle",
+    "partOfSpeech": "",
+    "zh": "原则",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "prior",
+    "partOfSpeech": "",
+    "zh": "先前的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "priority",
+    "partOfSpeech": "noun",
+    "zh": "优先权",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "privacy",
+    "partOfSpeech": "noun",
+    "zh": "隐私",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "proceed",
+    "partOfSpeech": "",
+    "zh": "继续",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "produce",
+    "partOfSpeech": "noun",
+    "zh": "农产品",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "productivity",
+    "partOfSpeech": "noun",
+    "zh": "生产力",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "profession",
+    "partOfSpeech": "noun",
+    "zh": "职业",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "professional",
+    "partOfSpeech": "",
+    "zh": "专业的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "profit",
+    "partOfSpeech": "noun",
+    "zh": "利润",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "profitable",
+    "partOfSpeech": "",
+    "zh": "有利可图的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "profound",
+    "partOfSpeech": "",
+    "zh": "意义深远的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "prohibit",
+    "partOfSpeech": "",
+    "zh": "禁止",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "project",
+    "partOfSpeech": "",
+    "zh": "项目",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "prolonged",
+    "partOfSpeech": "adjective",
+    "zh": "延长的，持续很久的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "promise",
+    "partOfSpeech": "",
+    "zh": "承诺",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "promote",
+    "partOfSpeech": "",
+    "zh": "促进",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "proponent",
+    "partOfSpeech": "",
+    "zh": "支持者",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "proportion",
+    "partOfSpeech": "",
+    "zh": "比例",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "propulsion",
+    "partOfSpeech": "",
+    "zh": "推进",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "prospect",
+    "partOfSpeech": "",
+    "zh": "前景",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "prosperous",
+    "partOfSpeech": "",
+    "zh": "繁荣的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "psychology",
+    "partOfSpeech": "",
+    "zh": "心理学",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "purchase",
+    "partOfSpeech": "",
+    "zh": "购买",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "quality",
+    "partOfSpeech": "",
+    "zh": "质量",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "quantity",
+    "partOfSpeech": "",
+    "zh": "数量",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "quartz",
+    "partOfSpeech": "",
+    "zh": "石英",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "random",
+    "partOfSpeech": "",
+    "zh": "随机的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "range",
+    "partOfSpeech": "",
+    "zh": "范围",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "rapid",
+    "partOfSpeech": "",
+    "zh": "迅速的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "rational",
+    "partOfSpeech": "",
+    "zh": "理性的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "react",
+    "partOfSpeech": "",
+    "zh": "反应",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "recall",
+    "partOfSpeech": "",
+    "zh": "回忆起",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "reconstruct",
+    "partOfSpeech": "",
+    "zh": "重建",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "recycle",
+    "partOfSpeech": "",
+    "zh": "回收利用",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "refine",
+    "partOfSpeech": "",
+    "zh": "精炼；改善",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "region",
+    "partOfSpeech": "",
+    "zh": "地区",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "registrar",
+    "partOfSpeech": "noun",
+    "zh": "教务主任，注册员",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "registration",
+    "partOfSpeech": "",
+    "zh": "登记",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "regulate",
+    "partOfSpeech": "verb",
+    "zh": "管理，调节",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "reinforce",
+    "partOfSpeech": "",
+    "zh": "加强",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "relax",
+    "partOfSpeech": "",
+    "zh": "放松",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "release",
+    "partOfSpeech": "verb",
+    "zh": "释放",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "reliable",
+    "partOfSpeech": "adjective",
+    "zh": "可靠的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "religion",
+    "partOfSpeech": "",
+    "zh": "宗教",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "reluctant",
+    "partOfSpeech": "",
+    "zh": "不情愿的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "remarkable",
+    "partOfSpeech": "",
+    "zh": "非凡的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "remote",
+    "partOfSpeech": "adjective",
+    "zh": "远程的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "renaissance",
+    "partOfSpeech": "noun",
+    "zh": "文艺复兴",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "renewable",
+    "partOfSpeech": "adjective",
+    "zh": "可再生的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "request",
+    "partOfSpeech": "noun",
+    "zh": "请求",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "require",
+    "partOfSpeech": "",
+    "zh": "要求；需要",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "reserve",
+    "partOfSpeech": "",
+    "zh": "储备",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "resident",
+    "partOfSpeech": "",
+    "zh": "居民",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "resilience",
+    "partOfSpeech": "noun",
+    "zh": "韧性，恢复力",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "resistant",
+    "partOfSpeech": "",
+    "zh": "抵制的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "resolve",
+    "partOfSpeech": "",
+    "zh": "解决",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "resource",
+    "partOfSpeech": "noun",
+    "zh": "资源",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "restrict",
+    "partOfSpeech": "",
+    "zh": "限制",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "retain",
+    "partOfSpeech": "",
+    "zh": "保留",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "reveal",
+    "partOfSpeech": "",
+    "zh": "揭示",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "revenue",
+    "partOfSpeech": "",
+    "zh": "收入",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "reverse",
+    "partOfSpeech": "",
+    "zh": "颠倒；使反转",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "revise",
+    "partOfSpeech": "",
+    "zh": "修改",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "revolution",
+    "partOfSpeech": "",
+    "zh": "革命",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "rigid",
+    "partOfSpeech": "",
+    "zh": "僵硬的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "ritualistic",
+    "partOfSpeech": "adjective",
+    "zh": "仪式的，惯例的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "route",
+    "partOfSpeech": "",
+    "zh": "路线",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "rudimentary",
+    "partOfSpeech": "",
+    "zh": "基本的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "rural",
+    "partOfSpeech": "adjective",
+    "zh": "农村的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "salinity",
+    "partOfSpeech": "",
+    "zh": "含盐量",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "sanitation",
+    "partOfSpeech": "noun",
+    "zh": "卫生设施，公共卫生",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "satirize",
+    "partOfSpeech": "verb",
+    "zh": "讽刺",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "satisfaction",
+    "partOfSpeech": "noun",
+    "zh": "满足感",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "saturate",
+    "partOfSpeech": "",
+    "zh": "使饱和",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "scale",
+    "partOfSpeech": "",
+    "zh": "规模",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "schedule",
+    "partOfSpeech": "",
+    "zh": "日程安排",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "scheme",
+    "partOfSpeech": "",
+    "zh": "计划",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "sculptural",
+    "partOfSpeech": "adjective",
+    "zh": "雕刻的，雕塑般的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "section",
+    "partOfSpeech": "",
+    "zh": "部分",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "secure",
+    "partOfSpeech": "",
+    "zh": "使安全",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "sediment",
+    "partOfSpeech": "",
+    "zh": "沉积物",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "seek",
+    "partOfSpeech": "",
+    "zh": "寻求",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "seismology",
+    "partOfSpeech": "",
+    "zh": "地震学",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "sensitive",
+    "partOfSpeech": "",
+    "zh": "敏感的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "settlement",
+    "partOfSpeech": "noun",
+    "zh": "定居点",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "sewage",
+    "partOfSpeech": "",
+    "zh": "污水",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "shift",
+    "partOfSpeech": "",
+    "zh": "转移；变换",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "shortage",
+    "partOfSpeech": "",
+    "zh": "短缺",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "shuttle bus",
+    "partOfSpeech": "",
+    "zh": "校内班车/穿梭巴士",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "signaling",
+    "partOfSpeech": "noun",
+    "zh": "信号传输",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "significant",
+    "partOfSpeech": "",
+    "zh": "重要的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "significantly",
+    "partOfSpeech": "adjective",
+    "zh": "显著地；明显地",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "similarly",
+    "partOfSpeech": "adverb",
+    "zh": "同样地",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "simulate",
+    "partOfSpeech": "",
+    "zh": "模拟",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "solar",
+    "partOfSpeech": "",
+    "zh": "太阳能的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "soluble",
+    "partOfSpeech": "",
+    "zh": "可溶的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "sophisticate",
+    "partOfSpeech": "",
+    "zh": "老练的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "spectacular",
+    "partOfSpeech": "",
+    "zh": "壮观的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "speculation",
+    "partOfSpeech": "noun",
+    "zh": "推测",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "stable",
+    "partOfSpeech": "",
+    "zh": "稳定的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "starve",
+    "partOfSpeech": "",
+    "zh": "饿死",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "steady",
+    "partOfSpeech": "",
+    "zh": "平稳的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "stimulate",
+    "partOfSpeech": "",
+    "zh": "刺激；促进",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "stimulus",
+    "partOfSpeech": "noun",
+    "zh": "刺激",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "strategy",
+    "partOfSpeech": "noun",
+    "zh": "策略",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "strength",
+    "partOfSpeech": "",
+    "zh": "力量；强度",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "stress",
+    "partOfSpeech": "",
+    "zh": "强调",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "strike",
+    "partOfSpeech": "",
+    "zh": "罢工",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "structure",
+    "partOfSpeech": "",
+    "zh": "结构",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "subsequent",
+    "partOfSpeech": "",
+    "zh": "随后的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "substitute",
+    "partOfSpeech": "",
+    "zh": "替代",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "suburb",
+    "partOfSpeech": "noun",
+    "zh": "郊区",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "succession",
+    "partOfSpeech": "",
+    "zh": "一系列；继承",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "successive",
+    "partOfSpeech": "",
+    "zh": "连续的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "sufficient",
+    "partOfSpeech": "adjective",
+    "zh": "足够的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "summary",
+    "partOfSpeech": "",
+    "zh": "总结",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "supply",
+    "partOfSpeech": "noun / verb",
+    "zh": "供应",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "suppress",
+    "partOfSpeech": "",
+    "zh": "抑制",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "surplus",
+    "partOfSpeech": "noun",
+    "zh": "剩余，过剩",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "survive",
+    "partOfSpeech": "",
+    "zh": "生存",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "sustain",
+    "partOfSpeech": "",
+    "zh": "维持",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "sustainable",
+    "partOfSpeech": "adjective",
+    "zh": "可持续的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "syllabus",
+    "partOfSpeech": "noun",
+    "zh": "课程大纲",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "symbiotic",
+    "partOfSpeech": "",
+    "zh": "共生的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "synthetic",
+    "partOfSpeech": "adjective",
+    "zh": "合成的，人造的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "technical",
+    "partOfSpeech": "",
+    "zh": "技术的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "technique",
+    "partOfSpeech": "noun",
+    "zh": "技巧，技术",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "tendency",
+    "partOfSpeech": "",
+    "zh": "趋势",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "terminal",
+    "partOfSpeech": "",
+    "zh": "终端",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "terrain",
+    "partOfSpeech": "",
+    "zh": "地形",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "terrestrial",
+    "partOfSpeech": "",
+    "zh": "陆地的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "territory",
+    "partOfSpeech": "",
+    "zh": "领土",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "theoretical",
+    "partOfSpeech": "adjective",
+    "zh": "理论的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "therefore",
+    "partOfSpeech": "adverb",
+    "zh": "因此",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "trace",
+    "partOfSpeech": "",
+    "zh": "追踪",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "trait",
+    "partOfSpeech": "noun",
+    "zh": "特征，特点",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "transfer",
+    "partOfSpeech": "",
+    "zh": "转移",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "transform",
+    "partOfSpeech": "",
+    "zh": "使改变",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "transformation",
+    "partOfSpeech": "noun",
+    "zh": "转变",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "transit",
+    "partOfSpeech": "",
+    "zh": "通过；运输",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "transmission",
+    "partOfSpeech": "noun",
+    "zh": "传播，传送",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "transmit",
+    "partOfSpeech": "",
+    "zh": "传输",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "transplant",
+    "partOfSpeech": "",
+    "zh": "移植",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "transport",
+    "partOfSpeech": "",
+    "zh": "输送",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "trend",
+    "partOfSpeech": "",
+    "zh": "趋向；动态",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "tribe",
+    "partOfSpeech": "",
+    "zh": "部落",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "trigger",
+    "partOfSpeech": "",
+    "zh": "触发",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "tropics",
+    "partOfSpeech": "",
+    "zh": "热带地区",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "ultimately",
+    "partOfSpeech": "",
+    "zh": "最终",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "undergo",
+    "partOfSpeech": "",
+    "zh": "经历",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "underscore",
+    "partOfSpeech": "",
+    "zh": "着重说明",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "uniform",
+    "partOfSpeech": "",
+    "zh": "统一的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "unique",
+    "partOfSpeech": "",
+    "zh": "独特的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "urban",
+    "partOfSpeech": "adjective",
+    "zh": "城市的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "urbanization",
+    "partOfSpeech": "noun",
+    "zh": "城市化",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "utilize",
+    "partOfSpeech": "",
+    "zh": "利用",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "vacation",
+    "partOfSpeech": "",
+    "zh": "假期",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "valid",
+    "partOfSpeech": "",
+    "zh": "有效的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "valuable",
+    "partOfSpeech": "",
+    "zh": "有价值的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "various",
+    "partOfSpeech": "",
+    "zh": "各种各样的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "vast",
+    "partOfSpeech": "",
+    "zh": "辽阔的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "verbal",
+    "partOfSpeech": "",
+    "zh": "口头的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "verification",
+    "partOfSpeech": "noun",
+    "zh": "验证",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "versatile",
+    "partOfSpeech": "",
+    "zh": "多才多艺的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "via",
+    "partOfSpeech": "",
+    "zh": "通过",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "vigorous",
+    "partOfSpeech": "",
+    "zh": "充满活力的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "violate",
+    "partOfSpeech": "",
+    "zh": "违反",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "visible",
+    "partOfSpeech": "",
+    "zh": "可见的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "vision",
+    "partOfSpeech": "",
+    "zh": "视力；想象",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "vital",
+    "partOfSpeech": "",
+    "zh": "必不可少的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "vocation",
+    "partOfSpeech": "",
+    "zh": "职业",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "voyage",
+    "partOfSpeech": "noun",
+    "zh": "航海，长途旅行",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "vulnerable",
+    "partOfSpeech": "adjective",
+    "zh": "脆弱的，易受影响的",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "widespread",
+    "partOfSpeech": "",
+    "zh": "广泛的",
+    "source": "桌面·托福阅读必备词汇"
+  },
+  {
+    "word": "workload",
+    "partOfSpeech": "noun",
+    "zh": "工作量",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "yield",
+    "partOfSpeech": "verb",
+    "zh": "/n. 产生，产量",
+    "source": "桌面·新托福高频词汇"
+  },
+  {
+    "word": "youngster",
+    "partOfSpeech": "",
+    "zh": "年轻人",
+    "source": "桌面·托福阅读必备词汇"
+  }
+]

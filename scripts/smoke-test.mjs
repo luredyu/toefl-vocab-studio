@@ -119,9 +119,48 @@ vm.runInContext(`
   practiceMode = "complete";
   practiceGroupIndex = 0;
   resetPracticeQueue();
-  const completeHtml = renderCompleteWordsQuestion(practiceQueue[0]);
-  if (!completeHtml.includes('id="complete-word-answer"')) {
-    throw new Error("Complete the Words input was not rendered");
+  const completeHtml = renderCompleteWordsQuestion();
+  if ((completeHtml.match(/data-complete-word=/g) || []).length !== 5) {
+    throw new Error("Multi-word Complete the Words inputs were not rendered");
+  }
+  completeAnswers = Object.fromEntries(
+    getCurrentClozeTargets().map((word) => [word, word.slice(Math.max(1, Math.ceil(word.length / 2)))])
+  );
+  checkCompleteWordAnswer();
+  if (!completeWordAnswered) throw new Error("Multi-word answers were not accepted");
+
+  practiceMode = "simulation";
+  practiceGroupIndex = 0;
+  resetPracticeQueue();
+  const simulationHtml = renderSimulationQuestion(practiceQueue[0]);
+  if ((simulationHtml.match(/data-complete-word=/g) || []).length !== practiceQueue[0].targets.length) {
+    throw new Error("TOEFL simulation inputs were not rendered");
+  }
+
+  practiceMode = "sentence";
+  practiceGroupIndex = 0;
+  resetPracticeQueue();
+  const sentenceHtml = renderSentenceQuestion(practiceQueue[0]);
+  if ((sentenceHtml.match(/data-sentence-tile=/g) || []).length !== practiceQueue[0].answer.length) {
+    throw new Error("Build a Sentence tiles were not rendered");
+  }
+  sentenceSelection = practiceQueue[0].answer.map((_, index) => index);
+  checkSentenceAnswer();
+  if (sentenceAnswered !== true) throw new Error("Correct sentence order was not accepted");
+
+  importSession.text = "Students participating in the study completed a survey.";
+  importSession.tokenLemmas = { participating: "participate" };
+  importSession.candidates = [{
+    word: "participate",
+    count: 1,
+    basic: false,
+    score: "medium",
+    mode: "recognition",
+    gloss: { partOfSpeech: "verb", zh: "参与，参加" },
+  }];
+  const sourceHtml = renderSourceCandidateView(importSession.candidates);
+  if (!sourceHtml.includes("v. 参与，参加") || !sourceHtml.includes("is-recognition")) {
+    throw new Error("Source text classification did not show the basic meaning and selected mode");
   }
 `, context);
 

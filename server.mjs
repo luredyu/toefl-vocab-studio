@@ -156,6 +156,16 @@ try {
   console.log("未找到本地词库文件，将完全依赖 API");
 }
 
+let glossaryMap = new Map();
+try {
+  const raw = await readFile(join(root, "glossary.json"), "utf-8");
+  const glossary = JSON.parse(raw);
+  glossary.forEach((entry) => glossaryMap.set(entry.word.toLowerCase(), entry));
+  console.log(`基础释义库已加载：${glossaryMap.size} 个词`);
+} catch {
+  console.log("未找到基础释义库，将只使用本地词库释义");
+}
+
 // Simple in-memory audio cache
 const audioCache = new Map();
 let ocrWorkerPromise = null;
@@ -199,6 +209,9 @@ export async function handleRequest(request, response) {
     }
     if (request.method === "POST" && url.pathname === "/api/wordbank/lookup") {
       return lookupWordbank(request, response);
+    }
+    if (request.method === "POST" && url.pathname === "/api/glossary/lookup") {
+      return lookupGlossary(request, response);
     }
     if (request.method === "POST" && url.pathname === "/api/lemmatize") {
       return lemmatizeWords(request, response);
@@ -809,6 +822,39 @@ async function lookupWordbank(request, response) {
             : "",
           source: entry.source || "本地词库",
         };
+      } else {
+        missing.push(key);
+      }
+    }
+    return json(response, 200, { found, missing });
+  } catch (error) {
+    return json(response, 400, { error: error.message });
+  }
+}
+
+async function lookupGlossary(request, response) {
+  try {
+    const body = await readJsonBody(request, 1_000_000);
+    const words = Array.isArray(body.words) ? body.words : [];
+    if (words.length > 5000) {
+      return json(response, 413, { error: "一次最多查询 5000 个单词" });
+    }
+    const found = {};
+    const missing = [];
+    for (const value of words) {
+      const key = String(value || "").toLowerCase().trim();
+      if (!key || found[key]) continue;
+      const wordbankEntry = wordbankMap.get(key);
+      const glossaryEntry = glossaryMap.get(key);
+      if (wordbankEntry) {
+        found[key] = {
+          word: key,
+          partOfSpeech: wordbankEntry.partOfSpeech || glossaryEntry?.partOfSpeech || "",
+          zh: wordbankEntry.definitions?.[0]?.zh || glossaryEntry?.zh || "",
+          source: wordbankEntry.source || "本地词库",
+        };
+      } else if (glossaryEntry) {
+        found[key] = glossaryEntry;
       } else {
         missing.push(key);
       }
