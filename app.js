@@ -2381,10 +2381,12 @@ async function extractDocxText(file) {
 
 async function extractImageText(file) {
   showToast("正在浏览器中识别图片，首次使用需要加载识别模型");
+  let browserError = null;
   try {
     const text = await recognizeImageInBrowser(file);
     if (text) return text;
   } catch (error) {
+    browserError = error;
     console.warn("Browser OCR failed, falling back to server OCR:", error?.message || error);
   }
 
@@ -2398,7 +2400,11 @@ async function extractImageText(file) {
     body: JSON.stringify({ imageBase64, mimeType }),
   });
   const payload = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(payload.error || `图片识别失败（${response.status}）`);
+  if (!response.ok) {
+    const serverMessage = payload.error || `服务器识别失败（${response.status}）`;
+    const browserMessage = browserError?.message ? `；浏览器识别：${browserError.message}` : "";
+    throw new Error(`${serverMessage}${browserMessage}`);
+  }
   const text = String(payload.text || "").trim();
   if (!text) throw new Error("图片中未识别到英文文字，请尝试更清晰、正向的图片");
   return text;
@@ -2428,11 +2434,34 @@ async function recognizeImageInBrowser(file) {
     });
   }
 
-  const worker = await browserOcrWorkerPromise;
-  const result = await worker.recognize(file);
-  const text = String(result.data?.text || "").trim();
-  if (!text) throw new Error("图片中未识别到英文文字");
-  return text;
+  try {
+    const worker = await withBrowserTimeout(browserOcrWorkerPromise, 45_000, "浏览器 OCR 模型加载超时");
+    const result = await withBrowserTimeout(worker.recognize(file), 45_000, "浏览器 OCR 识别超时");
+    const text = String(result.data?.text || "").trim();
+    if (!text) throw new Error("图片中未识别到英文文字");
+    return text;
+  } catch (error) {
+    const staleWorker = browserOcrWorkerPromise;
+    browserOcrWorkerPromise = null;
+    staleWorker?.then((worker) => worker.terminate()).catch(() => {});
+    throw error;
+  }
+}
+
+function withBrowserTimeout(promise, timeoutMs, message) {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error(message)), timeoutMs);
+    Promise.resolve(promise).then(
+      (value) => {
+        clearTimeout(timer);
+        resolve(value);
+      },
+      (error) => {
+        clearTimeout(timer);
+        reject(error);
+      }
+    );
+  });
 }
 
 async function prepareImageForOcr(file) {

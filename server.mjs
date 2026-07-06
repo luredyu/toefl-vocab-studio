@@ -508,6 +508,7 @@ async function exportDocx(request, response) {
 // ── local OCR ───────────────────────────────────────────────
 
 async function recognizeImage(request, response) {
+  const startedAt = Date.now();
   try {
     const body = await readJsonBody(request, process.env.VERCEL ? 4_400_000 : 18_000_000);
     const mimeType = String(body.mimeType || "").toLowerCase();
@@ -536,33 +537,66 @@ async function recognizeImage(request, response) {
       return json(response, 400, { error: "图片内容与文件格式不匹配" });
     }
 
+    console.info("[ocr] recognition started", { mimeType, bytes: image.length });
     const result = await enqueueOcr(image);
     const text = String(result.data?.text || "").trim();
     if (!text) return json(response, 422, { error: "图片中未识别到英文文字，请尝试更清晰、正向的图片" });
 
+    console.info("[ocr] recognition completed", {
+      elapsedMs: Date.now() - startedAt,
+      confidence: Number(result.data?.confidence || 0),
+      characters: text.length,
+    });
     return json(response, 200, {
       text,
       confidence: Number(result.data?.confidence || 0),
     });
   } catch (error) {
-    console.error("OCR failed:", error);
+    console.error("[ocr] recognition failed", {
+      elapsedMs: Date.now() - startedAt,
+      error: error?.message || String(error),
+      stack: error?.stack,
+    });
     return json(response, 500, { error: "图片识别失败，请换一张更清晰的图片重试" });
   }
 }
 
 function enqueueOcr(image) {
   const job = ocrQueue.then(async () => {
-    if (!ocrWorkerPromise) {
-      ocrWorkerPromise = createWorker("eng", 1, {
-        langPath: join(root, "node_modules/@tesseract.js-data/eng/4.0.0"),
-        cachePath: OCR_CACHE_DIR,
-      });
+    try {
+      if (!ocrWorkerPromise) {
+        ocrWorkerPromise = createWorker("eng", 1, {
+          langPath: join(root, "node_modules/@tesseract.js-data/eng/4.0.0_best_int"),
+          cachePath: OCR_CACHE_DIR,
+        });
+      }
+      const worker = await withTimeout(ocrWorkerPromise, 25_000, "OCR 模型加载超时");
+      return await withTimeout(worker.recognize(image), 35_000, "OCR 图片识别超时");
+    } catch (error) {
+      const staleWorker = ocrWorkerPromise;
+      ocrWorkerPromise = null;
+      staleWorker?.then((worker) => worker.terminate()).catch(() => {});
+      throw error;
     }
-    const worker = await ocrWorkerPromise;
-    return worker.recognize(image);
   });
   ocrQueue = job.catch(() => {});
   return job;
+}
+
+function withTimeout(promise, timeoutMs, message) {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error(message)), timeoutMs);
+    Promise.resolve(promise).then(
+      (value) => {
+        clearTimeout(timer);
+        resolve(value);
+      },
+      (error) => {
+        clearTimeout(timer);
+        reject(error);
+      }
+    );
+  });
 }
 
 function hasExpectedImageSignature(buffer, mimeType) {
