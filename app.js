@@ -326,7 +326,17 @@ let practiceQueue = [];
 let practiceIndex = 0;
 let practiceRevealed = false;
 let spellingAnswered = false;
+let practiceSort = "created";
+let practiceGroupIndex = 0;
+let practiceDueOnly = false;
+let vocabularyAnswered = null;
+let completeWordAnswered = false;
+let completeWordHadError = false;
+let contextSelectedWord = "";
+let lastAutoPlayedKey = "";
+const practiceQuestionCache = new Map();
 let activeAudioPlayer = null;
+let browserOcrWorkerPromise = null;
 
 const content = document.querySelector("#app-content");
 const title = document.querySelector("#page-title");
@@ -846,10 +856,12 @@ function wordCard(word) {
 }
 
 function renderPractice() {
-  const eligible = getPracticeWords(practiceMode);
-  if (!practiceQueue.length || practiceQueue.some((word) => !eligible.find((candidate) => candidate.id === word.id))) {
-    resetPracticeQueue();
+  const eligible = getActivePracticeWords();
+  if (!practiceQueue.length || practiceQueue.some((word) => !eligible.some((candidate) => candidate.id === word.id))) {
+    resetPracticeQueue(practiceDueOnly);
   }
+  const groupCount = Math.max(1, Math.ceil(eligible.length / 20));
+  const currentGroupSize = Math.min(20, Math.max(0, eligible.length - practiceGroupIndex * 20));
 
   content.innerHTML = `
     <div class="content-inner practice-layout">
@@ -857,11 +869,34 @@ function renderPractice() {
         <div class="section-kicker" style="margin-bottom:12px">练习模式</div>
         <div class="practice-mode-list">
           ${practiceModeButton("recognition", "快速识记", "释义回忆 + 自评")}
+          ${practiceModeButton("vocabulary", "文章近义词题", "学术短文 → 选择近义表达")}
           ${practiceModeButton("spelling", "看义拼写", "中文释义 → 键盘输入")}
           ${practiceModeButton("listening", "听音拼写", "词典录音 → 键盘输入")}
+          ${practiceModeButton("complete", "段落补词", "2026 Complete the Words 形式")}
         </div>
+        ${
+          eligible.length
+            ? `
+              <div class="practice-group-controls">
+                <label class="form-label" for="practice-sort">20 词一组</label>
+                <select id="practice-sort" class="select-input">
+                  <option value="created" ${practiceSort === "created" ? "selected" : ""}>按添加时间（早 → 晚）</option>
+                  <option value="mastery" ${practiceSort === "mastery" ? "selected" : ""}>按熟练度（弱 → 强）</option>
+                </select>
+                <select id="practice-group-index" class="select-input" aria-label="选择练习分组">
+                  ${Array.from({ length: groupCount }, (_, index) => {
+                    const start = index * 20 + 1;
+                    const end = Math.min(eligible.length, start + 19);
+                    return `<option value="${index}" ${index === practiceGroupIndex ? "selected" : ""}>第 ${index + 1} 组 · ${start}–${end}</option>`;
+                  }).join("")}
+                </select>
+                <div class="group-summary">本组 ${currentGroupSize} 词 · 共 ${eligible.length} 词</div>
+              </div>
+            `
+            : ""
+        }
         <div class="privacy-note" style="margin-top:16px">
-          听音模式只使用有可靠词典录音的拼写词。没有录音的词不会出现在该模式。
+          听音模式进入每个单词时会自动播放，也可以点击播放按钮重听。文章题为原创练习，不复制 ETS 真题。
         </div>
       </aside>
       <section class="panel practice-stage">
@@ -869,8 +904,9 @@ function renderPractice() {
       </section>
     </div>
   `;
-  if (practiceMode === "spelling" || practiceMode === "listening") {
-    requestAnimationFrame(() => document.querySelector("#spelling-answer")?.focus());
+  if (["spelling", "listening", "complete"].includes(practiceMode)) {
+    if (practiceMode === "listening" && !spellingAnswered) autoPlayCurrentListeningWord();
+    requestAnimationFrame(() => document.querySelector("#spelling-answer, #complete-word-answer")?.focus());
   }
 }
 
@@ -888,6 +924,14 @@ function renderPracticeStage() {
   const word = practiceQueue[practiceIndex];
   if (!word) return renderPracticeComplete();
   const definition = firstDefinition(word);
+
+  if (practiceMode === "vocabulary") {
+    return renderVocabularyQuestion(word);
+  }
+
+  if (practiceMode === "complete") {
+    return renderCompleteWordsQuestion(word);
+  }
 
   if (practiceMode === "recognition") {
     return `
@@ -938,6 +982,213 @@ function renderPracticeStage() {
   `;
 }
 
+function renderVocabularyQuestion(word) {
+  const question = getVocabularyQuestion(word);
+  const answered = vocabularyAnswered;
+  return `
+    <div class="objective-card">
+      <div class="practice-counter">${practiceIndex + 1} / ${practiceQueue.length} · 阅读词汇题</div>
+      <div class="question-instruction">阅读短文，选择与标记词在文中意思最接近的选项。</div>
+      <article class="academic-passage">
+        ${renderInteractivePassage(question.passage, word.word)}
+      </article>
+      <div class="vocabulary-stem">The word <strong>“${escapeHtml(word.word)}”</strong> in the passage is closest in meaning to:</div>
+      <div class="vocabulary-options">
+        ${question.options
+          .map((option, index) => {
+            const isCorrect = option === question.answer;
+            const isSelected = answered?.selected === option;
+            const stateClass = answered
+              ? isCorrect
+                ? "is-correct"
+                : isSelected
+                  ? "is-wrong"
+                  : "is-muted"
+              : "";
+            return `
+              <button class="vocabulary-option ${stateClass}" data-vocabulary-option="${escapeHtml(option)}" ${answered ? "disabled" : ""}>
+                <span>${String.fromCharCode(65 + index)}</span>${escapeHtml(option)}
+              </button>
+            `;
+          })
+          .join("")}
+      </div>
+      ${
+        answered
+          ? `
+            <div class="quiz-explanation ${answered.correct ? "is-correct" : "is-wrong"}">
+              <strong>${answered.correct ? "回答正确" : `正确答案：${escapeHtml(question.answer)}`}</strong>
+              <p>${escapeHtml(firstDefinition(word)?.en || "")}</p>
+              <p>${escapeHtml(firstDefinition(word)?.zh || "")}</p>
+            </div>
+            <button class="button button-primary" data-action="next-objective-question">下一题 <span>→</span></button>
+          `
+          : ""
+      }
+      ${renderArticleWordPicker()}
+    </div>
+  `;
+}
+
+function renderCompleteWordsQuestion(word) {
+  const question = getPracticeQuestion(word);
+  const splitAt = Math.max(1, Math.ceil(word.word.length / 2));
+  const missing = word.word.slice(splitAt);
+  return `
+    <div class="objective-card">
+      <div class="practice-counter">${practiceIndex + 1} / ${practiceQueue.length} · Complete the Words</div>
+      <div class="question-instruction">根据段落语境补全缺失字母，只输入横线部分。</div>
+      <article class="academic-passage complete-passage">
+        ${renderInteractivePassage(question.passage, word.word, {
+          missingWord: true,
+          splitAt,
+          answered: completeWordAnswered,
+        })}
+      </article>
+      <div class="answer-feedback" id="answer-feedback">
+        ${completeWordAnswered ? `正确：${escapeHtml(word.word)} ✓` : `需要填写 ${missing.length} 个字母，按 Enter 检查`}
+      </div>
+      ${
+        completeWordAnswered
+          ? `<button class="button button-primary" data-action="next-objective-question">下一题 <span>→</span></button>`
+          : `<button class="button button-ghost button-small" data-action="show-complete-answer">想不起来，显示答案</button>`
+      }
+      ${renderArticleWordPicker()}
+    </div>
+  `;
+}
+
+function getVocabularyQuestion(word) {
+  const cacheKey = `vocabulary:${word.id}`;
+  if (practiceQuestionCache.has(cacheKey)) return practiceQuestionCache.get(cacheKey);
+  const hasSynonym = Boolean(word.synonyms?.[0]?.word);
+  const answer = hasSynonym ? word.synonyms[0].word : firstDefinition(word)?.en || word.word;
+  const candidates = state.words
+    .filter((candidate) => candidate.id !== word.id)
+    .map((candidate) => hasSynonym ? candidate.synonyms?.[0]?.word || candidate.word : firstDefinition(candidate)?.en)
+    .filter((candidate) => candidate && candidate.toLowerCase() !== answer.toLowerCase());
+  const fallbacks = hasSynonym
+    ? ["temporary", "ordinary", "isolated", "rigid", "accidental", "superficial"]
+    : [
+        "to remain completely unchanged",
+        "a detail with little practical importance",
+        "to separate two things permanently",
+        "a result caused only by chance",
+        "to make a process more difficult",
+        "present in one location only",
+      ];
+  const distractors = uniqueStrings([...seededShuffle(candidates, `${word.id}:distractors`), ...fallbacks])
+    .filter((candidate) => candidate.toLowerCase() !== answer.toLowerCase())
+    .slice(0, 3);
+  const question = {
+    passage: getPracticeQuestion(word).passage,
+    answer,
+    options: seededShuffle([answer, ...distractors], `${word.id}:options`),
+  };
+  practiceQuestionCache.set(cacheKey, question);
+  return question;
+}
+
+function getPracticeQuestion(word) {
+  const cacheKey = `passage:${word.id}`;
+  if (practiceQuestionCache.has(cacheKey)) return practiceQuestionCache.get(cacheKey);
+  const topics = [
+    {
+      intro: "Ecologists compared plant communities in several coastal wetlands over a ten-year period.",
+      outro: "They then compared the pattern with rainfall records and changes in land use.",
+    },
+    {
+      intro: "Archaeologists examined pottery fragments recovered from settlements along an ancient trade route.",
+      outro: "The finding helped them revise their account of exchange between neighboring communities.",
+    },
+    {
+      intro: "Cognitive scientists asked volunteers to complete the same task under several laboratory conditions.",
+      outro: "The researchers repeated the procedure to determine whether the pattern was consistent.",
+    },
+    {
+      intro: "Geologists analyzed layers of sediment taken from the floor of a high-altitude lake.",
+      outro: "Measurements from several cores allowed the team to test its interpretation of past climate.",
+    },
+    {
+      intro: "Education researchers observed how students approached unfamiliar problems in an introductory science course.",
+      outro: "Later assessments showed how this feature influenced both accuracy and long-term retention.",
+    },
+    {
+      intro: "Economists studied how a regional transportation change affected small businesses and household travel.",
+      outro: "Because several factors changed at once, the investigators interpreted the evidence cautiously.",
+    },
+  ];
+  const topic = topics[stableHash(word.word) % topics.length];
+  const example = (word.collocations || [])
+    .map((item) => item.example?.trim())
+    .find((item) => item && new RegExp(`\\b${escapeRegExp(word.word)}\\b`, "i").test(item));
+  const targetSentence = example
+    ? replaceFirstWord(example, word.word, `[[${word.word}]]`)
+    : buildTargetSentence(word);
+  const question = { passage: `${topic.intro} ${targetSentence} ${topic.outro}` };
+  practiceQuestionCache.set(cacheKey, question);
+  return question;
+}
+
+function buildTargetSentence(word) {
+  const target = `[[${word.word}]]`;
+  const part = String(word.partOfSpeech || "").toLowerCase();
+  if (part.includes("adverb") || part === "adv." || part === "adv") {
+    return `In the final set of observations, the response occurred ${target}, a feature the authors considered important when evaluating the evidence.`;
+  }
+  if (part.includes("adjective") || part === "adj." || part === "adj") {
+    return `The authors described the resulting pattern as ${target}, and they used this description consistently throughout the report.`;
+  }
+  if (part.includes("verb") || part === "v." || part === "v") {
+    return `The researchers concluded that one environmental condition could ${target} the process, although the size of the effect varied across samples.`;
+  }
+  return `The report emphasized the concept of ${target}, treating it as an important part of the explanation rather than a minor detail.`;
+}
+
+function renderInteractivePassage(passage, targetWord, options = {}) {
+  let targetRendered = false;
+  const cleanPassage = passage.replace(`[[${targetWord}]]`, targetWord);
+  return cleanPassage
+    .split(/([A-Za-z]+(?:['’-][A-Za-z]+)*)/)
+    .map((part) => {
+      if (!/^[A-Za-z]/.test(part)) return escapeHtml(part);
+      const normalized = normalizeCandidateToken(part.toLowerCase());
+      if (!targetRendered && normalized === targetWord.toLowerCase()) {
+        targetRendered = true;
+        if (options.missingWord) {
+          const splitAt = options.splitAt;
+          const shown = targetWord.slice(0, splitAt);
+          const missing = targetWord.slice(splitAt);
+          return options.answered
+            ? `<span class="complete-word is-correct">${escapeHtml(targetWord)}</span>`
+            : `<span class="complete-word"><strong>${escapeHtml(shown)}</strong><input id="complete-word-answer" class="complete-word-input" style="--missing-letters:${missing.length}" maxlength="${missing.length}" size="${Math.max(2, missing.length)}" autocomplete="off" spellcheck="false" aria-label="补全 ${escapeHtml(targetWord)} 的缺失字母" /></span>`;
+        }
+        return `<mark class="target-word">${escapeHtml(part)}</mark>`;
+      }
+      if (normalized.length >= 4 && !BASIC_WORDS.has(lemmatize(normalized))) {
+        return `<button class="article-word" data-article-word="${escapeHtml(lemmatize(normalized))}" title="点击归类这个词">${escapeHtml(part)}</button>`;
+      }
+      return escapeHtml(part);
+    })
+    .join("");
+}
+
+function renderArticleWordPicker() {
+  if (!contextSelectedWord) {
+    return `<div class="article-word-hint">文章中的虚线词可点击，并直接归类为拼写词或识记词。</div>`;
+  }
+  const existing = state.words.find((word) => word.word.toLowerCase() === contextSelectedWord);
+  return `
+    <div class="article-word-picker">
+      <div><strong>${escapeHtml(contextSelectedWord)}</strong>${existing ? ` · 当前为${existing.mode === "spelling" ? "拼写词" : "识记词"}` : " · 加入词库"}</div>
+      <div class="mode-picker">
+        <button class="mode-option ${existing?.mode === "spelling" ? "is-selected" : ""}" data-article-mode="spelling" data-word="${escapeHtml(contextSelectedWord)}">拼写</button>
+        <button class="mode-option ${existing?.mode === "recognition" ? "is-selected" : ""}" data-article-mode="recognition" data-word="${escapeHtml(contextSelectedWord)}">识记</button>
+      </div>
+    </div>
+  `;
+}
+
 function ratingButtons(spelling = false) {
   return `
     <button class="rating-button" data-rating="again">${spelling ? "错误" : "忘记"}<br><small>1 · 很快再来</small></button>
@@ -950,14 +1201,20 @@ function ratingButtons(spelling = false) {
 function renderPracticeEmpty() {
   const messages = {
     recognition: ["没有可练习的识记词", "先从材料中选择一些识记词，生成后就能在这里复习。"],
+    vocabulary: ["没有可出题的识记词", "先加入识记词；有英文释义后即可生成原创学术文章近义词题。"],
     spelling: ["没有可练习的拼写词", "先从材料中选择一些拼写词，生成后就能进行键盘练习。"],
     listening: ["暂时没有可用的词典录音", "只有拿到可靠词典录音的拼写词才会进入听音模式。"],
+    complete: ["没有可练习的拼写词", "先加入拼写词，即可按 2026 TOEFL Complete the Words 形式练习。"],
   };
   return emptyState("⌨", messages[practiceMode][0], messages[practiceMode][1], "导入材料", "go-import");
 }
 
 function renderPracticeComplete() {
-  return emptyState("✓", "这一组完成了", "评分已经写入间隔重复计划。休息一下，或换一种模式继续。", "返回今日", "go-dashboard");
+  const totalGroups = Math.max(1, Math.ceil(getActivePracticeWords().length / 20));
+  if (practiceGroupIndex + 1 < totalGroups) {
+    return emptyState("✓", "这一组完成了", "练习结果已写入间隔重复计划。可以继续下一组。", "开始下一组", "next-practice-group");
+  }
+  return emptyState("✓", "这一组完成了", "练习结果已写入间隔重复计划。休息一下，或换一种模式继续。", "返回今日", "go-dashboard");
 }
 
 function renderSettings() {
@@ -1066,7 +1323,7 @@ function renderSettings() {
       <section class="panel settings-card">
         <div class="section-kicker">示例与重置</div>
         <h2>体验完整流程</h2>
-        <p>没有 API Key 时，可以先加入 4 个示例词，查看词卡、近义词辨析和三种练习模式。</p>
+        <p>没有 API Key 时，可以先加入 4 个示例词，查看词卡、近义词辨析和五种练习模式。</p>
         <div class="settings-actions">
           <button class="button button-secondary" data-action="add-demo-words">加入示例词</button>
           <button class="button button-danger" data-action="clear-all-data">清空学习数据</button>
@@ -1100,8 +1357,27 @@ function handleGlobalClick(event) {
   const practiceModeTarget = event.target.closest("[data-practice-mode]");
   if (practiceModeTarget) {
     practiceMode = practiceModeTarget.dataset.practiceMode;
+    practiceGroupIndex = 0;
+    practiceDueOnly = false;
+    contextSelectedWord = "";
     resetPracticeQueue();
     renderPractice();
+  }
+
+  const vocabularyOption = event.target.closest("[data-vocabulary-option]");
+  if (vocabularyOption) {
+    answerVocabularyQuestion(vocabularyOption.dataset.vocabularyOption);
+  }
+
+  const articleWord = event.target.closest("[data-article-word]");
+  if (articleWord) {
+    contextSelectedWord = articleWord.dataset.articleWord;
+    renderPractice();
+  }
+
+  const articleMode = event.target.closest("[data-article-mode]");
+  if (articleMode) {
+    addArticleWord(articleMode.dataset.word, articleMode.dataset.articleMode);
   }
 
   const rating = event.target.closest("[data-rating]")?.dataset.rating;
@@ -1125,8 +1401,15 @@ function handleAction(action, event) {
   if (action === "go-import") setView("import");
   if (action === "go-practice") setView("practice");
   if (action === "go-dashboard") setView("dashboard");
+  if (action === "next-practice-group") {
+    practiceGroupIndex += 1;
+    resetPracticeQueue(practiceDueOnly);
+    renderPractice();
+  }
+  if (action === "next-objective-question") advanceObjectiveQuestion();
   if (action === "start-due") {
     practiceMode = "recognition";
+    practiceGroupIndex = 0;
     resetPracticeQueue(true);
     setView("practice");
   }
@@ -1169,6 +1452,7 @@ function handleAction(action, event) {
       setTimeout(renderPractice, 250);
     }
   }
+  if (action === "show-complete-answer") revealCompleteWordAnswer();
   if (action === "save-api-key") saveApiKey();
   if (action === "remove-api-key") removeApiKey();
   if (action === "test-api") testApi();
@@ -1216,6 +1500,17 @@ function handleGlobalChange(event) {
     libraryMode = event.target.value;
     renderLibrary();
   }
+  if (event.target.id === "practice-sort") {
+    practiceSort = event.target.value;
+    practiceGroupIndex = 0;
+    resetPracticeQueue(practiceDueOnly);
+    renderPractice();
+  }
+  if (event.target.id === "practice-group-index") {
+    practiceGroupIndex = Number(event.target.value) || 0;
+    resetPracticeQueue(practiceDueOnly);
+    renderPractice();
+  }
   if (event.target.id === "deepseek-model") {
     state.settings.model = event.target.value;
     saveState();
@@ -1242,6 +1537,9 @@ function handleGlobalKeydown(event) {
   }
   if ((practiceMode === "spelling" || practiceMode === "listening") && event.key === "Enter" && !spellingAnswered) {
     checkSpellingAnswer();
+  }
+  if (practiceMode === "complete" && event.key === "Enter" && !completeWordAnswered) {
+    checkCompleteWordAnswer();
   }
   // Keyboard rating shortcuts: 1=again 2=hard 3=good 4=easy
   if (["1", "2", "3", "4"].includes(event.key) && (practiceRevealed || spellingAnswered)) {
@@ -1377,11 +1675,8 @@ async function generateSelectedWords() {
       const key = item.word.toLowerCase();
       const wbEntry = found[key];
       if (wbEntry) {
-        // Don't use local audio path — fetch from external API for reliability
-        const { audio: _localAudio, ...entryWithoutAudio } = wbEntry;
         enriched.push({
-          ...entryWithoutAudio,
-          audio: "", // Will be filled by fetchDictionaryAudio below
+          ...wbEntry,
           id: crypto.randomUUID(),
           word: wbEntry.word.toLowerCase(),
           mode: item.mode,
@@ -1614,7 +1909,15 @@ async function extractDocxText(file) {
 }
 
 async function extractImageText(file) {
-  showToast("正在识别图片文字，首次使用可能需要一点时间");
+  showToast("正在浏览器中识别图片，首次使用需要加载识别模型");
+  try {
+    const text = await recognizeImageInBrowser(file);
+    if (text) return text;
+  } catch (error) {
+    console.warn("Browser OCR failed, falling back to server OCR:", error?.message || error);
+  }
+
+  showToast("浏览器识别未完成，正在尝试服务器识别");
   const preparedImage = await prepareImageForOcr(file);
   const imageBase64 = await fileToBase64(preparedImage);
   const mimeType = preparedImage.type || normalizeImageMimeType(file);
@@ -1627,6 +1930,37 @@ async function extractImageText(file) {
   if (!response.ok) throw new Error(payload.error || `图片识别失败（${response.status}）`);
   const text = String(payload.text || "").trim();
   if (!text) throw new Error("图片中未识别到英文文字，请尝试更清晰、正向的图片");
+  return text;
+}
+
+async function recognizeImageInBrowser(file) {
+  if (!window.Tesseract) {
+    await loadScript("/vendor/tesseract/tesseract.min.js", 30000);
+  }
+  if (!window.Tesseract?.createWorker) {
+    throw new Error("浏览器 OCR 组件加载失败");
+  }
+
+  if (!browserOcrWorkerPromise) {
+    browserOcrWorkerPromise = window.Tesseract.createWorker("eng", 1, {
+      workerPath: "/vendor/tesseract/worker.min.js",
+      corePath: "/vendor/tesseract/core/tesseract-core-lstm.wasm.js",
+      langPath: "/vendor/tesseract/lang",
+      logger(message) {
+        if (message?.status === "recognizing text" && Number.isFinite(message.progress)) {
+          importSession.status = `正在识别图片文字 ${Math.round(message.progress * 100)}%`;
+        }
+      },
+    }).catch((error) => {
+      browserOcrWorkerPromise = null;
+      throw error;
+    });
+  }
+
+  const worker = await browserOcrWorkerPromise;
+  const result = await worker.recognize(file);
+  const text = String(result.data?.text || "").trim();
+  if (!text) throw new Error("图片中未识别到英文文字");
   return text;
 }
 
@@ -2004,17 +2338,49 @@ function getDueWords() {
 }
 
 function getPracticeWords(mode) {
-  if (mode === "recognition") return state.words.filter((word) => word.mode === "recognition");
-  if (mode === "spelling") return state.words.filter((word) => word.mode === "spelling");
+  if (mode === "recognition" || mode === "vocabulary") return state.words.filter((word) => word.mode === "recognition");
+  if (mode === "spelling" || mode === "complete") return state.words.filter((word) => word.mode === "spelling");
   return state.words.filter((word) => word.mode === "spelling" && word.audio);
 }
 
+function getActivePracticeWords() {
+  let words = getPracticeWords(practiceMode);
+  if (practiceDueOnly) {
+    const now = Date.now();
+    words = words.filter((word) => !word.srs?.dueAt || word.srs.dueAt <= now);
+  }
+  return sortPracticeWords(words);
+}
+
+function sortPracticeWords(words) {
+  return [...words].sort((a, b) => {
+    if (practiceSort === "mastery") {
+      return masteryScore(a) - masteryScore(b) || (a.createdAt || 0) - (b.createdAt || 0);
+    }
+    return (a.createdAt || 0) - (b.createdAt || 0) || a.word.localeCompare(b.word);
+  });
+}
+
+function masteryScore(word) {
+  const srs = word.srs || defaultSrs();
+  return (srs.reps || 0) * 3 + Math.log2((srs.interval || 0) + 1) - (srs.lapses || 0) * 2;
+}
+
 function resetPracticeQueue(dueOnly = false) {
-  let queue = dueOnly ? getDueWords() : getPracticeWords(practiceMode);
-  practiceQueue = shuffle([...queue]);
+  practiceDueOnly = dueOnly;
+  const words = getActivePracticeWords();
+  const groupCount = Math.max(1, Math.ceil(words.length / 20));
+  practiceGroupIndex = Math.min(practiceGroupIndex, groupCount - 1);
+  const start = practiceGroupIndex * 20;
+  practiceQueue = shuffle(words.slice(start, start + 20));
   practiceIndex = 0;
   practiceRevealed = false;
   spellingAnswered = false;
+  vocabularyAnswered = null;
+  completeWordAnswered = false;
+  completeWordHadError = false;
+  contextSelectedWord = "";
+  lastAutoPlayedKey = "";
 }
 
 function checkSpellingAnswer() {
@@ -2036,6 +2402,114 @@ function checkSpellingAnswer() {
   }
 }
 
+function answerVocabularyQuestion(selected) {
+  if (vocabularyAnswered) return;
+  const word = practiceQueue[practiceIndex];
+  if (!word) return;
+  const question = getVocabularyQuestion(word);
+  const correct = selected === question.answer;
+  vocabularyAnswered = { selected, correct };
+  recordObjectiveResult(word, correct ? "good" : "again");
+  renderPractice();
+}
+
+function checkCompleteWordAnswer() {
+  const word = practiceQueue[practiceIndex];
+  const input = document.querySelector("#complete-word-answer");
+  const feedback = document.querySelector("#answer-feedback");
+  if (!word || !input || !input.value.trim()) return;
+  const splitAt = Math.max(1, Math.ceil(word.word.length / 2));
+  const expected = word.word.slice(splitAt).toLowerCase();
+  const correct = input.value.trim().toLowerCase() === expected;
+  input.classList.remove("is-wrong", "is-correct");
+  input.classList.add(correct ? "is-correct" : "is-wrong");
+  if (correct) {
+    completeWordAnswered = true;
+    recordObjectiveResult(word, completeWordHadError ? "hard" : "good");
+    renderPractice();
+  } else {
+    completeWordHadError = true;
+    if (feedback) feedback.textContent = "缺失字母不正确，请结合上下文再试一次";
+    setTimeout(() => input.classList.remove("is-wrong"), 450);
+  }
+}
+
+function revealCompleteWordAnswer() {
+  const word = practiceQueue[practiceIndex];
+  if (!word || completeWordAnswered) return;
+  completeWordHadError = true;
+  completeWordAnswered = true;
+  recordObjectiveResult(word, "again");
+  renderPractice();
+}
+
+function recordObjectiveResult(word, rating) {
+  updateSrs(word, rating);
+  state.reviewsToday += 1;
+  updateStreak();
+  saveState();
+}
+
+function advanceObjectiveQuestion() {
+  practiceIndex += 1;
+  vocabularyAnswered = null;
+  completeWordAnswered = false;
+  completeWordHadError = false;
+  contextSelectedWord = "";
+  renderPractice();
+}
+
+async function addArticleWord(rawWord, mode) {
+  const word = normalizeCandidateToken(String(rawWord || "").toLowerCase());
+  if (!word || !["spelling", "recognition"].includes(mode)) return;
+  const existing = state.words.find((item) => item.word.toLowerCase() === word);
+  if (existing) {
+    existing.mode = mode;
+    saveState();
+    showToast(`“${word}” 已归类为${mode === "spelling" ? "拼写词" : "识记词"}`);
+    contextSelectedWord = word;
+    renderPractice();
+    return;
+  }
+
+  showToast(`正在把“${word}”加入词库`);
+  let entry = null;
+  try {
+    const response = await fetch("/api/wordbank/lookup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ words: [word] }),
+    });
+    const payload = await response.json().catch(() => ({}));
+    entry = payload.found?.[word] || null;
+  } catch {
+    // A minimal local card below keeps article classification usable offline.
+  }
+
+  state.words.push({
+    ...(entry || {
+      word,
+      partOfSpeech: "",
+      definitions: [{ en: "Definition pending", zh: "释义待补充" }],
+      irregularForms: [],
+      wordFamily: [],
+      collocations: [],
+      synonyms: [],
+      audio: "",
+    }),
+    id: crypto.randomUUID(),
+    word,
+    mode,
+    createdAt: Date.now(),
+    srs: defaultSrs(),
+  });
+  saveState();
+  practiceQuestionCache.clear();
+  contextSelectedWord = word;
+  showToast(`“${word}” 已归类为${mode === "spelling" ? "拼写词" : "识记词"}`);
+  renderPractice();
+}
+
 function rateCurrentWord(rating) {
   const word = practiceQueue[practiceIndex];
   if (!word) return;
@@ -2046,6 +2520,8 @@ function rateCurrentWord(rating) {
   practiceIndex += 1;
   practiceRevealed = false;
   spellingAnswered = false;
+  contextSelectedWord = "";
+  lastAutoPlayedKey = "";
   renderPractice();
 }
 
@@ -2114,6 +2590,15 @@ function playWordAudio(id) {
     console.warn("Dictionary audio playback failed:", error?.name || "Error", error?.message || "");
     reportError();
   });
+}
+
+function autoPlayCurrentListeningWord() {
+  const word = practiceQueue[practiceIndex];
+  if (!word?.audio) return;
+  const key = `${word.id}:${practiceIndex}`;
+  if (lastAutoPlayedKey === key) return;
+  lastAutoPlayedKey = key;
+  playWordAudio(word.id);
 }
 
 async function saveApiKey() {
@@ -2307,6 +2792,44 @@ function shuffle(items) {
     [items[i], items[j]] = [items[j], items[i]];
   }
   return items;
+}
+
+function seededShuffle(items, seedText) {
+  const result = [...items];
+  let seed = stableHash(seedText) || 1;
+  for (let index = result.length - 1; index > 0; index -= 1) {
+    seed = (seed * 1664525 + 1013904223) >>> 0;
+    const target = seed % (index + 1);
+    [result[index], result[target]] = [result[target], result[index]];
+  }
+  return result;
+}
+
+function stableHash(value) {
+  let hash = 2166136261;
+  for (const character of String(value || "")) {
+    hash ^= character.charCodeAt(0);
+    hash = Math.imul(hash, 16777619);
+  }
+  return hash >>> 0;
+}
+
+function uniqueStrings(values) {
+  const seen = new Set();
+  return values.filter((value) => {
+    const key = String(value || "").trim().toLowerCase();
+    if (!key || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+function escapeRegExp(value) {
+  return String(value || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function replaceFirstWord(text, word, replacement) {
+  return String(text || "").replace(new RegExp(`\\b${escapeRegExp(word)}\\b`, "i"), replacement);
 }
 
 function escapeHtml(value = "") {

@@ -39,6 +39,10 @@ const PUBLIC_FILES = new Map([
   ["/vendor/pdf/pdf.min.mjs", join(root, "node_modules/pdfjs-dist/build/pdf.min.mjs")],
   ["/vendor/pdf/pdf.worker.min.mjs", join(root, "node_modules/pdfjs-dist/build/pdf.worker.min.mjs")],
   ["/vendor/mammoth/mammoth.browser.min.js", join(root, "node_modules/mammoth/mammoth.browser.min.js")],
+  ["/vendor/tesseract/tesseract.min.js", join(root, "node_modules/tesseract.js/dist/tesseract.min.js")],
+  ["/vendor/tesseract/worker.min.js", join(root, "node_modules/tesseract.js/dist/worker.min.js")],
+  ["/vendor/tesseract/core/tesseract-core-lstm.wasm.js", join(root, "node_modules/tesseract.js-core/tesseract-core-lstm.wasm.js")],
+  ["/vendor/tesseract/lang/eng.traineddata.gz", join(root, "node_modules/@tesseract.js-data/eng/4.0.0_best_int/eng.traineddata.gz")],
 ]);
 
 const SECURITY_HEADERS = {
