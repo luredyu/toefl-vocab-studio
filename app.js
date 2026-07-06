@@ -2400,9 +2400,34 @@ async function extractTextFromFile(file) {
     return extractDocxText(file);
   }
   if (file.type.startsWith("image/") || ["png", "jpg", "jpeg", "webp", "bmp", "gif"].includes(extension)) {
-    return extractImageText(file);
+    const text = await extractImageText(file);
+    // Post-process for fill-in-the-blank exercises: fix OCR errors with underscores
+    return fixOcrUnderscores(text);
   }
   throw new Error("暂不支持这种文件格式");
+}
+
+// Fix common OCR errors that affect fill-in-the-blank exercise recognition
+function fixOcrUnderscores(text) {
+  let fixed = text;
+  // Dash sequences after a word → underscores (e.g., "civiliza----" → "civiliza____")
+  fixed = fixed.replace(/\b([A-Za-z]{2,18})[-—–]{2,}/g, (m, prefix) => {
+    const dashCount = m.length - prefix.length;
+    return prefix + "_".repeat(Math.min(dashCount, 12));
+  });
+  // Dot sequences after a word → underscores (e.g., "civiliza...." → "civiliza____")
+  fixed = fixed.replace(/\b([A-Za-z]{2,18})[.]{3,}/g, (m, prefix) => {
+    const dotCount = m.length - prefix.length;
+    return prefix + "_".repeat(Math.min(dotCount, 12));
+  });
+  // Single underscores separated by spaces → compact form
+  // "civiliza_ _ _ _" stays as-is (this is the expected format)
+  // But "civiliza _ _ _ _" (underscore separated from word by space) → fix
+  fixed = fixed.replace(/\b([A-Za-z]{2,18})\s+((?:_\s*){2,})/g, "$1$2");
+  // Lowercase L or I recognized as underscore → fix common patterns
+  // e.g., "civilizal l l l" → "civiliza_ _ _ _"
+  // Only apply when there's a clear word+gap pattern
+  return fixed;
 }
 
 async function extractPdfText(file) {
@@ -3500,7 +3525,14 @@ async function convertCustomExerciseWithAi() {
   const source = customExerciseImport.text.trim();
   if (!source) return;
   const apiKey = currentUser ? "" : localStorage.getItem(API_KEY_STORAGE);
-  const typeInstruction = `提取所有 Complete the Words 题。每题返回 {"text":"完整段落"}，必须保留原文措辞，并把每个缺字单词恢复为完整单词后写成 [[complete]] 形式。答案页中的答案必须正确对应到空格。`;
+  const typeInstruction = `提取所有 Complete the Words 题。每题返回 {"text":"完整段落"}，必须保留原文措辞，并把每个缺字单词恢复为完整单词后写成 [[complete]] 形式，例如 "The rise of civiliza_ _ _ _" 转换为 "The rise of [[civilization]]"。
+
+重要规则：
+1. 每个下划线 _ 代表一个缺失字母。例如 civiliza_ _ _ _ = civilization（4个_对应tion）
+2. 下划线之间可能有空格（_ _ _ _）也可能连续（____），两种格式等价
+3. OCR 可能把 _ 误识别为 - 或 .，请根据上下文恢复完整单词
+4. 答案页中的答案必须正确对应到题目中的空格位置
+5. 不要修改题干文字，只替换缺字部分为完整单词并包在 [[ ]] 中`;
   try {
     const answerIndex = Math.max(source.lastIndexOf("Answer Key"), source.lastIndexOf("答案"));
     const answerReference = answerIndex >= 0 ? source.slice(answerIndex, answerIndex + 35_000) : "";
@@ -3605,22 +3637,49 @@ function prepareCustomExerciseDrafts() {
 }
 
 function parseCompleteWordsLocally(source) {
-  const answerSectionIndex = Math.max(source.lastIndexOf("Answer Key"), source.lastIndexOf("答案"));
-  const answerSource = answerSectionIndex >= 0 ? source.slice(answerSectionIndex) : "";
+  // Fix common OCR errors with underscores
+  let text = source;
+  // Normalize: sequences of dashes or dots that look like underscore gaps → underscores
+  text = text.replace(/([a-zA-Z])[-—–]{2,}(\s*[-—–])*/g, (m, prefix) => {
+    const underscoreCount = m.replace(/[^-—–]/g, "").length;
+    return prefix + "_".repeat(Math.min(underscoreCount, 12));
+  });
+  // Normalize: dots used as underscores (common OCR error)
+  text = text.replace(/([a-zA-Z])[.]{2,}(\s*[.])*/g, (m, prefix) => {
+    const dotCount = m.replace(/[^.]/g, "").length;
+    return prefix + "_".repeat(Math.min(dotCount, 12));
+  });
+  // Normalize: multiple underscores without spaces → same
+  // Normalize: single underscores with spaces → compact (e.g., "_ _ _ _" → "____")
+  text = text.replace(/(?<=[a-zA-Z])(_(\s+_)+)/g, (m) => m.replace(/\s+/g, ""));
+  // Normalize: isolated underscore groups at start of line → join with previous line's trailing underscore
+  text = text.replace(/([a-zA-Z])(_+)\s*\n\s*(_+)/g, "$1$2$3");
+
+  const answerSectionIndex = Math.max(text.lastIndexOf("Answer Key"), text.lastIndexOf("答案"));
+  const answerSource = answerSectionIndex >= 0 ? text.slice(answerSectionIndex) : "";
   const answers = [...answerSource.matchAll(/\b\d{1,3}[\s.:、-]+([A-Za-z'-]+)/g)].map((match) => match[1]);
   let answerIndex = 0;
-  const blocks = source
-    .slice(0, answerSectionIndex >= 0 ? answerSectionIndex : source.length)
+  const blocks = text
+    .slice(0, answerSectionIndex >= 0 ? answerSectionIndex : text.length)
     .split(/\n\s*\n/)
-    .filter((block) => /_(?:\s*_){1,}/.test(block));
+    .filter((block) => /_[\s_]*_/.test(block) || /_[a-z]/i.test(block));
   return blocks.map((block) => {
-    const converted = block.replace(/\b([A-Za-z]{1,18})(?:\s*_\s*){1,24}/g, (_, prefix) => {
-      const answer = answers[answerIndex++] || "ANSWER";
-      const full = answer.toLowerCase().startsWith(prefix.toLowerCase()) ? answer : `${prefix}${answer}`;
+    const converted = block.replace(/\b([A-Za-z]{1,18})(_[\s_]*_){1,24}/g, (match, prefix) => {
+      const answer = answers[answerIndex++] || guessCompleteWord(match);
+      const answerClean = answer.replace(/[^A-Za-z'-]/g, "");
+      const full = answerClean.toLowerCase().startsWith(prefix.toLowerCase())
+        ? answerClean
+        : prefix + answerClean;
       return `[[${full}]]`;
     });
     return { text: converted.trim() };
   });
+}
+
+function guessCompleteWord(blank) {
+  // If no answer key available, just keep the underscore pattern as-is
+  const prefix = blank.match(/^([A-Za-z]+)/);
+  return prefix ? prefix[1] : "ANSWER";
 }
 
 function normalizeImportedExerciseDrafts(questions) {
