@@ -864,20 +864,22 @@ function renderCandidates() {
           </div>
         </div>
         <div class="panel-body">
-          <div class="candidate-toolbar">
-            <div class="candidate-summary">
-              共提取 <strong>${importSession.candidates.length}</strong> 个 · 当前显示 <strong>${visibleCandidates.length}</strong> 个
-              ${state.settings.hideBasic ? `（隐藏了 ${importSession.candidates.length - visibleCandidates.length} 个基础词）` : ""}
-              · 已选 <strong>${selected.length}</strong> 个
+          <div class="candidate-sticky-classifier">
+            <div class="candidate-toolbar">
+              <div class="candidate-summary">
+                共提取 <strong>${importSession.candidates.length}</strong> 个 · 当前显示 <strong>${visibleCandidates.length}</strong> 个
+                ${state.settings.hideBasic ? `（隐藏了 ${importSession.candidates.length - visibleCandidates.length} 个基础词）` : ""}
+                · 已选 <strong>${selected.length}</strong> 个
+              </div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <button class="button button-ghost button-small" data-action="select-recommended">推荐词设为识记</button>
+                <button class="button button-secondary button-small" data-action="toggle-basic">
+                  ${state.settings.hideBasic ? "显示全部词" : "隐藏基础词"}
+                </button>
+              </div>
             </div>
-            <div style="display:flex;align-items:center;gap:8px">
-              <button class="button button-ghost button-small" data-action="select-recommended">推荐词设为识记</button>
-              <button class="button button-secondary button-small" data-action="toggle-basic">
-                ${state.settings.hideBasic ? "显示全部词" : "隐藏基础词"}
-              </button>
-            </div>
+            ${renderActiveCandidateDetail()}
           </div>
-          ${renderActiveCandidateDetail()}
           ${
             candidateViewMode === "text"
               ? renderSourceCandidateView(visibleCandidates)
@@ -903,6 +905,15 @@ function renderCandidates() {
       </section>
     </div>
   `;
+}
+
+function renderCandidatesPreservingScroll() {
+  const x = typeof window !== "undefined" ? window.scrollX || 0 : 0;
+  const y = typeof window !== "undefined" ? window.scrollY || 0 : 0;
+  renderCandidates();
+  if (typeof window !== "undefined" && typeof window.scrollTo === "function") {
+    requestAnimationFrame(() => window.scrollTo(x, y));
+  }
 }
 
 function candidateRow(item) {
@@ -1731,7 +1742,7 @@ function handleGlobalClick(event) {
   const sourceCandidate = event.target.closest("[data-source-candidate]");
   if (sourceCandidate) {
     activeImportCandidate = sourceCandidate.dataset.sourceCandidate;
-    renderCandidates();
+    renderCandidatesPreservingScroll();
   }
 
   const practiceModeTarget = event.target.closest("[data-practice-mode]");
@@ -1992,7 +2003,7 @@ function setCandidateMode(word, mode) {
   if (!item) return;
   item.mode = item.mode === mode ? null : mode;
   activeImportCandidate = item.word;
-  renderCandidates();
+  renderCandidatesPreservingScroll();
 }
 
 function renameCandidateWord(oldWord) {
@@ -2031,12 +2042,12 @@ function renameCandidateWord(oldWord) {
 
   activeImportCandidate = nextWord;
   importSession.candidates.sort(sortCandidatesForDisplay);
-  renderCandidates();
+  renderCandidatesPreservingScroll();
   if (!glossCache.has(nextWord)) {
     fetchBasicGlosses([nextWord]).then(() => {
       const updated = importSession.candidates.find((candidate) => candidate.word === nextWord);
       if (updated) updated.gloss = glossCache.get(nextWord) || null;
-      if (activeView === "import" && importPhase === "classify") renderCandidates();
+      if (activeView === "import" && importPhase === "classify") renderCandidatesPreservingScroll();
     });
   }
   showToast(`已改为 ${nextWord}`);

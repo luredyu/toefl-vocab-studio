@@ -768,6 +768,18 @@ button {
   margin-bottom: 14px;
 }
 
+.candidate-sticky-classifier {
+  position: sticky;
+  top: 12px;
+  z-index: 8;
+  margin: -4px -6px 18px;
+  padding: 10px 6px 1px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 12px 28px rgba(30, 41, 35, 0.08);
+  backdrop-filter: blur(14px);
+}
+
 .candidate-summary {
   color: var(--ink-soft);
   font-size: 13px;
@@ -937,7 +949,7 @@ button {
   border: 1px solid var(--line);
   border-radius: 11px;
   background: var(--surface-soft);
-  margin-bottom: 16px;
+  margin-bottom: 0;
 }
 
 .source-active-word strong {
@@ -1939,6 +1951,17 @@ button {
   .focused-practice-options {
     width: 100%;
     margin-left: 0;
+  }
+
+  .candidate-toolbar,
+  .source-active-word,
+  .candidate-edit-line {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .candidate-word-edit {
+    width: min(100%, 220px);
   }
 }
 
