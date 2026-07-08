@@ -756,6 +756,10 @@ button {
   font-size: 12px;
 }
 
+.file-status span:last-child {
+  overflow-wrap: anywhere;
+}
+
 .candidate-toolbar {
   display: flex;
   align-items: center;
@@ -945,6 +949,38 @@ button {
 .source-active-word span {
   color: var(--ink-soft);
   font-size: 12px;
+}
+
+.candidate-edit-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.candidate-edit-line label {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.candidate-word-edit {
+  width: min(220px, 40vw);
+  padding: 7px 9px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  background: #fff;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.candidate-word-edit:focus {
+  border-color: var(--green);
+  outline: 2px solid var(--green-soft);
 }
 
 .source-active-word.is-empty {

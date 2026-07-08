@@ -94,6 +94,8 @@ const IRREGULAR_LEMMAS = {
   written: "write",
 };
 
+const FINAL_S_BASE_EXCEPTIONS = /(?:[cs]ious|eous|ous|ss|is|us)$/;
+
 const ADVANCED_WORDS = new Set(
   `
   abundant accelerate accommodate accumulate adjacent advocate allocate ambiguous
@@ -793,9 +795,9 @@ function renderImport() {
                   <div>
                     <div class="dropzone-icon">⇧</div>
                     <h3>拖入文件，或从电脑选择</h3>
-                    <p>支持 TXT、Markdown、PDF、Word（DOCX）和常见图片格式<br />图片仅用于 OCR，不会发送给 DeepSeek</p>
-                    <label class="button button-secondary" for="material-file">选择文件</label>
-                    <input id="material-file" type="file" class="hidden" accept=".txt,.md,.pdf,.docx,image/*" />
+                    <p>支持 TXT、Markdown、PDF、Word（DOCX）和常见图片格式，可一次选择多个<br />图片仅用于 OCR，不会发送给 DeepSeek</p>
+                    <label class="button button-secondary" for="material-file">选择一个或多个文件</label>
+                    <input id="material-file" type="file" class="hidden" accept=".txt,.md,.pdf,.docx,image/*" multiple />
                     ${
                       importSession.fileName
                         ? `<div class="file-status"><span>✓</span><span>${escapeHtml(importSession.fileName)} · 已读取 ${importSession.text.length.toLocaleString()} 个字符</span></div>`
@@ -958,7 +960,11 @@ function renderActiveCandidateDetail() {
   return `
     <div class="source-active-word">
       <div>
-        <strong>${escapeHtml(active.word)}</strong>
+        <div class="candidate-edit-line">
+          <label for="candidate-word-edit">原型</label>
+          <input id="candidate-word-edit" class="candidate-word-edit" value="${escapeHtml(active.word)}" spellcheck="false" autocomplete="off" />
+          <button class="button button-secondary button-small" data-action="rename-candidate" data-old-word="${escapeHtml(active.word)}">保存拼写</button>
+        </div>
         <span>${escapeHtml(formatBasicGloss(active.gloss))}</span>
       </div>
       <div class="mode-picker">
@@ -1827,6 +1833,9 @@ function handleAction(action, event) {
     });
     renderCandidates();
   }
+  if (action === "rename-candidate") {
+    renameCandidateWord(event?.target?.closest?.("[data-old-word]")?.dataset.oldWord || activeImportCandidate);
+  }
   if (action === "generate-words") generateSelectedWords();
   if (action === "clear-library-filter") {
     librarySearch = "";
@@ -1913,8 +1922,8 @@ function handleGlobalInput(event) {
 }
 
 function handleGlobalChange(event) {
-  if (event.target.id === "material-file" && event.target.files?.[0]) {
-    readMaterialFile(event.target.files[0]);
+  if (event.target.id === "material-file" && event.target.files?.length) {
+    readMaterialFiles([...event.target.files]);
   }
   if (event.target.id === "library-mode") {
     libraryMode = event.target.value;
@@ -1937,8 +1946,8 @@ function handleGlobalChange(event) {
     resetPracticeQueue(false);
     renderPractice();
   }
-  if (event.target.id === "custom-exercise-file" && event.target.files?.[0]) {
-    readCustomExerciseFile(event.target.files[0]);
+  if (event.target.id === "custom-exercise-file" && event.target.files?.length) {
+    readCustomExerciseFiles([...event.target.files]);
   }
   if (event.target.id === "deepseek-model") {
     state.settings.model = event.target.value;
@@ -1984,6 +1993,63 @@ function setCandidateMode(word, mode) {
   item.mode = item.mode === mode ? null : mode;
   activeImportCandidate = item.word;
   renderCandidates();
+}
+
+function renameCandidateWord(oldWord) {
+  const currentWord = normalizeCandidateToken(String(oldWord || "").toLowerCase());
+  const input = document.querySelector("#candidate-word-edit");
+  const nextWord = normalizeCandidateToken(String(input?.value || "").toLowerCase());
+  if (!currentWord || !nextWord || !/^[a-z]+(?:'[a-z]+)?$/.test(nextWord) || nextWord.length < 3) {
+    showToast("请输入有效英文单词原型", "error");
+    return;
+  }
+  if (currentWord === nextWord) {
+    showToast("拼写没有变化");
+    return;
+  }
+
+  const current = importSession.candidates.find((candidate) => candidate.word === currentWord);
+  if (!current) return;
+  const existing = importSession.candidates.find((candidate) => candidate.word === nextWord);
+
+  Object.keys(importSession.tokenLemmas || {}).forEach((token) => {
+    if (importSession.tokenLemmas[token] === currentWord) importSession.tokenLemmas[token] = nextWord;
+  });
+
+  if (existing) {
+    existing.count += current.count || 0;
+    existing.mode = existing.mode || current.mode;
+    existing.basic = BASIC_WORDS.has(nextWord);
+    existing.score = betterCandidateScore(existing.score, current.score);
+    importSession.candidates = importSession.candidates.filter((candidate) => candidate !== current);
+  } else {
+    current.word = nextWord;
+    current.basic = BASIC_WORDS.has(nextWord);
+    current.score = ADVANCED_WORDS.has(nextWord) || nextWord.length >= 10 ? "high" : nextWord.length >= 7 ? "medium" : "low";
+    current.gloss = glossCache.get(nextWord) || null;
+  }
+
+  activeImportCandidate = nextWord;
+  importSession.candidates.sort(sortCandidatesForDisplay);
+  renderCandidates();
+  if (!glossCache.has(nextWord)) {
+    fetchBasicGlosses([nextWord]).then(() => {
+      const updated = importSession.candidates.find((candidate) => candidate.word === nextWord);
+      if (updated) updated.gloss = glossCache.get(nextWord) || null;
+      if (activeView === "import" && importPhase === "classify") renderCandidates();
+    });
+  }
+  showToast(`已改为 ${nextWord}`);
+}
+
+function betterCandidateScore(a, b) {
+  const rank = { high: 0, medium: 1, low: 2 };
+  return (rank[a] ?? 2) <= (rank[b] ?? 2) ? a : b;
+}
+
+function sortCandidatesForDisplay(a, b) {
+  const rank = { high: 0, medium: 1, low: 2 };
+  return rank[a.score] - rank[b.score] || b.count - a.count || a.word.localeCompare(b.word);
 }
 
 function loadSampleMaterial() {
@@ -2041,10 +2107,7 @@ async function extractCandidates(text) {
       const score = ADVANCED_WORDS.has(word) || word.length >= 10 ? "high" : word.length >= 7 ? "medium" : "low";
       return { word, count, basic, score, mode: null, gloss: null };
     })
-    .sort((a, b) => {
-      const rank = { high: 0, medium: 1, low: 2 };
-      return rank[a.score] - rank[b.score] || b.count - a.count || a.word.localeCompare(b.word);
-    });
+    .sort(sortCandidatesForDisplay);
   await fetchBasicGlosses(candidates.map((item) => item.word));
   candidates.forEach((item) => {
     item.gloss = glossCache.get(item.word) || null;
@@ -2083,8 +2146,14 @@ function lemmatize(word) {
     }
     return root;
   }
-  if (word.endsWith("s") && !word.endsWith("ss") && word.length > 4) return word.slice(0, -1);
+  if (word.endsWith("s") && shouldStripFinalS(word)) return word.slice(0, -1);
   return word;
+}
+
+function shouldStripFinalS(word) {
+  if (!word || word.length <= 4) return false;
+  if (FINAL_S_BASE_EXCEPTIONS.test(word)) return false;
+  return true;
 }
 
 async function fetchBasicGlosses(words) {
@@ -2365,25 +2434,46 @@ function setupDropzone() {
     });
   });
   zone.addEventListener("drop", (event) => {
-    const file = event.dataTransfer.files?.[0];
-    if (file) readMaterialFile(file);
+    const files = [...(event.dataTransfer.files || [])];
+    if (files.length) readMaterialFiles(files);
   });
 }
 
-async function readMaterialFile(file) {
-  importSession.fileName = file.name;
-  importSession.status = "正在读取文件……";
-  showToast("正在读取文件");
+async function readMaterialFiles(files) {
+  const validFiles = files.filter(Boolean);
+  if (!validFiles.length) return;
+  importSession.fileName = formatFileListName(validFiles);
+  importSession.status = validFiles.length > 1 ? `正在读取 ${validFiles.length} 个文件……` : "正在读取文件……";
+  showToast(validFiles.length > 1 ? `正在读取 ${validFiles.length} 个文件` : "正在读取文件");
   try {
-    importSession.text = await extractTextFromFile(file);
-    showToast(`已读取 ${file.name}`);
+    const parts = [];
+    for (let index = 0; index < validFiles.length; index += 1) {
+      const file = validFiles[index];
+      if (validFiles.length > 1) showToast(`正在读取 ${index + 1}/${validFiles.length}：${file.name}`);
+      const text = await extractTextFromFile(file);
+      parts.push(`\n\n--- ${file.name} ---\n\n${text.trim()}`);
+    }
+    importSession.text = parts.join("").trim();
+    importSession.status = `已读取 ${validFiles.length} 个文件，共 ${importSession.text.length.toLocaleString()} 个字符`;
+    showToast(validFiles.length > 1 ? `已读取 ${validFiles.length} 个文件` : `已读取 ${validFiles[0].name}`);
     renderImport();
   } catch (error) {
     importSession.fileName = "";
     importSession.text = "";
+    importSession.status = "";
     renderImport();
     showToast(error.message || "文件读取失败", "error");
   }
+}
+
+async function readMaterialFile(file) {
+  return readMaterialFiles([file]);
+}
+
+function formatFileListName(files) {
+  if (files.length === 1) return files[0].name;
+  const firstNames = files.slice(0, 2).map((file) => file.name).join("、");
+  return files.length > 2 ? `${firstNames} 等 ${files.length} 个文件` : firstNames;
 }
 
 async function extractTextFromFile(file) {
@@ -3452,8 +3542,8 @@ function renderCustomExerciseImport() {
                 <input id="custom-exercise-title" class="text-input" value="${escapeHtml(customExerciseImport.title)}" placeholder="例如：Complete the Words 练习 2" />
               </div>
               <div class="exercise-file-row">
-                <label class="button button-secondary" for="custom-exercise-file">选择 PDF / Word / 图片 / 文本</label>
-                <input id="custom-exercise-file" class="hidden" type="file" accept=".pdf,.docx,.txt,.md,image/*" />
+                <label class="button button-secondary" for="custom-exercise-file">选择一个或多个 PDF / Word / 图片 / 文本</label>
+                <input id="custom-exercise-file" class="hidden" type="file" accept=".pdf,.docx,.txt,.md,image/*" multiple />
                 <span>${customExerciseImport.fileName ? escapeHtml(customExerciseImport.fileName) : "尚未选择文件"}</span>
               </div>
               <div class="form-group">
@@ -3504,25 +3594,41 @@ function renderCustomExerciseDraftReview() {
   `;
 }
 
-async function readCustomExerciseFile(file) {
-  customExerciseImport.fileName = file.name;
+async function readCustomExerciseFiles(files) {
+  const validFiles = files.filter(Boolean);
+  if (!validFiles.length) return;
+  customExerciseImport.fileName = formatFileListName(validFiles);
   if (!customExerciseImport.title) {
-    customExerciseImport.title = file.name.replace(/\.[^.]+$/, "");
+    customExerciseImport.title = validFiles.length === 1
+      ? validFiles[0].name.replace(/\.[^.]+$/, "")
+      : `${validFiles[0].name.replace(/\.[^.]+$/, "")} 等 ${validFiles.length} 份资料`;
   }
-  customExerciseImport.status = "正在提取文件内容……";
+  customExerciseImport.status = validFiles.length > 1 ? `正在提取 ${validFiles.length} 个文件内容……` : "正在提取文件内容……";
   renderCustomExerciseImport();
   try {
-    const text = await extractTextFromFile(file);
+    const parts = [];
+    for (let index = 0; index < validFiles.length; index += 1) {
+      const file = validFiles[index];
+      customExerciseImport.status = validFiles.length > 1 ? `正在提取 ${index + 1}/${validFiles.length}：${file.name}` : "正在提取文件内容……";
+      renderCustomExerciseImport();
+      const text = await extractTextFromFile(file);
+      parts.push(`\n\n--- ${file.name} ---\n\n${text.trim()}`);
+    }
+    const text = parts.join("").trim();
     if (text.length > 500_000) {
       throw new Error("提取文本超过 50 万字符，请拆分成两份题库导入");
     }
     customExerciseImport.text = text;
-    customExerciseImport.status = `已提取 ${text.length.toLocaleString()} 个字符，请检查原文后转换`;
+    customExerciseImport.status = `已提取 ${validFiles.length} 个文件，共 ${text.length.toLocaleString()} 个字符，请检查原文后转换`;
   } catch (error) {
     customExerciseImport.fileName = "";
     customExerciseImport.status = error.message || "文件读取失败";
   }
   renderCustomExerciseImport();
+}
+
+async function readCustomExerciseFile(file) {
+  return readCustomExerciseFiles([file]);
 }
 
 async function convertCustomExerciseWithAi() {
@@ -3694,7 +3800,18 @@ function parseCompleteWordsLocally(source) {
           }
         }
       }
-      // Third: guess from wordbank
+      // Third: many answer keys list only the missing letters (e.g. Th__ → ese).
+      if (!answer) {
+        for (let i = 0; i < remainingAnswers.length; i++) {
+          const a = remainingAnswers[i].replace(/[^A-Za-z'-]/g, "");
+          if (a.length >= 1 && a.length <= underscores.length + 1) {
+            answer = `${prefix}${a}`;
+            answerIdx = i;
+            break;
+          }
+        }
+      }
+      // Fourth: guess from wordbank
       if (!answer) {
         answer = guessWordFromWordbank(prefix, underscores.length);
       }

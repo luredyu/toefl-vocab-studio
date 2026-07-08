@@ -13,6 +13,7 @@ const port = Number(process.env.PORT || 4173);
 const OCR_CACHE_DIR = process.env.VERCEL
   ? join("/tmp", "toefl-vocab-tesseract-cache")
   : join(root, "data", "tesseract-cache");
+const FINAL_S_BASE_EXCEPTIONS = /(?:[cs]ious|eous|ous|ss|is|us)$/;
 
 const MIME_TYPES = {
   ".html": "text/html; charset=utf-8",
@@ -941,6 +942,7 @@ function resolveLemma(word) {
     wore: "wear", worn: "wear", wrote: "write", written: "write",
   };
   if (irregular[word]) return irregular[word];
+  if (wordbankMap.has(word) && !looksInflected(word)) return word;
 
   const candidates = inflectionCandidates(word);
   const derivedCandidates = candidates.filter((candidate) => candidate !== word);
@@ -1017,8 +1019,24 @@ function fallbackLemma(word) {
     if (root.endsWith("at") || ["us", "mov", "lov", "liv", "creat"].includes(root)) return `${root}e`;
     return root;
   }
-  if (word.endsWith("s") && !word.endsWith("ss") && word.length > 4) return word.slice(0, -1);
+  if (word.endsWith("s") && shouldStripFinalS(word)) return word.slice(0, -1);
   return word;
+}
+
+function looksInflected(word) {
+  if (word.endsWith("ies") && word.length >= 5) return true;
+  if (word.endsWith("ied") && word.length >= 5) return true;
+  if (word.endsWith("ing") && word.length >= 6) return true;
+  if (word.endsWith("ed") && word.length >= 5) return true;
+  if (/(ches|shes|xes|zes|oes)$/.test(word)) return true;
+  if (word.endsWith("s") && shouldStripFinalS(word)) return true;
+  return false;
+}
+
+function shouldStripFinalS(word) {
+  if (!word || word.length <= 4) return false;
+  if (FINAL_S_BASE_EXCEPTIONS.test(word)) return false;
+  return true;
 }
 
 // ── utils ────────────────────────────────────────────────────

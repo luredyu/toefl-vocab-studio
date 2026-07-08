@@ -161,6 +161,17 @@ vm.runInContext(`
   if (!renderActiveCandidateDetail().includes("v. 参与，参加")) {
     throw new Error("Selected source word did not show its basic meaning");
   }
+  if (lemmatize("nutritious") !== "nutritious") {
+    throw new Error("Adjectives ending in -ious should not lose final s");
+  }
+  if (lemmatize("conditions") !== "condition") {
+    throw new Error("Plural nouns should still lose final s");
+  }
+  document.querySelector("#candidate-word-edit").value = "participation";
+  renameCandidateWord("participate");
+  if (!importSession.candidates.some((candidate) => candidate.word === "participation") || importSession.tokenLemmas.participating !== "participation") {
+    throw new Error("Candidate spelling edit did not update candidates and source mapping");
+  }
 
   const localDrafts = parseCompleteWordsLocally(
     "Fill in the missing letters.\\n\\nTh_ _ plants gr_ _ rapidly.\\n\\nAnswer Key\\n1 ese\\n2 ow"
@@ -213,7 +224,7 @@ vm.runInContext(`
     throw new Error("Focused practice view did not render its return control");
   }
   openCustomExerciseImport();
-  if (!modalRoot.innerHTML.includes("选择 PDF / Word / 图片 / 文本") || modalRoot.innerHTML.includes("Build a Sentence")) {
+  if (!modalRoot.innerHTML.includes("选择一个或多个 PDF / Word / 图片 / 文本") || modalRoot.innerHTML.includes("Build a Sentence")) {
     throw new Error("Personal exercise import UI was not rendered");
   }
 `, context);
