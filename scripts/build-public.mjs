@@ -14,7 +14,6 @@ for (const filename of ["index.html", "styles.css", "app.js"]) {
   await cp(join(root, filename), join(output, filename));
 }
 
-await cp(join(root, "media"), join(output, "media"), { recursive: true });
 await cp(
   join(root, "node_modules/pdfjs-dist/build/pdf.min.mjs"),
   join(output, "vendor/pdf/pdf.min.mjs")

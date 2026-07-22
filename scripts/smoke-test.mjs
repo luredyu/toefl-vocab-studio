@@ -99,7 +99,33 @@ vm.runInContext(`
   playWordAudio = (id) => { playedWordId = id; };
   autoPlayCurrentListeningWord();
   if (playedWordId !== practiceQueue[0].id) throw new Error("Listening audio did not autoplay");
+  let listeningHtml = renderPracticeStage();
+  if (!listeningHtml.includes("8 个字母") || !listeningHtml.includes("word-length-slots") || listeningHtml.includes("data-rating")) {
+    throw new Error("Listening spelling should show letter count before answering and no rating buttons");
+  }
+  document.querySelector("#spelling-answer").value = "wrong";
+  checkSpellingAnswer();
+  if (!state.mistakeBook.includes(practiceQueue[0].id) || !spellingAnswered || spellingCorrect !== false) {
+    throw new Error("Wrong listening answer should reveal answer and enter mistake book");
+  }
+  listeningHtml = renderPracticeStage();
+  if (!listeningHtml.includes("听完后显示中文释义") || !listeningHtml.includes(practiceQueue[0].word)) {
+    throw new Error("Listening result should show the correct spelling and Chinese meaning after answering");
+  }
 
+  state.words.forEach((word) => { word.inMistakeBook = false; });
+  state.mistakeBook = ["spell-0"];
+  practiceMode = "mistakes";
+  resetPracticeQueue();
+  if (practiceQueue.length !== 1 || practiceQueue[0].id !== "spell-0") {
+    throw new Error("Mistake book practice queue is invalid");
+  }
+  practiceRevealed = true;
+  if (renderPracticeStage().includes("data-rating")) {
+    throw new Error("Mistake book should not render rating buttons");
+  }
+
+  practiceMode = "listening";
   practiceGroupIndex = 2;
   resetPracticeQueue();
   if (practiceQueue.length !== 5 || practiceQueue.some((word) => word.createdAt < 40)) {

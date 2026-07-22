@@ -208,6 +208,9 @@ export async function handleRequest(request, response) {
     if (request.method === "GET" && url.pathname === "/api/audio") {
       return streamWordAudio(request, url, response);
     }
+    if (request.method === "GET" && url.pathname === "/api/media") {
+      return streamBundledMedia(request, url, response);
+    }
     if (request.method === "POST" && url.pathname === "/api/wordbank/lookup") {
       return lookupWordbank(request, response);
     }
@@ -440,30 +443,55 @@ async function exportDocx(request, response) {
     children: [new Paragraph({ children: [new TextRun({ text: String(text || ""), font: "Noto Sans SC", size: 18 })] })],
   });
 
-  const colWidths = [1200, 700, 700, 2200, 2200, 1800, 1360];
-  const headerTexts = ["单词", "词性", "分类", "中文释义", "英文释义", "写作搭配", "近义词"];
+  const colWidths = [3000, 2800, 2500, 1860];
+  const headerTexts = ["词汇与中文释义", "英文释义", "写作搭配", "近义词"];
 
-  const headerRow = new TableRow({
+  const makeHeaderRow = () => new TableRow({
     tableHeader: true,
     children: headerTexts.map((t, i) => headerCell(t, colWidths[i])),
   });
 
-  const dataRows = words.map((w) => {
+  const formatEntry = (w) => {
+    const def = w.definitions?.[0] || {};
+    const pos = compactPartOfSpeech(w.partOfSpeech);
+    return `${w.word}${pos || def.zh ? " " : ""}${pos}${def.zh ? `${pos ? "" : ""}${def.zh}` : ""}`.trim();
+  };
+
+  const makeRows = (groupWords) => groupWords.map((w) => {
     const def = w.definitions?.[0] || {};
     const colls = (w.collocations || []).map(c => c.phrase).join("; ");
     const syns = (w.synonyms || []).map(s => s.word).join("; ");
     return new TableRow({
       children: [
-        dataCell(w.word, colWidths[0]),
-        dataCell(w.partOfSpeech || "", colWidths[1]),
-        dataCell(w.mode === "spelling" ? "拼写" : "识记", colWidths[2]),
-        dataCell(def.zh || "", colWidths[3]),
-        dataCell(def.en || "", colWidths[4]),
-        dataCell(colls, colWidths[5]),
-        dataCell(syns, colWidths[6]),
+        dataCell(formatEntry(w), colWidths[0]),
+        dataCell(def.en || "", colWidths[1]),
+        dataCell(colls, colWidths[2]),
+        dataCell(syns, colWidths[3]),
       ],
     });
   });
+
+  const makeSection = (title, groupWords) => {
+    if (!groupWords.length) return [];
+    return [
+      new Paragraph({
+        spacing: { before: 220, after: 120 },
+        children: [new TextRun({ text: `${title}（${groupWords.length}）`, bold: true, size: 24, font: "Noto Sans SC", color: "174638" })],
+      }),
+      new Table({
+        width: { size: 10160, type: WidthType.DXA },
+        columnWidths: colWidths,
+        rows: [makeHeaderRow(), ...makeRows(groupWords)],
+      }),
+    ];
+  };
+
+  const spellingWords = words.filter((w) => w.mode === "spelling");
+  const recognitionWords = words.filter((w) => w.mode !== "spelling");
+  const tables = [
+    ...makeSection("拼写词汇", spellingWords),
+    ...makeSection("识记词汇", recognitionWords),
+  ];
 
   const doc = new Document({
     styles: {
@@ -487,11 +515,7 @@ async function exportDocx(request, response) {
           spacing: { after: 300 },
           children: [new TextRun({ text: `导出时间：${new Date().toLocaleDateString("zh-CN")}  ·  共 ${words.length} 个词`, size: 18, color: "888888", font: "Noto Sans SC" })],
         }),
-        new Table({
-          width: { size: 10160, type: WidthType.DXA },
-          columnWidths: colWidths,
-          rows: [headerRow, ...dataRows],
-        }),
+        ...tables,
       ],
     }],
   });
@@ -504,6 +528,17 @@ async function exportDocx(request, response) {
     "Cache-Control": "no-store",
   });
   response.end(buffer);
+}
+
+function compactPartOfSpeech(partOfSpeech) {
+  const value = String(partOfSpeech || "").toLowerCase();
+  if (value.includes("noun") && value.includes("verb")) return "n./v.";
+  if (value.includes("noun") && value.includes("adjective")) return "n./adj.";
+  if (value.includes("noun") || value === "n." || value === "n") return "n.";
+  if (value.includes("verb") || value === "v." || value === "v") return "v.";
+  if (value.includes("adjective") || value === "adj." || value === "adj") return "adj.";
+  if (value.includes("adverb") || value === "adv." || value === "adv") return "adv.";
+  return partOfSpeech ? `${partOfSpeech} ` : "";
 }
 
 // ── local OCR ───────────────────────────────────────────────
@@ -726,7 +761,7 @@ async function streamWordAudio(request, url, response) {
 
   if (source.kind === "local") {
     response.writeHead(302, {
-      Location: source.url,
+      Location: source.url.replace(/^\/media\//, "/api/media?file="),
       "Cache-Control": "public, max-age=86400",
     });
     return response.end();
@@ -749,6 +784,19 @@ async function streamWordAudio(request, url, response) {
     return sendAudioBuffer(request, response, body, contentType);
   } catch {
     return json(response, 502, { error: "Audio proxy failed" });
+  }
+}
+
+async function streamBundledMedia(request, url, response) {
+  const filename = basename(String(url.searchParams.get("file") || ""));
+  if (!/^[\w .()'-]+\.mp3$/i.test(filename)) return json(response, 400, { error: "Invalid media file" });
+  try {
+    const body = await readFile(join(root, "media", filename));
+    return sendAudioBuffer(request, response, body, "audio/mpeg");
+  } catch (error) {
+    if (error?.code === "ENOENT") return json(response, 404, { error: "Audio not found" });
+    console.error(error);
+    return json(response, 500, { error: "Audio unavailable" });
   }
 }
 

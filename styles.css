@@ -1502,32 +1502,42 @@ button {
   animation: fade-in 180ms ease;
 }
 
-.rating-row {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  margin-top: 20px;
-}
-
-.rating-button {
-  padding: 11px 8px;
-  border: 1px solid var(--line);
-  border-radius: 9px;
-  background: #fff;
-  cursor: pointer;
-  font-size: 11px;
-  font-weight: 700;
-}
-
-.rating-button:hover {
-  border-color: #92b09f;
-  background: var(--green-soft);
-}
-
 .spelling-prompt {
   color: var(--ink-soft);
   font-size: 18px;
   line-height: 1.7;
+}
+
+.word-length-slots {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 7px;
+  margin: 18px auto 5px;
+}
+
+.word-length-slots span {
+  display: grid;
+  width: 30px;
+  height: 36px;
+  place-items: center;
+  border: 1px solid #d5d8d0;
+  border-bottom: 3px solid var(--green);
+  border-radius: 7px;
+  color: var(--green-dark);
+  background: #fff;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 18px;
+  font-weight: 800;
+  text-transform: uppercase;
+  box-shadow: 0 6px 14px rgba(30, 41, 35, 0.06);
+}
+
+.word-length-count {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
 }
 
 .spelling-input {
@@ -1566,6 +1576,67 @@ button {
   margin-top: 14px;
   font-size: 13px;
   font-weight: 700;
+}
+
+.answer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.spelling-result {
+  display: grid;
+  gap: 12px;
+  max-width: 560px;
+  margin: 18px auto 18px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+  text-align: left;
+}
+
+.spelling-result.is-correct {
+  border-color: #9ab9a6;
+  background: var(--green-soft);
+}
+
+.spelling-result.is-wrong {
+  border-color: #d39a92;
+  background: #fff4f2;
+}
+
+.spelling-result span {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.spelling-result strong {
+  color: var(--ink);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 28px;
+}
+
+.spelling-result em {
+  display: block;
+  margin-top: 4px;
+  color: var(--red);
+  font-size: 12px;
+  font-style: normal;
+}
+
+.spelling-result p {
+  margin: 2px 0;
+  color: var(--ink-soft);
+  font-size: 13px;
+  line-height: 1.6;
 }
 
 .listen-orb {
